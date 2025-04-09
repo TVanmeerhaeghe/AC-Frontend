@@ -1,0 +1,8 @@
+{
+  "/acbrocante/api": {
+    "target": "http://diawd.fr",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
