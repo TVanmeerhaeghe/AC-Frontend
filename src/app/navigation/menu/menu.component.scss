@@ -1,23 +1,54 @@
-nav{
-    max-width: 264px;
-    text-align: left;
-    justify-content: center;
-
-    h1{
-        
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: 100vh;
+    background-color: blue;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    user-select: none;
+  
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
     }
-
-    hr{
-       
+  
+    hr {
+      border: none;
+      height: 1px;
+      background-color: black;
+      margin-bottom: 1.5rem;
     }
-    
-    ul{
-        list-style: none;
-
-        li{
-            a{
-                text-decoration: none;
-            }
+  
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex-grow: 1;
+  
+      li {
+        margin-bottom: 1rem;
+  
+        a {
+          display: block;
+          text-decoration: none;
+          color: black;
+          cursor: pointer;
+          user-select: none;
+  
+          &:hover {
+            background-color: aliceblue;
+            color: black;
+          }
+  
+          &.active {
+            font-weight: bold;
+            color: aliceblue;
+          }
         }
+      }
     }
-}
+  }
+  

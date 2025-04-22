@@ -1,10 +1,12 @@
-<div class="dashboard-layout">
+   <div class="dashboard-layout">
     <app-menu></app-menu>
   
     <div class="dashboard-content">
+      <div class="user-menu-wrapper">
+        <app-user-menu></app-user-menu>
+      </div>
+  
       <router-outlet></router-outlet>
     </div>
-  
-    <app-user-menu></app-user-menu>
   </div>
   
