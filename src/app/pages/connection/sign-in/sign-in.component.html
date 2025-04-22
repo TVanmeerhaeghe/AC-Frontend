@@ -1,8 +1,13 @@
-<h1>Connexion</h1>
-<form [formGroup]="form" (ngSubmit)="submit()">
-    <input type="email" formControlName="email_adress" placeholder="Email" />
-    <input type="password" formControlName="password" placeholder="Mot de passe" />
-    <button>S'enregistrer</button>
-    <button type="submit">Se connecter</button>
-  </form>
+<div class="sign-in-layout">
+  <app-user-menu></app-user-menu>
+  <div class="sign-in-content">
+    <h1>Connexion</h1>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <input type="email" formControlName="email_adress" placeholder="Email" />
+        <input type="password" formControlName="password" placeholder="Mot de passe" />
+        <button type="submit">Se connecter</button>
+      </form>
+  </div>
+</div>
   

@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
+import { UserMenuComponent } from '../../../navigation/user-menu/user-menu.component';
 
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, UserMenuComponent],
   templateUrl: './sign-in.component.html'
 })
 export class SignInComponent implements OnInit {

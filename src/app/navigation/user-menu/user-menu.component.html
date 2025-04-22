@@ -1,7 +1,18 @@
 <nav>
     <ul>
-        <li><button>Sauvegarde</button></li>
-        <li><a routerLink="/dashboard/parameters" routerLinkActive="active">Parametre</a></li>
-        <li><button (click)="logout()">Déconnexion</button></li>
+        <li *ngIf="isLoggedIn">
+            <button>Sauvegarde</button>
+        </li>
+
+        <li><a routerLink="/dashboard/parameters" routerLinkActive="active">Paramètres</a></li>
+  
+        <li *ngIf="isLoggedIn">
+            <button (click)="logout()">Déconnexion</button>
+        </li>
+    
+        <li *ngIf="!isLoggedIn">
+            <button (click)="login()">Connexion</button>
+        </li>
     </ul>
-</nav>
+  </nav>
+  

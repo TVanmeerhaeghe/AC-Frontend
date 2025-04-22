@@ -1,12 +1,17 @@
-<h1>S'enregistrer</h1>
-<form [formGroup]="form" (ngSubmit)="submit()">
-    <input type="text" formControlName="name" placeholder="Nom" />
-    <input type="text" formControlName="surname" placeholder="Prénom" />
-    <input type="email" formControlName="email_adress" placeholder="Email" />
-    <input type="password" formControlName="password" placeholder="Mot de passe" />
-    <select formControlName="role">
-      <option value="ADMIN">Admin</option>
-    </select>
-    <button type="submit">S'enregistrer</button>
- </form>
+<div class="sign-up-layout">
+  <app-user-menu></app-user-menu>
+  <div class="sign-up-content">
+    <h1>S'enregistrer</h1>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <input type="text" formControlName="name" placeholder="Nom" />
+        <input type="text" formControlName="surname" placeholder="Prénom" />
+        <input type="email" formControlName="email_adress" placeholder="Email" />
+        <input type="password" formControlName="password" placeholder="Mot de passe" />
+        <select formControlName="role">
+          <option value="ADMIN">Admin</option>
+        </select>
+        <button type="submit">S'enregistrer</button>
+     </form>
+  </div>
   
+</div>
