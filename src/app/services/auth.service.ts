@@ -9,8 +9,9 @@ export class AuthService {
   constructor() {}
 
   setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem('token', token);
   }
+  
 
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
@@ -21,6 +22,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!localStorage.getItem('token');
   }
+  
 }
