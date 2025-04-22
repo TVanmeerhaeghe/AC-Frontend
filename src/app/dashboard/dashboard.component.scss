@@ -1,0 +1,21 @@
+.dashboard-layout {
+    display: flex;
+    height: 100vh;
+  }
+  
+  app-menu,
+  app-user-menu {
+    width: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dashboard-content {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  

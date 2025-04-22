@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ParametersComponent } from '../../pages/parameters/parameters.component';
 
 
 @Component({
   selector: 'app-user-menu',
   standalone: true,
-  imports: [],
+  imports: [ParametersComponent, RouterModule],
   templateUrl: './user-menu.component.html',
   styleUrl: './user-menu.component.scss'
 })

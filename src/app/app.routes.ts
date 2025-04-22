@@ -9,6 +9,7 @@ import { ClientsComponent } from './pages/clients/clients.component';
 import { InvoicesComponent } from './pages/invoices/invoices.component';
 import { EstimatesComponent } from './pages/estimates/estimates.component';
 import { ProductsComponent } from './pages/products/products.component';
+import { ParametersComponent } from './pages/parameters/parameters.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
@@ -23,6 +24,7 @@ export const routes: Routes = [
             { path: 'invoices', component: InvoicesComponent },
             { path: 'estimates', component: EstimatesComponent },
             { path: 'product', component: ProductsComponent },
+            { path: 'parameters', component: ParametersComponent }
           ]
-        }
+        },
 ];
