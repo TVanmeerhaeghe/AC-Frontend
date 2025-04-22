@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { UserMenuComponent } from '../user-menu/user-menu.component';
 
 @Component({
   selector: 'app-menu',
-  imports: [],
+  imports: [UserMenuComponent],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })
