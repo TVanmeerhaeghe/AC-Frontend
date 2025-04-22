@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
@@ -16,7 +17,8 @@ export class SignInComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +34,7 @@ export class SignInComponent implements OnInit {
         next: res => {
           this.authService.setToken(res.token);
           console.log('✅ Connexion réussie', res);
+          this.router.navigate(['/home']);
         },
         error: err => console.error('❌ Erreur', err)
       });
