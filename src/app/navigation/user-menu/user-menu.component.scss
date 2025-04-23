@@ -1,10 +1,94 @@
-ul{
-    user-select: none;
-    background-color: blue;
-    li{
+@use '../../../styles/shared' as *;
+
+nav {
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+
+  .toggleMenu {
+    background-color: $color1;
+    color: $white;
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+    border: none;
+    font-size: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 2;
+    position: relative;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 100%;
+
+    .dropMenu {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20%);
+      background-color: $color3;
+      width: 70px;
+      border-radius: 0 0 35px 35px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      max-height: 0;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      padding-top: 30px;
+      transition: 
+        opacity 0.4s ease-in-out,
+        max-height 0.5s ease-in-out,
+        transform 0.5s ease-in-out;
+
+      &.open {
+        opacity: 1;
+        pointer-events: auto;
+        max-height: 500px;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      li {
         list-style: none;
-        a{
-            text-decoration: none;
+        padding: 8px;
+
+        button {
+          background-color: $color1;
+          color: $white;
+          border: none;
+          border-radius: 100%;
+          font-size: 24px;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          &:hover{
+            color: $color2;
+            background-color: $hover-color3;
+            transition: 0.5s;
+          }
+
+          #loginIn {
+            color: greenyellow;
+          }
+
+          #logout {
+            color: red;
+          }
         }
+      }
     }
+  }
 }

@@ -1,18 +1,31 @@
 <nav>
-    <ul>
-        <li *ngIf="isLoggedIn">
-            <button>Sauvegarde</button>
-        </li>
-
-        <li><a routerLink="/dashboard/parameters" routerLinkActive="active">Paramètres</a></li>
+    <button class="toggleMenu" (click)="toggleMenu()">
+      <span class="iconify" data-icon="material-symbols:account-circle" data-inline="true"></span>
+    </button>
   
+    <ul>
+      <div class="dropMenu" [class.open]="menuOpen">
         <li *ngIf="isLoggedIn">
-            <button (click)="logout()">Déconnexion</button>
+          <button>
+            <span class="iconify" data-icon="lucide-lab:floppy-disk" data-inline="true"></span>
+          </button>
         </li>
-    
+        <li>
+          <button routerLink="/dashboard/parameters" routerLinkActive="active">
+            <span class="iconify" data-icon="solar:settings-outline" data-inline="true"></span>
+          </button>
+        </li>
+        <li *ngIf="isLoggedIn">
+          <button (click)="logout()">
+            <span id="logout" class="iconify" data-icon="material-symbols:logout-rounded" data-inline="true"></span>
+          </button>
+        </li>
         <li *ngIf="!isLoggedIn">
-            <button (click)="login()">Connexion</button>
+          <button (click)="login()">
+            <span id="loginIn" class="iconify" data-icon="material-symbols:login-rounded" data-inline="true"></span>
+          </button>
         </li>
+      </div>
     </ul>
   </nav>
   

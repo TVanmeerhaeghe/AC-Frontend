@@ -73,12 +73,14 @@ nav {
       
           &:hover {
             text-decoration: underline;
-            color: $color2;
+            color: $hover-color2;
+            transition: 0.5s;
           }
       
           &.active {
             text-decoration: underline;
             color: $color2;
+            transition: 5s;
           }
         }
       }

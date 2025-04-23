@@ -2,17 +2,17 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { ParametersComponent } from '../../pages/parameters/parameters.component';
 
 @Component({
   selector: 'app-user-menu',
   standalone: true,
-  imports: [ ParametersComponent, RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './user-menu.component.html',
   styleUrl: './user-menu.component.scss'
 })
 export class UserMenuComponent {
   isLoggedIn = false;
+  menuOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -21,6 +21,10 @@ export class UserMenuComponent {
 
   ngOnInit() {
     this.isLoggedIn = this.authService.isLoggedIn();
+  }
+
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
   }
 
   logout(): void {
@@ -32,3 +36,4 @@ export class UserMenuComponent {
     this.router.navigate(['/sign-in']);
   }
 }
+
