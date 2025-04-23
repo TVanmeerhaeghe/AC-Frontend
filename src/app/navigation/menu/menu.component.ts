@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { UserMenuComponent } from '../user-menu/user-menu.component';
 import { RouterModule } from '@angular/router';
 
 @Component({
