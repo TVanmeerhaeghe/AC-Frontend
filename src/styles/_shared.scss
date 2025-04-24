@@ -1,3 +1,4 @@
+// Variable partager
 $color1 : #3935A7;
 $color2 : #A1BCFF;
 $color3 : #4641BD;
@@ -7,4 +8,11 @@ $hover-color3: #26237a;
 
 $white : #FFFFFF;
 
-  
+
+.titre{
+    font-family: 'Josefin Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 32px;
+    color: $white;
+}
