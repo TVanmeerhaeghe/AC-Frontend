@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../../services/api.service';
+import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { UserMenuComponent } from '../../../navigation/user-menu/user-menu.component';
@@ -17,7 +17,7 @@ export class SignInComponent implements OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
-    private userService: UserService,
+    private apiService: ApiService,
     private authService: AuthService,
     private router: Router,
     private zone: NgZone
@@ -37,7 +37,7 @@ export class SignInComponent implements OnInit {
 
   submit() {
     if (this.form.valid) {
-      this.userService.signIn(this.form.value).subscribe({
+      this.apiService.signIn(this.form.value).subscribe({
         next: res => {
           this.authService.setToken(res.token);
           this.router.navigate(['/dashboard']);

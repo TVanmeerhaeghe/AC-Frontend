@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AuthService {
   private isAuthenticated = false;
-  private readonly TOKEN_KEY = 'auth_token';
+  private readonly TOKEN_KEY = 'token';
 
   constructor() {}
 
@@ -27,11 +27,14 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    this.isAuthenticated = false;
+    localStorage.removeItem(this.TOKEN_KEY);
   }
   
-  login(): void {
+  
+  login(token: string): void {
     this.isAuthenticated = true;
+    this.setToken(token);
   }
   
 }

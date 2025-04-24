@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../../services/api.service';
+import { ApiService } from './../../../services/api.service';
 import { UserMenuComponent } from '../../../navigation/user-menu/user-menu.component';
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, UserMenuComponent],
-  templateUrl: './sign-up.component.html'
+  
+templateUrl: './sign-up.component.html'
 })
 export class SignUpComponent implements OnInit {
   form!: FormGroup;
 
-  constructor(private readonly fb: FormBuilder, private userService: UserService) {}
+  constructor(private readonly fb: FormBuilder, private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -35,7 +36,7 @@ export class SignUpComponent implements OnInit {
         role: string;
       };
 
-      this.userService.signUp(payload).subscribe({
+      this.apiService.signUp(payload).subscribe({
         next: (res) => console.log('✅ Inscription réussie', res),
         error: (err) => console.error('❌ Erreur', err)
       });
