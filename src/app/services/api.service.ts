@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { Credentials } from '../models/credentials.model';
 import { AuthResponse } from '../models/auth-response.model';
+import { CalendarEvent } from '../models/calendar-event.model';
 
 @Injectable({
   providedIn: 'root',
@@ -38,4 +39,9 @@ export class ApiService {
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/users/${id}`);
   }
+  // Calendar
+  getAllCalendarEvents(): Observable<CalendarEvent[]> {
+    return this.http.get<CalendarEvent[]>(`${this.baseUrl}calendars/`);
+  }
+  
 }
