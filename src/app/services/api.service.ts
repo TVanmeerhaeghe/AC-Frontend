@@ -39,9 +39,25 @@ export class ApiService {
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/users/${id}`);
   }
+
   // Calendar
   getAllCalendarEvents(): Observable<CalendarEvent[]> {
     return this.http.get<CalendarEvent[]>(`${this.baseUrl}calendars/`);
   }
-  
+
+  getCalendarEvent(id: number): Observable<CalendarEvent> {
+    return this.http.get<CalendarEvent>(`${this.baseUrl}calendars/${id}`);
+  }
+
+  createCalendarEvent(event: Partial<CalendarEvent>): Observable<CalendarEvent> {
+    return this.http.post<CalendarEvent>(`${this.baseUrl}calendars/`, event);
+  }
+
+  updateCalendarEvent(id: number, event: Partial<CalendarEvent>): Observable<CalendarEvent> {
+    return this.http.put<CalendarEvent>(`${this.baseUrl}calendars/${id}`, event);
+  }
+
+  deleteCalendarEvent(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}calendars/${id}`);
+  }
 }

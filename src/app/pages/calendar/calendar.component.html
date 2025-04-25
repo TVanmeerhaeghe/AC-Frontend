@@ -1,1 +1,39 @@
 <h1 class="title">Calendrier</h1>
+
+<div class="calendar-container">
+  <div class="calendar-left">
+    <mat-form-field appearance="fill">
+      <mat-label>Sélectionner une date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div class="calendar-right" *ngIf="selectedDate">
+    <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Nom</mat-label>
+        <input matInput [(ngModel)]="formData.name" name="name" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Description</mat-label>
+        <textarea matInput [(ngModel)]="formData.description" name="description"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Lieu</mat-label>
+        <input matInput [(ngModel)]="formData.localisation" name="localisation">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Durée (heures)</mat-label>
+        <input matInput type="number" [(ngModel)]="formData.duration_time" name="duration_time">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">{{ formData.id ? 'Modifier' : 'Créer' }}</button>
+      <button mat-button type="button" (click)="onDelete()" *ngIf="formData.id">Supprimer</button>
+    </form>
+  </div>
+</div>
