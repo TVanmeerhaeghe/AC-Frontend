@@ -116,6 +116,7 @@ export class CalendarComponent implements OnInit {
     }
   }
   
+  
   resetForm(): void {
     this.formData = {};
   }
