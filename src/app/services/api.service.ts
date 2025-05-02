@@ -1,10 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { slugify } from './slugify.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { Credentials } from '../models/credentials.model';
 import { AuthResponse } from '../models/auth-response.model';
 import { CalendarEvent } from '../models/calendar-event.model';
+import { Category } from '../models/categories.model';
+import { Product } from '../models/products.model';
 
 @Injectable({
   providedIn: 'root',
@@ -60,4 +64,28 @@ export class ApiService {
   deleteCalendarEvent(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}calendars/${id}`);
   }
+
+  //Categories
+  getAllCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.baseUrl}categories/`).pipe(
+      map(cats =>
+        cats.map(cat => ({
+          ...cat,
+          slug: slugify(cat.name)
+        }))
+      )
+    );
+  }
+
+  //Products
+  getAllProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.baseUrl}products/`);
+  }
+
+  getProductsByCategory(categoryId: number): Observable<Product[]> {
+    return this.http.get<Product[]>(
+      `${this.baseUrl}categories/${categoryId}/products`
+    );
+  }
 }
+

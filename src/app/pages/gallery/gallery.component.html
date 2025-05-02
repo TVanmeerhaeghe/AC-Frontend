@@ -1,0 +1,42 @@
+<div class="gallery-container">
+  <aside class="category-list">
+    <ul>
+      <!-- “Tous” : pas de slug → getAllProducts() -->
+      <li
+        [routerLink]="['/galerie', 'produits', 'all']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Tous
+      </li>
+
+      <!-- chaque catégorie pose le slug → getProductsByCategory(...) -->
+      <li
+        *ngFor="let cat of categories"
+        [routerLink]="['/galerie', 'produits', cat.slug]"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <span
+          class="iconify showcase-icon"
+          [attr.data-icon]="cat.icon"
+          data-inline="true"
+        ></span>
+        <span>{{ cat.name }}</span>
+      </li>
+    </ul>
+  </aside>
+
+  <section class="product-list">
+    <div *ngIf="products.length === 0">Aucun produit pour cette catégorie.</div>
+    <div class="product-card" *ngFor="let product of products">
+      <img
+        *ngIf="product.imageUrl"
+        [src]="product.imageUrl"
+        alt="{{ product.name }}"
+      />
+      <h3>{{ product.name }}</h3>
+      <span>{{ product.price | currency : "EUR" : "symbol" }}</span>
+    </div>
+  </section>
+</div>
