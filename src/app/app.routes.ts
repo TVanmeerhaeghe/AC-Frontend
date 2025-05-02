@@ -10,6 +10,7 @@ import { InvoicesComponent } from './pages/invoices/invoices.component';
 import { EstimatesComponent } from './pages/estimates/estimates.component';
 import { ProductsComponent } from './pages/products/products.component';
 import { ParametersComponent } from './pages/parameters/parameters.component';
+import { ShowcaseComponent } from './showcase/showcase.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
@@ -27,4 +28,9 @@ export const routes: Routes = [
             { path: 'parameters', component: ParametersComponent }
           ]
         },
+    { path: 'galerie', component: ShowcaseComponent, 
+      children: [
+          { path: '', redirectTo: 'home', pathMatch: 'full' },
+        ] 
+      },
 ];

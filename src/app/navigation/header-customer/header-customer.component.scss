@@ -1,0 +1,25 @@
+@use "../../../styles/shared" as *;
+
+.customer-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 72px;
+    border-bottom: 1px solid #E5E8EB;
+}
+
+.showcase-icons{
+    display: flex;
+    gap: 32px;
+}
+
+.showcase-background-icon{
+    width: 40px;
+    height: 40px;
+    background-color: #F0F2F5;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

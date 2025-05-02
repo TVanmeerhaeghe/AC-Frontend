@@ -1,0 +1,11 @@
+@use "../../styles/shared" as *;
+
+.showcase-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.showcase-content {
+  flex: 1;
+}

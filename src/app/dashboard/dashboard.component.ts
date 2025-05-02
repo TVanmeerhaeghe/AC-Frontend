@@ -10,5 +10,5 @@ import { UserMenuComponent } from '../navigation/user-menu/user-menu.component';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-
+  
 }
