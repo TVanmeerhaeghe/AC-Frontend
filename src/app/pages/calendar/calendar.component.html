@@ -9,12 +9,16 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-      <mat-calendar [(selected)]="selectedDate" (selectedChange)="onDateChange($event)"></mat-calendar>
+      <mat-calendar
+        [(selected)]="selectedDate"
+        (selectedChange)="onDateChange($event)"
+        [dateClass]="dateClass">
+      </mat-calendar>
     </div>
   
     <div class="calendar-right" *ngIf="selectedDate">
       <div class="top-form">
-        <h2 class="sub-title">{{ formData.id ? formData.name : 'Crée un événement' }}</h2>
+        <h2 class="sub-title">{{ formData.id ? formData.name : 'Créer un événement' }}</h2>
         <button type="button" (click)="onDelete()" *ngIf="formData.id"><span class="iconify" data-icon="lucide:trash-2" data-inline="true"></span></button>
       </div>
       <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
@@ -29,10 +33,19 @@
         </mat-form-field>
   
         <mat-form-field appearance="fill">
-          <mat-label>Durée (heures)</mat-label>
-          <input matInput type="number" [(ngModel)]="formData.duration_time" name="duration_time">
+          <mat-label>Date de début</mat-label>
+          <input matInput [matDatepicker]="startPicker" [(ngModel)]="formData.start_date" name="start_date" required>
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
         </mat-form-field>
 
+        <mat-form-field appearance="fill">
+          <mat-label>Date de fin</mat-label>
+          <input matInput [matDatepicker]="endPicker" [(ngModel)]="formData.end_date" name="end_date" required>
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+  
         <mat-form-field appearance="fill">
           <mat-label>Description</mat-label>
           <textarea matInput [(ngModel)]="formData.description" name="description"></textarea>
