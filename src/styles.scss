@@ -9,6 +9,7 @@ html {
       theme-type: light,
       primary: mat.$azure-palette,
       tertiary: mat.$blue-palette,
+      
     ),
     typography: Roboto,
     density: 0,
@@ -21,3 +22,23 @@ body,
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: #d9ebff !important;
+  color: 1d1b20 !important;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) {
+  background-color: #d9ebff !important;
+  color: 1d1b20 !important;
+}
+
+.mdc-text-field--filled .mdc-floating-label {
+  color: #49454f !important;
+}
+
+.mdc-text-field--outlined .mdc-floating-label {
+  color: #49454f !important;
+}
+
+

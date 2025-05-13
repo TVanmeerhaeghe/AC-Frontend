@@ -7,7 +7,8 @@
   gap: 20px;
   flex-wrap: wrap;
 
-  .calendar-left, .calendar-right {
+  .calendar-left,
+  .calendar-right {
     background-color: $white;
     padding: 35px;
     border-radius: 25px;
@@ -41,7 +42,7 @@
         width: 100%;
       }
 
-      button[type="button"] {
+      button[type='button'] {
         width: 100%;
       }
     }
@@ -61,7 +62,7 @@
       justify-content: space-between;
       margin-bottom: 1rem;
       margin-inline: 1rem;
-    
+
       button {
         background: $light-blue;
         border: none;
@@ -75,18 +76,70 @@
         justify-content: center;
       }
     }
-    
-    
+
+    .custom-form {
+      mat-form-field.form-field {
+        appearance: outline;
+        margin-bottom: 15px;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+
+        button {
+          min-width: 75px;
+        }
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      button.mat-icon-button {
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
+.date-fields {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+
+  .form-field {
+    flex: 1;
+    background-color: #d9ebff;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+
+    button {
+      font-size: 12px;
+      text-transform: uppercase;
+    }
   }
 }
 
 @media (max-width: 768px) {
+  .date-fields {
+    flex-direction: column;
+  }
+
   .calendar-container {
     flex-direction: column;
     align-items: center;
   }
 
-  .calendar-left, .calendar-right {
+  .calendar-left,
+  .calendar-right {
     max-width: 90%;
     margin-bottom: 20px;
   }
@@ -97,12 +150,69 @@
     padding: 5px;
   }
 
-  .calendar-left, .calendar-right {
+  .calendar-left,
+  .calendar-right {
     max-width: 100%;
     padding: 15px;
   }
 
   form {
+    margin-top: 10px;
+  }
+}
+
+.custom-form {
+  mat-form-field.form-field {
+    appearance: outline;
+    margin-bottom: 15px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    button {
+      min-width: 75px;
+    }
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  button.mat-icon-button {
+    margin-left: 5px;
+  }
+}
+
+.event-list {
+  list-style: none;
+  padding: 0;
+
+  li {
+    background-color: #d9ebff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #d9ebff;
+    }
+
+    h3 {
+      margin: 0 0 5px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+
+  button {
     margin-top: 10px;
   }
 }

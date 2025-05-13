@@ -7,7 +7,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -22,11 +21,12 @@ import { CommonModule } from '@angular/common';
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatButtonModule,
+    MatButtonModule
   ],
 })
 export class CalendarComponent implements OnInit {
   events: CalendarEvent[] = [];
+  filteredEvents: CalendarEvent[] = [];
   selectedDate: Date | null = null;
   formData: Partial<CalendarEvent> = {};
   selectedRange: { start: Date | null; end: Date | null } = { start: null, end: null };
@@ -86,23 +86,23 @@ export class CalendarComponent implements OnInit {
   }
   
   onDateChange(date: Date | null): void {
-    if (!date) return;
-
-    if (!this.selectedRange.start) {
-      this.selectedRange.start = date;
-      this.selectedRange.end = null;
-    } else if (!this.selectedRange.end) {
-      if (date < this.selectedRange.start) {
-        console.error('La date de fin doit être postérieure ou égale à la date de début.');
-        this.selectedRange.start = date;
-        this.selectedRange.end = null;
-      } else {
-        this.selectedRange.end = date;
-        this.updateFormDataWithRange();
-      }
-    } else {
-      this.selectedRange = { start: date, end: null };
+    this.selectedDate = date;
+    if (date) {
+      this.filterEventsByDate(date);
     }
+  }
+
+  filterEventsByDate(date: Date): void {
+    const selectedDateString = date.toISOString().split('T')[0]; // YYYY-MM-DD
+    this.filteredEvents = this.events.filter(event => {
+      const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
+      const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
+      return selectedDateString >= eventStartDate && selectedDateString <= eventEndDate;
+    });
+  }
+
+  onEventSelect(event: CalendarEvent): void {
+    this.formData = { ...event };
   }
 
   updateFormDataWithRange(): void {
@@ -121,19 +121,21 @@ export class CalendarComponent implements OnInit {
     return '';
   };
 
+  resetForm(): void {
+    this.formData = {};
+    this.selectedRange = { start: null, end: null };
+  }
+
   onDelete(): void {
     if (!this.formData.id) return;
+
     this.apiService.deleteCalendarEvent(this.formData.id).subscribe({
       next: () => {
-        this.loadEvents();
+        this.events = this.events.filter(event => event.id !== this.formData.id);
+        this.filterEventsByDate(this.selectedDate!);
         this.resetForm();
       },
       error: (err) => console.error('Erreur de suppression :', err),
     });
-  }
-  
-  
-  resetForm(): void {
-    this.formData = {};
   }
 }
