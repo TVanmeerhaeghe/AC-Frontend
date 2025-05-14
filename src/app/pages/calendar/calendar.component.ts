@@ -134,7 +134,16 @@ export class CalendarComponent implements OnInit {
   }
 
   onEventSelect(event: CalendarEvent): void {
-    this.formData = { ...event };
+    const startDateTime = new Date(event.start_date);
+    const endDateTime = new Date(event.end_date);
+
+    this.formData = {
+      ...event,
+      start_date: startDateTime.toISOString().split('T')[0], // Date au format YYYY-MM-DD
+      end_date: endDateTime.toISOString().split('T')[0],     // Date au format YYYY-MM-DD
+      start_time: startDateTime.toTimeString().split(' ')[0], // Heure au format HH:mm:ss
+      end_time: endDateTime.toTimeString().split(' ')[0],     // Heure au format HH:mm:ss
+    };
   }
 
   updateFormDataWithRange(): void {
