@@ -1,10 +1,10 @@
 export interface CalendarEvent {
-  id?: number;
+  id: number;
   name: string;
-  description?: string;
-  localisation?: string;
-  duration_time?: number;
+  description: string;
   start_date: string;
   end_date: string;
-  customer_id?: number;
+  start_time?: string;
+  end_time?: string;
+  localisation: string;
 }

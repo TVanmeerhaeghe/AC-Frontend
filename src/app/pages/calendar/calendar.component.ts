@@ -44,28 +44,57 @@ export class CalendarComponent implements OnInit {
       next: (data) => {
         this.events = data;
         console.log('Événements chargés :', this.events);
+        if (this.selectedDate) {
+          this.filterEventsByDate(this.selectedDate);
+        }
       },
       error: (err) => console.error('Erreur de récupération :', err),
     });
   }
 
   onSubmit(): void {
-    if (!this.formData.start_date || !this.formData.end_date) return;
-  
-    const start = new Date(this.formData.start_date);
-    const end = new Date(this.formData.end_date);
-  
-    if (start >= end) {
-      console.error('La date de fin doit être postérieure à la date de début.');
+    console.log('FormData:', this.formData);
+    console.log('Start Date:', this.formData.start_date);
+    console.log('End Date:', this.formData.end_date);
+    console.log('Start Time:', this.formData.start_time);
+    console.log('End Time:', this.formData.end_time);
+
+    if (!this.formData.start_date || !this.formData.end_date || !this.formData.start_time || !this.formData.end_time) {
+      console.error('Les dates et heures de début et de fin sont obligatoires.');
       return;
     }
-  
+    const startDateString = typeof this.formData.start_date === 'string'
+      ? this.formData.start_date
+      : (this.formData.start_date as Date).toISOString().split('T')[0];
+
+    const endDateString = typeof this.formData.end_date === 'string'
+      ? this.formData.end_date
+      : (this.formData.end_date as Date).toISOString().split('T')[0];
+
+    const startDateTime = new Date(`${startDateString}T${this.formData.start_time}`);
+    const endDateTime = new Date(`${endDateString}T${this.formData.end_time}`);
+
+    console.log('Start DateTime:', startDateTime);
+    console.log('End DateTime:', endDateTime);
+
+    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+      console.error('Les dates ou heures fournies sont invalides.');
+      return;
+    }
+
+    if (startDateTime >= endDateTime) {
+      console.error('L\'heure de fin doit être postérieure à l\'heure de début.');
+      return;
+    }
+
     const payload: Partial<CalendarEvent> = {
       ...this.formData,
-      start_date: start.toISOString(),
-      end_date: end.toISOString(),
+      start_date: startDateTime.toISOString(),
+      end_date: endDateTime.toISOString(),
     };
-  
+
+    console.log('Payload envoyé au backend :', payload);
+
     if (this.formData.id) {
       this.apiService.updateCalendarEvent(this.formData.id, payload).subscribe({
         next: () => {
@@ -89,14 +118,17 @@ export class CalendarComponent implements OnInit {
     this.selectedDate = date;
     if (date) {
       this.filterEventsByDate(date);
+    } else {
+      this.filteredEvents = [];
     }
   }
 
   filterEventsByDate(date: Date): void {
-    const selectedDateString = date.toISOString().split('T')[0]; // YYYY-MM-DD
+    const selectedDateString = date.toISOString().split('T')[0];
     this.filteredEvents = this.events.filter(event => {
       const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
       const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
+
       return selectedDateString >= eventStartDate && selectedDateString <= eventEndDate;
     });
   }
@@ -122,7 +154,15 @@ export class CalendarComponent implements OnInit {
   };
 
   resetForm(): void {
-    this.formData = {};
+    this.formData = {
+      start_date: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : undefined,
+      end_date: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : undefined,
+      start_time: '',
+      end_time: '',
+      name: '',
+      description: '',
+      localisation: '',
+    };
     this.selectedRange = { start: null, end: null };
   }
 
@@ -137,5 +177,33 @@ export class CalendarComponent implements OnInit {
       },
       error: (err) => console.error('Erreur de suppression :', err),
     });
+  }
+
+  calculateDuration(): number {
+    if (!this.formData.start_date || !this.formData.end_date || !this.formData.start_time || !this.formData.end_time) {
+      return 0;
+    }
+
+    const startDateTime = new Date(`${this.formData.start_date}T${this.formData.start_time}`);
+    const endDateTime = new Date(`${this.formData.end_date}T${this.formData.end_time}`);
+
+    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+      return 0;
+    }
+
+    const durationInMilliseconds = endDateTime.getTime() - startDateTime.getTime();
+    return durationInMilliseconds / (1000 * 60 * 60);
+  }
+
+  calculateEventDuration(event: CalendarEvent): number {
+    const startDateTime = new Date(event.start_date);
+    const endDateTime = new Date(event.end_date);
+
+    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+      return 0;
+    }
+
+    const durationInMilliseconds = endDateTime.getTime() - startDateTime.getTime();
+    return durationInMilliseconds / (1000 * 60 * 60);
   }
 }

@@ -26,13 +26,12 @@
             <p><strong>Lieu :</strong> {{ event.localisation }}</p>
             <p><strong>Début :</strong> {{ event.start_date | date: 'dd/MM/yyyy HH:mm' }}</p>
             <p><strong>Fin :</strong> {{ event.end_date | date: 'dd/MM/yyyy HH:mm' }}</p>
-            <p><strong>Durée :</strong> {{ event.duration_time }} heures</p>
+            <p><strong>Durée :</strong> {{ calculateEventDuration(event) }} heures</p>
           </li>
         </ul>
-        <button mat-raised-button color="primary" (click)="resetForm()">Créer un nouvel événement</button>
       </div>
 
-      <div *ngIf="!filteredEvents.length || formData.id">
+      <div *ngIf="formData.id || true">
         <div class="top-form">
           <h2 class="sub-title">{{ formData.id ? 'Modifier l\'événement' : 'Créer un événement' }}</h2>
           <button type="button" (click)="onDelete()" *ngIf="formData.id">
@@ -50,11 +49,6 @@
             <input matInput [(ngModel)]="formData.localisation" name="localisation">
           </mat-form-field>
 
-          <mat-form-field appearance="fill">
-            <mat-label>Durée (en heures)</mat-label>
-            <input matInput type="number" [(ngModel)]="formData.duration_time" name="duration_time" min="0">
-          </mat-form-field>
-
           <div class="date-fields">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Date de début</mat-label>
@@ -63,11 +57,23 @@
               <mat-datepicker #startPicker></mat-datepicker>
             </mat-form-field>
 
+            <mat-form-field appearance="fill" class="form-field">
+              <mat-label>Heure de début</mat-label>
+              <input matInput type="time" [(ngModel)]="formData.start_time" name="start_time" required>
+            </mat-form-field>
+          </div>
+
+          <div class="date-fields">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Date de fin</mat-label>
               <input matInput [matDatepicker]="endPicker" [(ngModel)]="formData.end_date" name="end_date" required>
               <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
               <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="form-field">
+              <mat-label>Heure de fin</mat-label>
+              <input matInput type="time" [(ngModel)]="formData.end_time" name="end_time" required>
             </mat-form-field>
           </div>
 
