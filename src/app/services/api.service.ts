@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { slugify } from './slugify.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '../models/user.model';
+import { User } from '../models/users.model';
 import { Credentials } from '../models/credentials.model';
 import { AuthResponse } from '../models/auth-response.model';
 import { CalendarEvent } from '../models/calendar-event.model';
