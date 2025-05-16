@@ -7,12 +7,27 @@
     <table *ngIf="!loading && customers.length > 0" class="customer-table">
       <tbody>
         <tr *ngFor="let customer of customers">
-          <td>
-            <span class="avatar">
-              {{ customer.surname ? customer.name[0] : '' }}{{ customer.name ? customer.surname[0] : '' }}
-            </span>
+          <td colspan="2" class="row-cell">
+            <div class="row-bg">
+              <div class="identity-cell">
+                <span class="avatar">
+                  {{ customer.name ? customer.name[0] : '' }}{{ customer.surname ? customer.surname[0] : '' }}
+                </span>
+                <span class="fullname">
+                  {{ customer.name }} {{ customer.surname }}
+                </span>
+              </div>
+              <div class="actions-cell">
+                <div class="actions">
+                  <button title="Voir"><span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span></button>
+                  <button title="Appeler"><span class="iconify" data-icon="line-md:phone-call-loop" data-inline="true"></span></button>
+                  <button title="Pièce jointe"><span class="iconify" data-icon="prime:paperclip" data-inline="true"></span></button>
+                  <button title="Email"><span class="iconify" data-icon="pepicons-pencil:letter" data-inline="true"></span></button>
+                  <button title="Éditer"><span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span></button>
+                </div>
+              </div>
+            </div>
           </td>
-          <td>{{ customer.name }} {{ customer.surname }}</td>
         </tr>
       </tbody>
     </table>
