@@ -5,7 +5,7 @@ import { authGuard } from './guards/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { CalendarComponent } from './pages/calendar/calendar.component';
-import { ClientsComponent } from './pages/customers/customers.component';
+import { CustomersComponent } from './pages/customers/customers.component';
 import { InvoicesComponent } from './pages/invoices/invoices.component';
 import { EstimatesComponent } from './pages/estimates/estimates.component';
 import { ProductsComponent } from './pages/products/products.component';
@@ -22,7 +22,7 @@ export const routes: Routes = [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomePageComponent },
             { path: 'calendar', component: CalendarComponent },
-            { path: 'clients', component: ClientsComponent },
+            { path: 'customers', component: CustomersComponent },
             { path: 'invoices', component: InvoicesComponent },
             { path: 'estimates', component: EstimatesComponent },
             { path: 'product', component: ProductsComponent },
