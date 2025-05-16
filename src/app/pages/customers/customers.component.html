@@ -1,1 +1,21 @@
 <h1 class="title">Clients</h1>
+
+<div class="app-content">
+  <div class="customers-list">
+    <h2 class="sub-title">Liste des clients</h2>
+    <div *ngIf="loading" class="loading">Chargement...</div>
+    <table *ngIf="!loading && customers.length > 0" class="customer-table">
+      <tbody>
+        <tr *ngFor="let customer of customers">
+          <td>
+            <span class="avatar">
+              {{ customer.surname ? customer.name[0] : '' }}{{ customer.name ? customer.surname[0] : '' }}
+            </span>
+          </td>
+          <td>{{ customer.name }} {{ customer.surname }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!loading && customers.length === 0">Aucun client trouvé.</div>
+  </div>
+</div>
