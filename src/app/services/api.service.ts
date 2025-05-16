@@ -9,6 +9,7 @@ import { AuthResponse } from '../models/auth-response.model';
 import { CalendarEvent } from '../models/calendar-event.model';
 import { Category } from '../models/categories.model';
 import { Product } from '../models/products.model';
+import { Customer } from '../models/customers.model';
 
 @Injectable({
   providedIn: 'root',
@@ -86,6 +87,31 @@ export class ApiService {
     return this.http.get<Product[]>(
       `${this.baseUrl}categories/${categoryId}/products`
     );
+  }
+
+  // Customers
+  getAllCustomers(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(`${this.baseUrl}customers/`);
+  }
+
+  getCustomer(id: number): Observable<Customer> {
+    return this.http.get<Customer>(`${this.baseUrl}customers/${id}`);
+  }
+
+  createCustomer(customer: Partial<Customer>): Observable<Customer> {
+    return this.http.post<Customer>(`${this.baseUrl}customers/`, customer);
+  }
+
+  updateCustomer(id: number, customer: Partial<Customer>): Observable<Customer> {
+    return this.http.put<Customer>(`${this.baseUrl}customers/${id}`, customer);
+  }
+
+  deleteCustomer(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}customers/${id}`);
+  }
+
+  searchCustomers(query: string): Observable<Customer[]> {
+    return this.http.get<Customer[]>(`${this.baseUrl}customers/search?q=${query}`);
   }
 }
 
