@@ -20,13 +20,13 @@ export const routes: Routes = [
     { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard], 
         children: [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
-            { path: 'home', component: HomePageComponent },
-            { path: 'calendar', component: CalendarComponent },
-            { path: 'customers', component: CustomersComponent },
-            { path: 'invoices', component: InvoicesComponent },
-            { path: 'estimates', component: EstimatesComponent },
-            { path: 'product', component: ProductsComponent },
-            { path: 'parameters', component: ParametersComponent }
+            { path: 'home', component: HomePageComponent, data: { title: 'Accueil' } },
+            { path: 'calendar', component: CalendarComponent , data: { title: 'Calendrier' } },
+            { path: 'customers', component: CustomersComponent , data: { title: 'Clients' } },
+            { path: 'invoices', component: InvoicesComponent , data: { title: 'Factures' } },
+            { path: 'estimates', component: EstimatesComponent , data: { title: 'Devis' } },
+            { path: 'product', component: ProductsComponent ,data: { title: 'Produits' } },
+            { path: 'parameters', component: ParametersComponent , data: { title: 'Paramètres' } },
           ]
         },
     { path: 'galerie', component: ShowcaseComponent, 

@@ -1,0 +1,32 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 24px;
+  padding: 0 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  width: 100%;
+  max-width: 600px;
+  height: 44px;
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1.1em;
+    padding: 0;
+    color: #222;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+
+    svg {
+      display: block;
+    }
+  }
+}
