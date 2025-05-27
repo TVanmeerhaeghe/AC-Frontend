@@ -1,6 +1,14 @@
 <h1 class="title">Clients</h1>
 
 <div class="app-content">
+  <div class="customers-menu">
+    <h2 class="sub-title">Outils</h2>
+    <div class="actions">
+      <button title="Ajouter un utilisateur"><span class="iconify" data-icon="iconoir:user-plus" data-inline="true"></span></button>
+      <button title="Télécharger la liste des utilisateurs au format CSV"><span class="iconify" data-icon="radix-icons:download" data-inline="true"></span></button>
+      <button title="Importer un/des utilisateur(s) dans un fichier CSV"><span class="iconify" data-icon="tabler:file-plus" data-inline="true"></span></button>
+    </div>
+  </div>
   <div class="customers-list">
     <h2 class="sub-title">Liste des clients</h2>
     <div *ngIf="loading" class="loading">Chargement...</div>
