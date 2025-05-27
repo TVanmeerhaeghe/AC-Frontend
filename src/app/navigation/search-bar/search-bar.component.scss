@@ -5,28 +5,31 @@
   border-radius: 24px;
   padding: 0 18px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  width: 100%;
-  max-width: 600px;
-  height: 44px;
+  max-width: 15%;
+  height: 30px;
+  margin-top: 30px;
+  margin-bottom: 25px;
 
   input {
     flex: 1;
     border: none;
     outline: none;
     background: transparent;
-    font-size: 1.1em;
+    font-size: 1em;
     padding: 0;
-    color: #222;
+    color: #000;
+
+    &::placeholder {
+    color: #000000;
+    opacity: 1;
+  }
   }
 
-  .icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 8px;
-
-    svg {
-      display: block;
-    }
+  .iconify{
+    color: #000000;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    font-weight: 900;
   }
 }

@@ -2,11 +2,13 @@
   <app-menu></app-menu>
 
   <div class="dashboard-content">
-    <h1 class="title" *ngIf="pageTitle">{{ pageTitle }}</h1>
-    <app-search-bar></app-search-bar>
-    <div class="user-menu-wrapper">
-      <app-user-menu></app-user-menu>
+    <div class="dashboard-header">
+      <h1 class="title" *ngIf="pageTitle">{{ pageTitle }}</h1>
+      <div class="user-menu-wrapper">
+        <app-user-menu></app-user-menu>
+      </div>
     </div>
+    <app-search-bar></app-search-bar>
 
     <router-outlet></router-outlet>
   </div>
