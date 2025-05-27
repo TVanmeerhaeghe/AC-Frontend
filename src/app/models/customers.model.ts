@@ -5,9 +5,9 @@ export interface Customer {
     email: string;
     phone: string;
     address: string;
-    postalCode: string;
+    postal_code: string;
     city: string;
-    isArchived: boolean;
+    compagny: string;
     createdAt: Date;
     updatedAt: Date;
 }

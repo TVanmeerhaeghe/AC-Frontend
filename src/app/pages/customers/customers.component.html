@@ -2,41 +2,91 @@
   <div class="customers-menu">
     <h2 class="sub-title">Outils</h2>
     <div class="actions">
-      <button title="Ajouter un utilisateur"><span class="iconify" data-icon="iconoir:user-plus" data-inline="true"></span></button>
-      <button title="Télécharger la liste des utilisateurs au format CSV"><span class="iconify" data-icon="radix-icons:download" data-inline="true"></span></button>
-      <button title="Importer un/des utilisateur(s) dans un fichier CSV"><span class="iconify" data-icon="tabler:file-plus" data-inline="true"></span></button>
+      <button title="Ajouter un utilisateur" (click)="openCreateForm()">
+        <span class="iconify" data-icon="iconoir:user-plus" data-inline="true"></span>
+      </button>
+      <button title="Télécharger la liste des utilisateurs au format CSV">
+        <span class="iconify" data-icon="radix-icons:download" data-inline="true"></span>
+      </button>
+      <button title="Importer un/des utilisateur(s) dans un fichier CSV">
+        <span class="iconify" data-icon="tabler:file-plus" data-inline="true"></span>
+      </button>
     </div>
   </div>
-  <div class="customers-list">
-    <h2 class="sub-title">Liste des clients</h2>
-    <div *ngIf="loading" class="loading">Chargement...</div>
-    <table *ngIf="!loading && customers.length > 0" class="customer-table">
-      <tbody>
-        <tr *ngFor="let customer of customers">
-          <td colspan="2" class="row-cell">
-            <div class="row-bg">
-              <div class="identity-cell">
-                <span class="avatar">
-                  {{ customer.name ? customer.name[0] : '' }}{{ customer.surname ? customer.surname[0] : '' }}
-                </span>
-                <span class="fullname">
-                  {{ customer.name }} {{ customer.surname }}
-                </span>
-              </div>
-              <div class="actions-cell">
-                <div class="actions">
-                  <button title="Voir"><span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span></button>
-                  <button title="Appeler"><span class="iconify" data-icon="line-md:phone-call-loop" data-inline="true"></span></button>
-                  <button title="Pièce jointe"><span class="iconify" data-icon="prime:paperclip" data-inline="true"></span></button>
-                  <button title="Email"><span class="iconify" data-icon="pepicons-pencil:letter" data-inline="true"></span></button>
-                  <button title="Éditer"><span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span></button>
+  <div class="customers-main">
+    <div class="customers-list" [class.pushed]="showCreateForm">
+      <h2 class="sub-title">Liste des clients</h2>
+      <div *ngIf="loading" class="loading">Chargement...</div>
+      <table *ngIf="!loading && customers.length > 0" class="customer-table">
+        <tbody>
+          <tr *ngFor="let customer of customers">
+            <td colspan="2" class="row-cell">
+              <div class="row-bg">
+                <div class="identity-cell">
+                  <span class="avatar">
+                    {{ customer.name ? customer.name[0] : '' }}{{ customer.surname ? customer.surname[0] : '' }}
+                  </span>
+                  <span class="fullname">
+                    {{ customer.name }} {{ customer.surname }}
+                  </span>
+                </div>
+                <div class="actions-cell">
+                  <div class="actions">
+                    <button title="Voir"><span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span></button>
+                    <button title="Appeler"><span class="iconify" data-icon="line-md:phone-call-loop" data-inline="true"></span></button>
+                    <button title="Pièce jointe"><span class="iconify" data-icon="prime:paperclip" data-inline="true"></span></button>
+                    <button title="Email"><span class="iconify" data-icon="pepicons-pencil:letter" data-inline="true"></span></button>
+                    <button title="Éditer"><span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span></button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div *ngIf="!loading && customers.length === 0">Aucun client trouvé.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="!loading && customers.length === 0">Aucun client trouvé.</div>
+    </div>
+
+    <div class="create-customer-form" *ngIf="showCreateForm">
+      <h2 class="sub-title">Créer un client</h2>
+      <form (ngSubmit)="createCustomer()" #f="ngForm">
+        <mat-form-field appearance="fill">
+          <mat-label>Nom</mat-label>
+          <input matInput [(ngModel)]="createForm.name" name="name" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Prénom</mat-label>
+          <input matInput [(ngModel)]="createForm.surname" name="surname" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Adresse</mat-label>
+          <input matInput [(ngModel)]="createForm.address" name="address" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Ville</mat-label>
+          <input matInput [(ngModel)]="createForm.city" name="city" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Code Postal</mat-label>
+          <input matInput [(ngModel)]="createForm.postal_code" name="postal_code" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Entreprise</mat-label>
+          <input matInput [(ngModel)]="createForm.compagny" name="compagny" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Numéro de téléphone</mat-label>
+          <input matInput [(ngModel)]="createForm.phone" name="phone" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Adresse mail</mat-label>
+          <input matInput type="email" [(ngModel)]="createForm.email" name="email" />
+        </mat-form-field>
+        <div class="form-actions">
+          <button mat-stroked-button color="warn" type="button" class="cancel" (click)="closeCreateForm()">Annuler</button>
+          <button mat-flat-button color="primary" type="submit" class="create" [disabled]="f.invalid">Créer</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
