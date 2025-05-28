@@ -13,7 +13,6 @@ import { MatInputModule } from '@angular/material/input';
   standalone: true,
   imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule],
 })
-
 export class CustomersComponent implements OnInit {
   customers: Customer[] = [];
   loading = false;
@@ -30,6 +29,8 @@ export class CustomersComponent implements OnInit {
   };
   editMode = false;
   editCustomerId: number | null = null;
+  viewCustomerData: Customer | null = null;
+  showViewForm = false;
 
   constructor(private apiService: ApiService) {}
 
@@ -51,6 +52,7 @@ export class CustomersComponent implements OnInit {
   }
 
   openCreateForm() {
+    this.closeViewForm();
     this.showCreateForm = true;
     this.editMode = false;
     this.editCustomerId = null;
@@ -82,6 +84,7 @@ export class CustomersComponent implements OnInit {
   }
 
   openEditForm(customer: Customer) {
+    this.closeViewForm();
     this.editMode = true;
     this.showCreateForm = true;
     this.editCustomerId = customer.id;
@@ -113,5 +116,20 @@ export class CustomersComponent implements OnInit {
         }
       });
     }
+  }
+
+  viewCustomer(customer: Customer) {
+    this.closeCreateForm();
+    this.apiService.getCustomer(customer.id).subscribe({
+      next: (data) => {
+        this.viewCustomerData = data;
+        this.showViewForm = true;
+      }
+    });
+  }
+
+  closeViewForm() {
+    this.showViewForm = false;
+    this.viewCustomerData = null;
   }
 }

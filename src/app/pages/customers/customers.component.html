@@ -14,7 +14,7 @@
     </div>
   </div>
   <div class="customers-main">
-    <div class="customers-list" [class.pushed]="showCreateForm">
+    <div class="customers-list" [class.pushed]="showCreateForm || showViewForm">
       <h2 class="sub-title">Liste des clients</h2>
       <div *ngIf="loading" class="loading">Chargement...</div>
       <table *ngIf="!loading && customers.length > 0" class="customer-table">
@@ -32,7 +32,9 @@
                 </div>
                 <div class="actions-cell">
                   <div class="actions">
-                    <button title="Voir"><span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span></button>
+                    <button title="Voir" (click)="viewCustomer(customer)">
+                      <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
+                    </button>
                     <button title="Appeler"><span class="iconify" data-icon="line-md:phone-call-loop" data-inline="true"></span></button>
                     <button title="Pièce jointe"><span class="iconify" data-icon="prime:paperclip" data-inline="true"></span></button>
                     <button title="Email"><span class="iconify" data-icon="pepicons-pencil:letter" data-inline="true"></span></button>
@@ -49,6 +51,7 @@
       <div *ngIf="!loading && customers.length === 0">Aucun client trouvé.</div>
     </div>
 
+    <!-- formulaire pour créer/modif -->
     <div class="create-customer-form" *ngIf="showCreateForm">
       <h2 class="sub-title">
         {{ editMode ? 'Modifier' : 'Créer' }}
@@ -101,6 +104,52 @@
             {{ editMode ? 'Modifier' : 'Créer' }}
           </button>
         </div>
+      </form>
+    </div>
+
+    <!-- visu -->
+    <div class="view-customer-form" *ngIf="showViewForm">
+      <h2 class="sub-title">
+        Visualiser
+        <ng-container *ngIf="viewCustomerData?.name && viewCustomerData?.surname; else defaultViewTitle">
+          <span class="client-name"> {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }} </span>
+        </ng-container>
+        <ng-template #defaultViewTitle> un client</ng-template>
+        <button title="Fermer" (click)="closeViewForm()" style="border:none; background:none; font-size:1.2rem; cursor:pointer;">X</button>
+      </h2>
+      <form>
+        <mat-form-field appearance="fill">
+          <mat-label>Nom</mat-label>
+          <input matInput [value]="viewCustomerData?.name" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Prénom</mat-label>
+          <input matInput [value]="viewCustomerData?.surname" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Adresse</mat-label>
+          <input matInput [value]="viewCustomerData?.adress" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Ville</mat-label>
+          <input matInput [value]="viewCustomerData?.city" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Code Postal</mat-label>
+          <input matInput [value]="viewCustomerData?.postal_code" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Entreprise</mat-label>
+          <input matInput [value]="viewCustomerData?.company" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Numéro de téléphone</mat-label>
+          <input matInput [value]="viewCustomerData?.phone" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Adresse mail</mat-label>
+          <input matInput type="email" [value]="viewCustomerData?.email" disabled />
+        </mat-form-field>
       </form>
     </div>
   </div>
