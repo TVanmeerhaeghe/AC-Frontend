@@ -36,7 +36,9 @@
                     <button title="Appeler"><span class="iconify" data-icon="line-md:phone-call-loop" data-inline="true"></span></button>
                     <button title="Pièce jointe"><span class="iconify" data-icon="prime:paperclip" data-inline="true"></span></button>
                     <button title="Email"><span class="iconify" data-icon="pepicons-pencil:letter" data-inline="true"></span></button>
-                    <button title="Éditer"><span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span></button>
+                    <button title="Éditer" (click)="openEditForm(customer)">
+                      <span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -48,8 +50,14 @@
     </div>
 
     <div class="create-customer-form" *ngIf="showCreateForm">
-      <h2 class="sub-title">Créer un client</h2>
-      <form (ngSubmit)="createCustomer()" #f="ngForm">
+      <h2 class="sub-title">
+        {{ editMode ? 'Modifier' : 'Créer' }}
+        <ng-container *ngIf="createForm.name && createForm.surname; else defaultTitle">
+          <span class="client-name"> {{ createForm.name }} {{ createForm.surname }} </span>
+        </ng-container>
+        <ng-template #defaultTitle> un client</ng-template>
+      </h2>
+      <form (ngSubmit)="submitForm()" #f="ngForm">
         <mat-form-field appearance="fill">
           <mat-label>Nom</mat-label>
           <input matInput [(ngModel)]="createForm.name" name="name" required />
@@ -60,7 +68,7 @@
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>Adresse</mat-label>
-          <input matInput [(ngModel)]="createForm.address" name="address" />
+          <input matInput [(ngModel)]="createForm.adress" name="adress" />
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>Ville</mat-label>
@@ -72,7 +80,7 @@
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>Entreprise</mat-label>
-          <input matInput [(ngModel)]="createForm.compagny" name="compagny" />
+          <input matInput [(ngModel)]="createForm.company" name="company" />
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>Numéro de téléphone</mat-label>
@@ -84,7 +92,14 @@
         </mat-form-field>
         <div class="form-actions">
           <button mat-stroked-button color="warn" type="button" class="cancel" (click)="closeCreateForm()">Annuler</button>
-          <button mat-flat-button color="primary" type="submit" class="create" [disabled]="f.invalid">Créer</button>
+          <button
+            mat-flat-button
+            type="submit"
+            class="create"
+            [ngStyle]="editMode ? {'background-color': '#007AFF', 'color': '#fff'} : {}"
+            [disabled]="f.invalid">
+            {{ editMode ? 'Modifier' : 'Créer' }}
+          </button>
         </div>
       </form>
     </div>

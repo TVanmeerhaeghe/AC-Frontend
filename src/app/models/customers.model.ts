@@ -4,10 +4,10 @@ export interface Customer {
     surname: string;
     email: string;
     phone: string;
-    address: string;
+    adress: string;
     postal_code: string;
     city: string;
-    compagny: string;
+    company: string;
     createdAt: Date;
     updatedAt: Date;
 }

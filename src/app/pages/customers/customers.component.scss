@@ -194,6 +194,10 @@
       display: none;
     }
 
+    .client-name {
+      color: $color2;
+    }
+
     form {
       display: flex;
       flex-direction: column;
@@ -215,7 +219,7 @@
           cursor: pointer;
         }
         .create {
-          background: #00eb43;
+          background: #25a115;
           color: #fff;
           border: none;
           border-radius: 20px;
@@ -223,10 +227,12 @@
           font-size: 1em;
           cursor: pointer;
         }
+
         .create:disabled {
           opacity: 0.5;
           cursor: not-allowed;
-          background-color: #00eb43;
+          background-color: #1c3222;
+          color: white;
         }
       }
     }

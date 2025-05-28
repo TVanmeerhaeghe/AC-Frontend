@@ -23,11 +23,13 @@ export class CustomersComponent implements OnInit {
     surname: '',
     email: '',
     phone: '',
-    address: '',
+    adress: '',
     postal_code: '',
     city: '',
-    compagny: ''
+    company: ''
   };
+  editMode = false;
+  editCustomerId: number | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -50,20 +52,24 @@ export class CustomersComponent implements OnInit {
 
   openCreateForm() {
     this.showCreateForm = true;
+    this.editMode = false;
+    this.editCustomerId = null;
     this.createForm = {
       name: '',
       surname: '',
       email: '',
       phone: '',
-      address: '',
+      adress: '',
       postal_code: '',
       city: '',
-      compagny: ''
+      company: ''
     };
   }
 
   closeCreateForm() {
     this.showCreateForm = false;
+    this.editMode = false;
+    this.editCustomerId = null;
   }
 
   createCustomer() {
@@ -73,5 +79,39 @@ export class CustomersComponent implements OnInit {
         this.loadCustomers();
       }
     });
+  }
+
+  openEditForm(customer: Customer) {
+    this.editMode = true;
+    this.showCreateForm = true;
+    this.editCustomerId = customer.id;
+    this.createForm = {
+      name: customer.name,
+      surname: customer.surname,
+      email: customer.email,
+      phone: customer.phone,
+      adress: customer.adress,
+      postal_code: customer.postal_code,
+      city: customer.city,
+      company: customer.company
+    };
+  }
+
+  submitForm() {
+    if (this.editMode && this.editCustomerId) {
+      this.apiService.updateCustomer(this.editCustomerId, this.createForm).subscribe({
+        next: () => {
+          this.closeCreateForm();
+          this.loadCustomers();
+        }
+      });
+    } else {
+      this.apiService.createCustomer(this.createForm).subscribe({
+        next: () => {
+          this.closeCreateForm();
+          this.loadCustomers();
+        }
+      });
+    }
   }
 }
