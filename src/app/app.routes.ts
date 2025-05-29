@@ -12,6 +12,7 @@ import { ProductsComponent } from './pages/products/products.component';
 import { ParametersComponent } from './pages/parameters/parameters.component';
 import { ShowcaseComponent } from './showcase/showcase.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
+import { GalleryDetailsComponent } from './pages/gallery-details/gallery-details.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
@@ -34,6 +35,7 @@ export const routes: Routes = [
           { path: '', redirectTo: 'home', pathMatch: 'full' },
           { path: 'produits', redirectTo: 'produits/tous', pathMatch: 'full' },
           { path: 'produits/:categorySlug', component: GalleryComponent },
+          { path: 'produits/:categorySlug/:productSlug', component: GalleryDetailsComponent },
         ] 
       },
 ];

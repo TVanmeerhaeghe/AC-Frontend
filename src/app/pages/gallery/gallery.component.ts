@@ -46,6 +46,9 @@ export class GalleryComponent implements OnInit {
           return this.api.getProductsByCategory(cat.id);
         })
       )
-      .subscribe((prods) => (this.products = prods));
+      .subscribe((prods) => {
+        console.log('Produits reçus →', prods);
+        this.products = prods;
+      });
   }
 }

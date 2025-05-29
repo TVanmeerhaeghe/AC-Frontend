@@ -1,7 +1,6 @@
 <div class="gallery-container">
   <aside class="category-list">
     <ul>
-      <!-- “Tous” : pas de slug → getAllProducts() -->
       <li
         [routerLink]="['/galerie', 'produits', 'all']"
         routerLinkActive="active"
@@ -10,7 +9,6 @@
         Tous
       </li>
 
-      <!-- chaque catégorie pose le slug → getProductsByCategory(...) -->
       <li
         *ngFor="let cat of categories"
         [routerLink]="['/galerie', 'produits', cat.slug]"
