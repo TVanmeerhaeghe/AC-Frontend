@@ -10,6 +10,8 @@ export interface Product {
     image: string;
     video: string;
     quantity: number;
+    material:string;
+    style:string;
 }
 
 export enum Condition {

@@ -5,6 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 
 import { ApiService } from '../../services/api.service';
+import { slugify } from '../../services/slugify.service';
 import { Category } from '../../models/categories.model';
 import { Product } from '../../models/products.model';
 
@@ -19,6 +20,8 @@ export class GalleryComponent implements OnInit {
   categories: Category[] = [];
   selectedCategory: Category | null = null;
   products: Product[] = [];
+
+  public slugify = slugify;
 
   constructor(
     private api: ApiService,

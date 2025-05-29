@@ -27,7 +27,17 @@
 
   <section class="product-list">
     <div *ngIf="products.length === 0">Aucun produit pour cette catégorie.</div>
-    <div class="product-card" *ngFor="let product of products">
+    <a
+      class="product-card"
+      *ngFor="let product of products"
+      [routerLink]="[
+        '/galerie',
+        'produits',
+        selectedCategory?.slug || 'tous',
+        slugify(product.name)
+      ]"
+      routerLinkActive="active-card"
+    >
       <img
         *ngIf="product.imageUrl"
         [src]="product.imageUrl"
@@ -35,6 +45,6 @@
       />
       <h3>{{ product.name }}</h3>
       <span>{{ product.price | currency : "EUR" : "symbol" }}</span>
-    </div>
+    </a>
   </section>
 </div>
