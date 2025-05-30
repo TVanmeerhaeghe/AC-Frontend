@@ -7,6 +7,7 @@ export interface Product {
     price: number;
     sellState: boolean;
     imageUrl: string;
+    imageUrls: string[];
     image: string;
     video: string;
     quantity: number;

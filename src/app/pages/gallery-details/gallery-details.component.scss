@@ -47,6 +47,8 @@
         max-width: 800px;
       }
 
+      
+
       h1 {
         position: absolute;
         bottom: 16px;
@@ -168,3 +170,23 @@
     }
   }
 }
+
+.thumb {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.thumbnails {
+  display: flex;
+  gap: 8px;
+}
+
+.active {
+  border-color: #1A80E5;
+}
+

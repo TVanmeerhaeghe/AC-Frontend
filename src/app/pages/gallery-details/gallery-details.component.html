@@ -16,11 +16,23 @@
     <div class="main-content">
       <div class="image-wrapper">
         <img
-          *ngIf="product?.imageUrl"
-          [src]="product.imageUrl"
-          [alt]="product.name"
+          *ngIf="selectedImageUrl"
+          [src]="selectedImageUrl"
+          [alt]="product!.name"
+          class="main-image"
         />
         <h1>{{ product.name }}</h1>
+      </div>
+
+      <div class="thumbnails">
+        <img
+          *ngFor="let url of product!.imageUrls"
+          [src]="url"
+          [alt]="product!.name"
+          class="thumb"
+          [class.active]="url === selectedImageUrl"
+          (click)="selectedImageUrl = url"
+        />
       </div>
 
       <div class="description">

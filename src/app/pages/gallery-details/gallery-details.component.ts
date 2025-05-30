@@ -21,6 +21,7 @@ export class GalleryDetailsComponent implements OnInit {
   selectedCategory: Category | null = null;
   productThumbnails: string[] = [];
   relatedProducts: Product[] = [];
+  selectedImageUrl: string | null = null;
 
   public slugify = slugify;
 
@@ -72,7 +73,9 @@ export class GalleryDetailsComponent implements OnInit {
           return;
         }
         this.product = found;
-        this.productThumbnails = found.imageUrl ? [found.imageUrl] : [];
+        this.selectedImageUrl = this.product.imageUrls.length
+          ? this.product.imageUrls[0]
+          : this.product.imageUrl;
 
         this.api.getProductsByCategory(found.categoryId)
           .subscribe(rp => {
