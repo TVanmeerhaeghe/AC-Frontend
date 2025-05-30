@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -27,6 +28,7 @@ export class GalleryContactComponent implements OnInit {
   success = false;
   errorMsg: string | null = null;
   private siteKey = environment.recaptchaSiteKey;
+  private scriptEl!: HTMLScriptElement;
 
   constructor(
     private fb: FormBuilder,
@@ -35,6 +37,12 @@ export class GalleryContactComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.scriptEl = document.createElement('script');
+    this.scriptEl.src = `https://www.google.com/recaptcha/api.js?render=${environment.recaptchaSiteKey}`;
+    this.scriptEl.async = true;
+    this.scriptEl.defer = true;
+    document.head.appendChild(this.scriptEl);
+
     this.form = this.fb.group({
       name: [
         '',
@@ -121,5 +129,10 @@ export class GalleryContactComponent implements OnInit {
           this.submitting = false;
         });
     });
+  }
+
+  ngOnDestroy() {
+    document.head.removeChild(this.scriptEl);
+    delete (window as any).grecaptcha;
   }
 }
