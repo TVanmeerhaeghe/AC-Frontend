@@ -1,0 +1,137 @@
+<div class="contact-form">
+  <h2>Contactez-nous</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label>Nom</label>
+      <input formControlName="name" placeholder="Votre nom" />
+      <small *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
+        Obligatoire
+      </small>
+      <small
+        *ngIf="
+          form.get('name')?.touched && form.get('name')?.hasError('minlength')
+        "
+      >
+        Au moins 3 caractères
+      </small>
+      <small
+        *ngIf="
+          form.get('name')?.touched && form.get('name')?.hasError('pattern')
+        "
+      >
+        Lettres uniquement
+      </small>
+    </div>
+
+    <div class="field">
+      <label>Prénom</label>
+      <input formControlName="surname" placeholder="Votre prénom" />
+      <small
+        *ngIf="form.get('surname')?.touched && form.get('surname')?.invalid"
+      >
+        Obligatoire
+      </small>
+      <small
+        *ngIf="
+          form.get('surname')?.touched &&
+          form.get('surname')?.hasError('minlength')
+        "
+      >
+        Au moins 3 caractères
+      </small>
+      <small
+        *ngIf="
+          form.get('surname')?.touched &&
+          form.get('surname')?.hasError('pattern')
+        "
+      >
+        Lettres uniquement
+      </small>
+    </div>
+
+    <div class="field">
+      <label>Email</label>
+      <input formControlName="email" placeholder="Votre adresse email" />
+      <small
+        *ngIf="
+          form.get('email')?.touched && form.get('email')?.hasError('required')
+        "
+      >
+        Obligatoire
+      </small>
+      <small
+        *ngIf="
+          form.get('email')?.touched && form.get('email')?.hasError('email')
+        "
+      >
+        Format invalide
+      </small>
+    </div>
+
+    <div class="field">
+      <label>Téléphone</label>
+      <input formControlName="phone" placeholder="Votre téléphone" />
+      <small *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
+        Obligatoire
+      </small>
+      <small
+        *ngIf="
+          form.get('phone')?.touched && form.get('phone')?.hasError('pattern')
+        "
+      >
+        Doit contenir exactement 10 chiffres
+      </small>
+    </div>
+
+    <div class="field">
+      <label>Sujet</label>
+      <input formControlName="subject" placeholder="Sujet de votre message" />
+      <small
+        *ngIf="form.get('subject')?.touched && form.get('subject')?.invalid"
+      >
+        Obligatoire
+      </small>
+    </div>
+
+    <div class="field">
+      <label>Message</label>
+      <textarea
+        formControlName="message"
+        rows="5"
+        placeholder="Votre message"
+      ></textarea>
+      <small
+        *ngIf="form.get('message')?.touched && form.get('message')?.invalid"
+      >
+        Obligatoire
+      </small>
+    </div>
+
+    <div class="field">
+      <label>Produit (optionnel)</label>
+      <select formControlName="product_id">
+        <option [ngValue]="null">-- Aucun --</option>
+        <option *ngFor="let p of products" [ngValue]="p.id">
+          {{ p.name }}
+        </option>
+      </select>
+    </div>
+
+    <input
+      type="text"
+      formControlName="website"
+      style="display: none"
+      tabindex="-1"
+      autocomplete="off"
+    />
+
+    <input type="hidden" formControlName="recaptchaToken" />
+
+    <button type="submit" [disabled]="submitting">
+      {{ submitting ? "Envoi..." : "Envoyer" }}
+    </button>
+
+    <p class="success" *ngIf="success">Message envoyé avec succès !</p>
+    <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+  </form>
+</div>

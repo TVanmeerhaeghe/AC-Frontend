@@ -141,7 +141,7 @@
     .btn-reserve {
       margin-top: 16px;
       padding: 12px 0;
-      background: $blue;
+      background: $showcase-text-color;
       color: $white;
       border: none;
       border-radius: 8px;
@@ -152,7 +152,7 @@
       text-align: center;
 
       &:hover {
-        background-color: $hover-color3;
+        background-color: $showcase-bleu;
       }
     }
   }
@@ -174,7 +174,7 @@
 }
 
 .active {
-  border-color: #1A80E5;
+  border-color: $showcase-bleu;
 }
 
 .breadcrumbs {
@@ -195,7 +195,7 @@
       cursor: pointer;
       transition: color .2s;
       &:hover {
-        color: #007AFF;
+        color: $showcase-bleu;
       }
     }
 

@@ -10,6 +10,7 @@ import { CalendarEvent } from '../models/calendar-event.model';
 import { Category } from '../models/categories.model';
 import { Product } from '../models/products.model';
 import { Customer } from '../models/customers.model';
+import { Contact } from '../models/contact.model';
 
 @Injectable({
   providedIn: 'root',
@@ -118,6 +119,28 @@ export class ApiService {
 
   searchCustomers(query: string): Observable<Customer[]> {
     return this.http.get<Customer[]>(`${this.baseUrl}customers/search?q=${query}`);
+  }
+
+  //Contact
+  createContact(
+    data: Omit<Contact, 'id' | 'createdAt' | 'updatedAt' | 'product'>
+  ): Observable<Contact> {
+    return this.http.post<Contact>(
+      `${this.baseUrl}contacts`,
+      data
+    );
+  }
+
+  getAllContacts(): Observable<Contact[]> {
+    return this.http.get<Contact[]>(`${this.baseUrl}/contacts`);
+  }
+
+  getContactById(id: number): Observable<Contact> {
+    return this.http.get<Contact>(`${this.baseUrl}/contacts/${id}`);
+  }
+
+  deleteContact(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/contacts/${id}`);
   }
 }
 
