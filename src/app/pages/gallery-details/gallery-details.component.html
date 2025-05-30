@@ -1,15 +1,18 @@
 <ng-container *ngIf="product; else loading" class="product-detail">
   <nav class="breadcrumbs">
-    <a routerLink="/">Accueil</a>
-    <span *ngIf="selectedCategory?.slug !== 'tous'; else tousLink">
-      <a [routerLink]="['/galerie','produits',selectedCategory?.slug]">
-        {{ selectedCategory?.name }}
-      </a>
-    </span>
-    <ng-template #tousLink>
-      <a routerLink="/galerie/produits/tous">Tous</a>
+    <a [routerLink]="['/galerie','produits','tous']">Tous les produits</a>
+    <span class="separator">›</span>
+    <a
+      *ngIf="selectedCategory; else noCat"
+      [routerLink]="['/galerie','produits',selectedCategory.slug]"
+    >
+      {{ selectedCategory.name }}
+    </a>
+    <ng-template #noCat>
+      <span>Tous</span>
     </ng-template>
-    <span>/ {{ product.name }}</span>
+    <span class="separator">›</span>
+    <span>{{product.name}}</span>
   </nav>
 
   <div class="product-detail-container">

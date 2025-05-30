@@ -1,32 +1,15 @@
 @use "../../../styles/shared" as *;
 
 .product-detail-container {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 40px;
-  padding: 40px;
-  font-family: 'Manrope', sans-serif;
-  background: $white;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-
-  .breadcrumbs {
-    grid-column: 1 / -1;
-    font-size: 14px;
-    color: $showcase-text-color;
-    margin-bottom: 24px;
-
-    a {
-      color: $color1;
-      text-decoration: none;
-      &:hover { text-decoration: underline; }
-    }
-    span + a::before {
-      content: '/';
-      margin: 0 8px;
-      color: $showcase-text-color;
-    }
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+    padding: 40px;
+    font-family: 'Manrope', sans-serif;
+    background: $white;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
   }
 
   .main-content {
@@ -84,6 +67,8 @@
     }
 
     .related {
+      margin-top: 50px;
+
       h2 {
         @extend .showcase-title-22;
         margin-bottom: 16px;
@@ -98,7 +83,6 @@
           border-radius: 8px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.05);
           padding: 12px;
-          text-align: center;
 
           img {
             width: 100%;
@@ -122,6 +106,9 @@
   }
 
   .sidebar {
+    position: sticky;
+    top: 20px;           
+    align-self: start; 
     background: $white;
     border-radius: 12px;
     padding: 24px;
@@ -169,7 +156,7 @@
       }
     }
   }
-}
+
 
 .thumb {
   width: 100px;
@@ -190,3 +177,36 @@
   border-color: #1A80E5;
 }
 
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-family: 'Manrope', sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 16px;
+
+    a, span {
+      color: $showcase-text-color;
+      text-decoration: none;
+    }
+
+    a {
+      cursor: pointer;
+      transition: color .2s;
+      &:hover {
+        color: #007AFF;
+      }
+    }
+
+    .separator {
+      margin: 0 8px;
+      color: $showcase-text-color;
+      margin: 0px 5px;
+    }
+
+    span:last-child {
+      font-weight: 600;
+      color: $showcase-title-color;
+    }
+  }

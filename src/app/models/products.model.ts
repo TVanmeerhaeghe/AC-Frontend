@@ -2,7 +2,7 @@ export interface Product {
     id: number;
     name: string;
     description: string;
-    categoryId: number;
+    category_id: number;
     condition: Condition;
     price: number;
     sellState: boolean;

@@ -78,6 +78,12 @@ export class ApiService {
     );
   }
 
+  getCategoryProducts(categoryId: number) {
+  return this.http.get<Product[]>(
+    `${this.baseUrl}/categories/${categoryId}/products`
+  );
+}
+
   //Products
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.baseUrl}products/`);
