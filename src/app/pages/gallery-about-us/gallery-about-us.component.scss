@@ -1,0 +1,46 @@
+// src/app/pages/gallery-about-us/gallery-about-us.component.scss
+@use "../../../styles/shared" as *;
+
+.about-us-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px;
+  font-family: 'Manrope', sans-serif;
+  color: $showcase-text-color;
+
+  .about-title {
+    @extend .showcase-title-32;
+    text-align: center;
+    margin-bottom: 32px;
+    color: $showcase-title-color;
+  }
+
+  .about-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 48px;
+
+    &.reverse {
+      flex-direction: row-reverse;
+    }
+
+    .image {
+      flex: 1;
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+    }
+
+    .text {
+      flex: 1;
+      p {
+        line-height: 1.6;
+        font-size: 16px;
+      }
+    }
+  }
+}

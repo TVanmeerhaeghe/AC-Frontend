@@ -23,3 +23,13 @@
     justify-content: center;
     align-items: center;
 }
+
+h1 a {
+    text-decoration: none;
+    color: $showcase-title-color;
+}
+
+h1 span{
+    font-size: 12px;
+    font-style: italic;
+}
