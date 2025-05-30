@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -27,7 +28,11 @@ export class GalleryContactComponent implements OnInit {
   errorMsg: string | null = null;
   private siteKey = environment.recaptchaSiteKey;
 
-  constructor(private fb: FormBuilder, private api: ApiService) {}
+  constructor(
+    private fb: FormBuilder,
+    private api: ApiService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -59,6 +64,13 @@ export class GalleryContactComponent implements OnInit {
     this.api.getAllProducts().subscribe({
       next: (prods) => (this.products = prods),
       error: () => (this.products = []),
+    });
+
+    this.route.queryParamMap.subscribe((params) => {
+      const pid = params.get('productId');
+      if (pid) {
+        this.form.get('product_id')!.setValue(+pid);
+      }
     });
   }
 
