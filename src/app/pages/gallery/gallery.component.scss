@@ -85,4 +85,138 @@
       }
     }
   }
+
+  @media (max-width: 1024px) {
+    padding: 20px;
+    gap: 24px;
+
+    .category-list {
+      padding: 16px;
+      width: 200px;
+
+      ul li {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+
+      ul li .showcase-icon {
+        margin-right: 8px;
+      }
+    }
+
+    .product-list {
+      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+
+      .product-card {
+        padding: 12px;
+
+        img {
+          height: 140px;
+          margin-bottom: 10px;
+        }
+
+        h3 {
+          font-size: 16px;
+          margin-bottom: 6px;
+        }
+
+        span {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+
+    .category-list {
+      width: 100%;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+
+      ul {
+        display: flex;
+        overflow-x: auto;
+        gap: 12px;
+
+        li {
+          flex-shrink: 0;
+          padding: 8px 12px;
+          font-size: 14px;
+          margin-bottom: 0;
+
+          &:hover:not(.active),
+          &.active {
+            background-color: #f0f2f5;
+          }
+        }
+      }
+    }
+
+    .product-list {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+
+      .product-card {
+        padding: 8px;
+
+        img {
+          height: 120px;
+          margin-bottom: 8px;
+        }
+
+        h3 {
+          font-size: 14px;
+          margin-bottom: 4px;
+        }
+
+        span {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    gap: 12px;
+
+    .category-list {
+      padding: 8px;
+      border-radius: 6px;
+
+      ul li {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+    }
+
+    .product-list {
+      grid-template-columns: 1fr;
+      gap: 12px;
+
+      .product-card {
+        padding: 8px;
+
+        img {
+          height: 120px;
+          margin-bottom: 6px;
+        }
+
+        h3 {
+          font-size: 14px;
+          margin-bottom: 4px;
+        }
+
+        span {
+          font-size: 12px;
+        }
+      }
+    }
+  }
 }

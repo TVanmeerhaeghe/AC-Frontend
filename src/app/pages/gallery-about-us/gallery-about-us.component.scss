@@ -1,4 +1,3 @@
-// src/app/pages/gallery-about-us/gallery-about-us.component.scss
 @use "../../../styles/shared" as *;
 
 .about-us-container {
@@ -18,8 +17,8 @@
   .about-block {
     display: flex;
     align-items: flex-start;
-    gap: 24px;
-    margin-bottom: 48px;
+    gap: 20px;         
+    margin-bottom: 32px;
 
     &.reverse {
       flex-direction: row-reverse;
@@ -27,6 +26,7 @@
 
     .image {
       flex: 1;
+
       img {
         width: 100%;
         height: auto;
@@ -37,10 +37,78 @@
 
     .text {
       flex: 1;
+
       p {
         line-height: 1.6;
         font-size: 16px;
+        margin-bottom: 5px;
       }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    padding: 32px;
+
+    .about-block {
+      gap: 16px;
+      margin-bottom: 28px;
+
+      .text p {
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+    }
+
+    .about-title {
+      font-size: 28px;
+      margin-bottom: 28px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 24px;
+
+    .about-block, .about-block.reverse {
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+
+      .image {
+        width: 100%;
+      }
+
+      .text {
+        p {
+          font-size: 14px;
+          margin-bottom: 6px;
+        }
+      }
+    }
+
+    .about-title {
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
+
+    .about-block {
+      margin-bottom: 20px;
+      gap: 10px;
+
+      .text {
+        p {
+          font-size: 13px;
+          margin-bottom: 4px;
+        }
+      }
+    }
+
+    .about-title {
+      font-size: 20px;
+      margin-bottom: 20px;
     }
   }
 }
