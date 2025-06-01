@@ -1,11 +1,59 @@
 <header class="customer-header">
-    <h1 class="showcase-title showcase-title-18"><a href="/galerie/produits">Le village des brocanteurs</a> <span> - Pont-audemer</span></h1>
-    <div class="showcase-icons">
-        <div class="showcase-background-icon"><a href="recherche">
-            <span class="iconify showcase-icon" data-icon="line-md:search" data-inline="true"></span>
-        </a></div>
-        <div class="showcase-background-icon"><a href="/galerie/contact">
-            <span class="iconify showcase-icon" data-icon="material-symbols:mail-outline-rounded" data-inline="true"></span>
-        </a></div> 
+  <h1 class="showcase-title showcase-title-18">
+    <a routerLink="/galerie/produits">Le village des brocanteurs</a>
+    <span> – Pont-Audemer</span>
+  </h1>
+
+  <div class="right-block">
+    <div class="search-container">
+      <div class="search-form">
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Rechercher un produit..."
+          (keyup.enter)="onSubmitSearch($event)"
+        />
+        <button 
+          type="button" 
+          class="search-button" 
+          (click)="onSubmitSearch($event)"
+        >
+          <span
+            class="iconify showcase-icon"
+            data-icon="line-md:search"
+            data-inline="true"
+          ></span>
+        </button>
+      </div>
+
+      <ul class="search-suggestions" *ngIf="suggestions.length > 0">
+        <li *ngFor="let prod of suggestions" (click)="goToProduct(prod)">
+          <img
+            *ngIf="prod.imageUrl"
+            [src]="prod.imageUrl"
+            alt="{{ prod.name }}"
+            class="suggest-thumb"
+          />
+          <div class="suggest-text">
+            <span class="suggest-name">{{ prod.name }}</span>
+            <span class="suggest-price">
+              {{ prod.price | currency:'EUR':'symbol' }}
+            </span>
+          </div>
+        </li>
+      </ul>
     </div>
+
+    <div class="showcase-icons">
+      <div class="showcase-background-icon">
+        <a routerLink="/galerie/contact">
+          <span
+            class="iconify showcase-icon"
+            data-icon="material-symbols:mail-outline-rounded"
+            data-inline="true"
+          ></span>
+        </a>
+      </div>
+    </div>
+  </div>
 </header>

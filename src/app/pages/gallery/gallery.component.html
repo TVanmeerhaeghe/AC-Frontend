@@ -2,7 +2,7 @@
   <aside class="category-list">
     <ul>
       <li
-        [routerLink]="['/galerie', 'produits', 'all']"
+        [routerLink]="['/galerie', 'produits', 'tous']"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
       >
@@ -25,26 +25,47 @@
     </ul>
   </aside>
 
-  <section class="product-list">
-    <div *ngIf="products.length === 0">Aucun produit pour cette catégorie.</div>
-    <a
-      class="product-card"
-      *ngFor="let product of products"
-      [routerLink]="[
-        '/galerie',
-        'produits',
-        selectedCategory?.slug || 'tous',
-        slugify(product.name)
-      ]"
-      routerLinkActive="active-card"
-    >
-      <img
-        *ngIf="product.imageUrl"
-        [src]="product.imageUrl"
-        alt="{{ product.name }}"
-      />
-      <h3>{{ product.name }}</h3>
-      <span>{{ product.price | currency : "EUR" : "symbol" }}</span>
-    </a>
+  <section class="product-list-container">
+    <div class="page-header">
+      <ng-container *ngIf="currentSearch; else catHeader">
+        Résultat de la recherche : “{{ currentSearch }}”
+      </ng-container>
+
+      <ng-template #catHeader>
+        <span *ngIf="selectedCategory">
+          Catégorie : {{ selectedCategory.name }}
+        </span>
+      </ng-template>
+    </div>
+
+    <div class="product-list">
+      <div *ngIf="currentSearch && products.length === 0">
+        Aucun résultat pour “{{ currentSearch }}”.
+      </div>
+
+      <div *ngIf="!currentSearch && products.length === 0">
+        Aucun produit pour cette catégorie.
+      </div>
+
+      <a
+        class="product-card"
+        *ngFor="let product of products"
+        [routerLink]="[
+          '/galerie',
+          'produits',
+          selectedCategory?.slug || 'tous',
+          slugify(product.name)
+        ]"
+        routerLinkActive="active-card"
+      >
+        <img
+          *ngIf="product.imageUrl"
+          [src]="product.imageUrl"
+          alt="{{ product.name }}"
+        />
+        <h3>{{ product.name }}</h3>
+        <span>{{ product.price | currency : "EUR" : "symbol" }}</span>
+      </a>
+    </div>
   </section>
 </div>

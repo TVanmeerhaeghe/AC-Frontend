@@ -40,6 +40,7 @@ export const routes: Routes = [
           { path: 'produits/:categorySlug/:productSlug', component: GalleryDetailsComponent },
           { path: 'contact', component: GalleryContactComponent },
           { path: 'a-propos', component: GalleryAboutUsComponent },
+          { path: 'recherche', component: GalleryComponent },
         ] 
       },
 ];

@@ -96,6 +96,11 @@ export class ApiService {
     );
   }
 
+  searchProducts(query: string): Observable<Product[]> {
+    const q = encodeURIComponent(query.trim());
+    return this.http.get<Product[]>(`${this.baseUrl}products/search?q=${q}`);
+  }
+
   // Customers
   getAllCustomers(): Observable<Customer[]> {
     return this.http.get<Customer[]>(`${this.baseUrl}customers/`);

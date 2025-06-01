@@ -20,6 +20,7 @@ export class GalleryComponent implements OnInit {
   categories: Category[] = [];
   selectedCategory: Category | null = null;
   products: Product[] = [];
+  currentSearch: string | null = null;
 
   public slugify = slugify;
 
@@ -34,29 +35,48 @@ export class GalleryComponent implements OnInit {
       .getAllCategories()
       .pipe(
         tap((cats) => (this.categories = cats)),
-
-        switchMap(() => this.route.paramMap),
-
-        switchMap((params) => {
-          const slug = params.get('categorySlug');
-          if (!slug || slug === 'tous') {
-            this.selectedCategory = null;
-            return this.api.getAllProducts();
-          }
-
-          const cat = this.categories.find((c) => c.slug === slug);
-          if (!cat) {
-            this.router.navigate(['/galerie', 'produits', 'tous']);
-            return EMPTY;
-          }
-
-          this.selectedCategory = cat;
-          return this.api.getProductsByCategory(cat.id);
-        })
+        switchMap(() =>
+          this.route.queryParamMap.pipe(
+            switchMap((qParams) => {
+              const q = qParams.get('q')?.trim() || null;
+              if (q) {
+                this.currentSearch = q;
+                this.selectedCategory = null;
+                return this.api
+                  .searchProducts(q)
+                  .pipe(tap((results) => (this.products = results)));
+              } else {
+                this.currentSearch = null;
+                return this.route.paramMap.pipe(
+                  switchMap((params) => {
+                    const slug = params.get('categorySlug');
+                    if (!slug || slug === 'tous') {
+                      this.selectedCategory = null;
+                      return this.api
+                        .getAllProducts()
+                        .pipe(tap((prods) => (this.products = prods)));
+                    }
+                    const cat = this.categories.find((c) => c.slug === slug);
+                    if (!cat) {
+                      this.router.navigate(['/galerie', 'produits', 'tous']);
+                      return EMPTY;
+                    }
+                    this.selectedCategory = cat;
+                    return this.api
+                      .getProductsByCategory(cat.id)
+                      .pipe(tap((prods) => (this.products = prods)));
+                  })
+                );
+              }
+            })
+          )
+        )
       )
-      .subscribe((prods) => {
-        console.log('Produits reçus →', prods);
-        this.products = prods;
+      .subscribe({
+        next: () => {},
+        error: () => {
+          this.products = [];
+        },
       });
   }
 }
