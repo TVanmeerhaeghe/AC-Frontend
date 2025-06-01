@@ -1,0 +1,90 @@
+<ng-container *ngIf="product; else loading" class="product-detail">
+  <nav class="breadcrumbs">
+    <a [routerLink]="['/galerie', 'produits', 'tous']">Tous les produits</a>
+    <span class="separator">›</span>
+    <a
+      *ngIf="selectedCategory; else noCat"
+      [routerLink]="['/galerie', 'produits', selectedCategory.slug]"
+    >
+      {{ selectedCategory.name }}
+    </a>
+    <ng-template #noCat>
+      <span>Tous</span>
+    </ng-template>
+    <span class="separator">›</span>
+    <span>{{ product.name }}</span>
+  </nav>
+
+  <div class="product-detail-container">
+    <div class="main-content">
+      <div class="image-wrapper">
+        <img
+          *ngIf="selectedImageUrl"
+          [src]="selectedImageUrl"
+          [alt]="product!.name"
+          class="main-image"
+        />
+        <h1>{{ product.name }}</h1>
+      </div>
+
+      <div class="thumbnails">
+        <img
+          *ngFor="let url of product!.imageUrls"
+          [src]="url"
+          [alt]="product!.name"
+          class="thumb"
+          [class.active]="url === selectedImageUrl"
+          (click)="selectedImageUrl = url"
+        />
+      </div>
+
+      <div class="description">
+        <h2 class="showcase-title">Description</h2>
+        <p>{{ product.description }}</p>
+        <div>
+          <p class="label">
+            Quantité disponible : {{ product.quantity }} unitée(s)
+          </p>
+        </div>
+      </div>
+
+      <div class="related" *ngIf="relatedProducts?.length">
+        <h2>Dans la même catégorie</h2>
+        <div class="related-list">
+          <div class="product-card" *ngFor="let rp of relatedProducts">
+            <img *ngIf="rp.imageUrl" [src]="rp.imageUrl" [alt]="rp.name" />
+            <h3>{{ rp.name }}</h3>
+            <span>{{ rp.price | currency : "EUR" : "symbol" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <h4>Details</h4>
+      <div class="detail-bloc">
+        <div class="detail-item">
+          <span class="label">Prix unitaire</span>
+          <span>{{ product.price | currency : "EUR" : "symbol" }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">État</span>
+          <span>{{ product.condition }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Matériaux</span>
+          <span>{{ product.material }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Style</span>
+          <span>{{ product.style }}</span>
+        </div>
+      </div>
+      <button class="btn-reserve" (click)="onReserve()">Réserver</button>
+    </aside>
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <p>Chargement du produit…</p>
+</ng-template>

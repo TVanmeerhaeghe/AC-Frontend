@@ -1,0 +1,147 @@
+@use "../../../styles/shared" as *;
+
+.contact-form {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 24px;
+  background: $white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-family: "Manrope", sans-serif;
+
+  h2 {
+    @extend .showcase-title-22;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  form {
+    .field {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+
+      label {
+        margin-bottom: 4px;
+        font-weight: 600;
+        color: $showcase-title-color;
+      }
+
+      input,
+      textarea,
+      select {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+
+        &:focus {
+          border-color: $showcase-bleu;
+          outline: none;
+        }
+      }
+
+      small {
+        color: red;
+        margin-top: 4px;
+      }
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: $showcase-text-color;
+      color: $white;
+      font-weight: 600;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover:not(:disabled) {
+        background-color: $showcase-bleu;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .success {
+      color: green;
+      margin-top: 12px;
+    }
+
+    .error {
+      color: red;
+      margin-top: 12px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    margin: 40px auto;
+
+    .field {
+      margin-bottom: 12px;
+
+      input,
+      textarea,
+      select {
+        padding: 6px;
+        font-size: 13px;
+      }
+
+      small {
+        font-size: 12px;
+      }
+    }
+
+    button {
+      padding: 10px;
+      font-size: 15px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    padding: 12px;
+    margin: 30px auto;
+
+    .field {
+      margin-bottom: 8px;
+
+      label {
+        font-size: 14px;
+      }
+
+      input,
+      textarea,
+      select {
+        padding: 5px;
+        font-size: 12px;
+      }
+
+      small {
+        font-size: 11px;
+      }
+    }
+
+    button {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+  }
+}

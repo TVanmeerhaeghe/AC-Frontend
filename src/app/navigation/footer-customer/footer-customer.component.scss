@@ -1,35 +1,106 @@
 @use "../../../styles/shared" as *;
 
-.showcase-footer-customer{
-    max-width: 960px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    align-items: center;
-    padding: 40px 0;
-    color: $showcase-text-color;
-}
+.showcase-footer-customer {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  padding: 40px 0;
+  color: $showcase-text-color;
 
-.showcase-footer-customer a{
+  a {
     color: $showcase-text-color;
     text-decoration: none;
-}
+  }
 
-.showcase-footer-customer .showcase-icon{
+  .showcase-icon {
     color: $showcase-text-color;
-}
+    font-size: 24px;
+  }
 
-.link-footer-customer {
+  .link-footer-customer {
     display: flex;
     justify-content: space-between;
     width: 80%;
     margin: 0 auto;
+
+    a {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      transition: color 0.2s;
+      &:hover {
+        color: $showcase-bleu;
+      }
+    }
+  }
+
+  @media (min-width: 1025px) {
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 20px;
+
+    .link-footer-customer {
+      width: 60%;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    gap: 20px;
+    padding: 32px 16px;
+
+    .link-footer-customer {
+      width: 100%;
+      a {
+        font-size: 15px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    gap: 16px;
+    padding: 24px 12px;
+
+    flex-direction: column;
+    align-items: center;
+
+    .link-footer-customer {
+      flex-direction: column;
+      width: 100%;
+      gap: 8px;
+
+      a {
+        font-size: 14px;
+        padding: 6px 0;
+      }
+    }
+
+    .showcase-icon {
+      font-size: 22px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+    padding: 16px 8px;
+
+    .link-footer-customer {
+      a {
+        font-size: 13px;
+        padding: 4px 0;
+      }
+    }
+
+    .showcase-icon {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 12px;
+      text-align: center;
+      margin: 0;
+    }
+  }
 }
-  
-.link-footer-customer a {
-    flex: 1;
-    text-align: center;
-}
-  
-  
