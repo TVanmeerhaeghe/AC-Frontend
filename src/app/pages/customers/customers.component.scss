@@ -1,14 +1,32 @@
 @use '../../../styles/shared' as *;
 
-.customers-menu {
+
+.customers-main{
+  display: flex;
+  flex-direction: row;
+  max-height: fit-content;
+
+  .left-view {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+  }
+
+    .left-view.pushed {
+    max-width: 20%;
+  }
+
+  .customers-menu {
   background-color: $white;
-  padding: 10px 35px 35px 35px;
+  padding: 10px 55px 40px 55px;
   border-radius: 25px;
   flex-grow: 1;
   margin: 0px 0px 10px 0px;
   box-sizing: border-box;
-  width: fit-content;
-  max-width: 285px;
+  max-width: fit-content;
+  height: fit-content;
 
   .actions{
     display: flex;
@@ -44,15 +62,6 @@
     }
   }
 }
-
-
-.customers-main{
-  
-  display: flex;
-  flex-direction: row;
-  max-height: fit-content;
-
-
 
   .customers-list {
     background-color: $white;
@@ -118,9 +127,10 @@
       }
 
       .fullname {
-        font-size: 1.1em;
+        font-size: 1rem;
         color: #222;
         font-weight: 400;
+        overflow: hidden;
       }
 
       .actions-cell {
@@ -172,17 +182,11 @@
     }
   }
 
-  .customers-list.pushed {
-    max-width: 100%;
-    margin-right: 20px;
-    height: 600px;
-  }
-
   .create-customer-form {
     top: 0;
     right: 0;
-    width: 65%;
-    max-height: 600px;
+    width: 100%;
+    max-height: auto;
     background: #fff;
     border-radius: 25px;
     box-shadow: -2px 0 8px rgba(0,0,0,0.08);
@@ -242,8 +246,8 @@
   .view-customer-form {
     top: 0;
     right: 0;
-    width: 65%;
-    max-height: 600px;
+    width: 100%;
+    max-height: auto;
     background: #fff;
     border-radius: 25px;
     box-shadow: -2px 0 8px rgba(0,0,0,0.08);
@@ -276,3 +280,11 @@
     }
   }
 }
+
+  .customers-main.pushed {
+    max-width: 40%;
+    margin-right: 20px;
+    height: 600px;
+    display: flex;
+    flex-direction: row;
+  }
