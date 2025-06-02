@@ -128,47 +128,54 @@
         <div class="view-actions">
           <button class="btn-small" title="Fermer le détail de {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="closeViewForm()">Fermer</button>
           <button class="btn-small" title="Éditer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="viewCustomerData && openEditForm(viewCustomerData)">Éditer</button>  
-          <button class="btn-small"
-        title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}"
-        (click)="deleteCustomer(viewCustomerData?.id)">
-  Supprimer
-</button>
+          <button class="btn-small" title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="deleteCustomer(viewCustomerData?.id)">Supprimer</button>
         </div>
       </div>
-      <form>
-        <mat-form-field appearance="fill">
-          <mat-label>Nom</mat-label>
-          <input matInput [value]="viewCustomerData?.name" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Prénom</mat-label>
-          <input matInput [value]="viewCustomerData?.surname" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Adresse</mat-label>
-          <input matInput [value]="viewCustomerData?.adress" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Ville</mat-label>
-          <input matInput [value]="viewCustomerData?.city" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Code Postal</mat-label>
-          <input matInput [value]="viewCustomerData?.postal_code" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Entreprise</mat-label>
-          <input matInput [value]="viewCustomerData?.company" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Numéro de téléphone</mat-label>
-          <input matInput [value]="viewCustomerData?.phone" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Adresse mail</mat-label>
-          <input matInput type="email" [value]="viewCustomerData?.email" disabled />
-        </mat-form-field>
-      </form>
+
+      <mat-tab-group color="primary" animationDuration="1000ms" fitInkBarToContent>
+        <mat-tab label="Informations">
+            <form>
+              <mat-form-field appearance="fill">
+                <mat-label>Nom</mat-label>
+                <input matInput [value]="viewCustomerData?.name" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Prénom</mat-label>
+                <input matInput [value]="viewCustomerData?.surname" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Adresse</mat-label>
+                <input matInput [value]="viewCustomerData?.adress" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Ville</mat-label>
+                <input matInput [value]="viewCustomerData?.city" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Code Postal</mat-label>
+                <input matInput [value]="viewCustomerData?.postal_code" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Entreprise</mat-label>
+                <input matInput [value]="viewCustomerData?.company" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Numéro de téléphone</mat-label>
+                <input matInput [value]="viewCustomerData?.phone" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Adresse mail</mat-label>
+                <input matInput type="email" [value]="viewCustomerData?.email" disabled />
+              </mat-form-field>
+            </form>
+          </mat-tab>
+          <mat-tab label="Facture">
+          </mat-tab>
+          <mat-tab label="Devis">
+          </mat-tab>
+          <mat-tab label="Achats">
+          </mat-tab>
+        </mat-tab-group>
     </div>
   </div>
 </div>

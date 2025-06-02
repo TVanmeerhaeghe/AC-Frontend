@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Customer } from '../../models/customers.model';
+import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatTabsModule],
 })
 export class CustomersComponent implements OnInit {
   customers: Customer[] = [];
@@ -31,6 +32,7 @@ export class CustomersComponent implements OnInit {
   editCustomerId: number | null = null;
   viewCustomerData: Customer | null = null;
   showViewForm = false;
+  selectedTab: string = 'informations';
 
   constructor(private apiService: ApiService) {}
 

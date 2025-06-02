@@ -300,6 +300,30 @@
         }
       }
     }
+
+    .tabs-container {
+      margin-bottom: 20px;
+      ul.tabs {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 20px;
+        li {
+          cursor: pointer;
+          padding: 8px 16px;
+          border-bottom: 2px solid transparent;
+          transition: border-color 0.2s;
+          &:hover {
+            border-bottom-color: #007aff;
+          }
+          &.active {
+            border-bottom-color: #007aff;
+            font-weight: bold;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -310,3 +334,4 @@
     display: flex;
     flex-direction: row;
   }
+

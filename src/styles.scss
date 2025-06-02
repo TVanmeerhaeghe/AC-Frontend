@@ -6,7 +6,6 @@ html {
       theme-type: light,
       primary: mat.$azure-palette,
       tertiary: mat.$blue-palette,
-      
     ),
     typography: Roboto,
     density: 0,
@@ -30,12 +29,12 @@ body {
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
   background-color: #d9ebff !important;
-  color: 1d1b20 !important;
+  color: #1d1b20 !important;
 }
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) {
   background-color: #d9ebff !important;
-  color: 1d1b20 !important;
+  color: #1d1b20 !important;
 }
 
 .mdc-text-field--filled .mdc-floating-label {
@@ -46,4 +45,12 @@ body {
   color: #49454f !important;
 }
 
-
+.mdc-tab--active .mdc-tab__text-label {
+  color: #007aff !important;
+}
+.mdc-tab-indicator__content--underline {
+  background-color: #007aff !important;
+  height: 4px !important;
+  border-top-left-radius: 55px !important;
+  border-top-right-radius: 55px !important;
+}
