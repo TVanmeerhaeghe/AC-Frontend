@@ -132,4 +132,14 @@ export class CustomersComponent implements OnInit {
     this.showViewForm = false;
     this.viewCustomerData = null;
   }
+
+  deleteCustomer(id: number | undefined) {
+    if (!id) return;
+    this.apiService.deleteCustomer(id).subscribe({
+      next: () => {
+        this.closeViewForm();
+        this.loadCustomers();
+      }
+    });
+  }
 }

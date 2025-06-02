@@ -128,7 +128,11 @@
         <div class="view-actions">
           <button class="btn-small" title="Fermer le détail de {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="closeViewForm()">Fermer</button>
           <button class="btn-small" title="Éditer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="viewCustomerData && openEditForm(viewCustomerData)">Éditer</button>  
-          <button class="btn-small" title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}">Supprimer</button>
+          <button class="btn-small"
+        title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}"
+        (click)="deleteCustomer(viewCustomerData?.id)">
+  Supprimer
+</button>
         </div>
       </div>
       <form>
