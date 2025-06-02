@@ -117,20 +117,20 @@
 
     <!-- visu -->
     <div class="view-customer-form" *ngIf="showViewForm">
-      <h2 class="sub-title">
+      <div class="top-view">
+              <h2 class="sub-title">
         Détails
         <ng-container *ngIf="viewCustomerData?.name && viewCustomerData?.surname; else defaultViewTitle">
           <span class="client-name"> {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }} </span>
         </ng-container>
-        <ng-template #defaultViewTitle> un client</ng-template>
-
-        <button title="Fermer le détail de {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="closeViewForm()">Fermer</button>
-
-        <button title="Modifier {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="viewCustomerData && openEditForm(viewCustomerData)">Modifier</button>  
-
-        <button title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}">Supprimer</button>
-
+        <ng-template #defaultViewTitle> d'un client</ng-template>
       </h2>
+        <div class="view-actions">
+          <button class="btn-small" title="Fermer le détail de {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="closeViewForm()">Fermer</button>
+          <button class="btn-small" title="Éditer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="viewCustomerData && openEditForm(viewCustomerData)">Éditer</button>  
+          <button class="btn-small" title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}">Supprimer</button>
+        </div>
+      </div>
       <form>
         <mat-form-field appearance="fill">
           <mat-label>Nom</mat-label>
