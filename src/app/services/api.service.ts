@@ -126,6 +126,31 @@ export class ApiService {
     return this.http.get<Customer[]>(`${this.baseUrl}customers/search?q=${query}`);
   }
 
+  // Invoices
+  getAllInvoices(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}invoices/`);
+  }
+
+  getInvoice(id: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}invoices/${id}`);
+  }
+
+  createInvoice(invoice: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}invoices/`, invoice);
+  }
+
+  updateInvoice(id: number, invoice: Partial<any>): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}invoices/${id}`, invoice);
+  }
+
+  deleteInvoice(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}invoices/${id}`);
+  }
+
+  searchInvoices(query: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}invoices/search?q=${encodeURIComponent(query)}`);
+  }
+
   //Contact
   createContact(
     data: Omit<Contact, 'id' | 'createdAt' | 'updatedAt' | 'product'>
