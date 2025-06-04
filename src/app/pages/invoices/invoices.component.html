@@ -25,10 +25,10 @@
                 <div class="row-bg">
                   <div class="identity-cell">
                     <span class="avatar">
-                      {{ invoice.object ? invoice.object[0] : '' }}
+                      n°{{ invoice.id }}
                     </span>
                     <span class="object">
-                      {{ invoice.object.length > 14 ? (invoice.object | slice:0:14) + '...' : invoice.object }}
+                      Facture#{{ invoice.id }}
                     </span>
                   </div>
                   <div class="actions-cell">
@@ -55,15 +55,12 @@
 
       <!-- Formulaire création/modif -->
       <div class="create-invoice-form" *ngIf="showCreateForm">
-        <h2 class="sub-title">
-          {{ editMode ? 'Modifier' : 'Créer' }}
-          <ng-container *ngIf="createForm.object; else defaultTitle">
-            <span class="form-object">
-                {{ createForm.object.length > 14 ? (createForm.object | slice:0:14) + '...' : createForm.object }}
-            </span>
-          </ng-container>
-          <ng-template #defaultTitle> une facture</ng-template>
-        </h2>
+<h2 class="sub-title">
+  {{ editMode ? 'Modifier ' : 'Créer la ' }}
+  <span [style.color]="'#a1bcff'">
+    Facture#{{ editMode ? editInvoiceId : (invoices.length > 0 ? invoices[invoices.length - 1].id + 1 : 1) }}
+  </span>
+</h2>
         <form (ngSubmit)="submitForm()" #f="ngForm">
           <div class="form-fields">
             <mat-form-field appearance="fill">

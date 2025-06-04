@@ -72,6 +72,11 @@ export class InvoicesComponent implements OnInit {
     this.showCreateForm = true;
     this.editMode = false;
     this.editInvoiceId = null;
+
+    // Calcul ID
+    const maxId = this.invoices.length > 0 ? Math.max(...this.invoices.map(invoice => invoice.id)) : 0;
+    const nextId = maxId + 1;
+
     this.createForm = {
       object: '',
       status: InvoiceStatus.Brouillon,
@@ -82,6 +87,7 @@ export class InvoicesComponent implements OnInit {
       productId: undefined,
       creationDate: new Date(),
       validityDate: new Date(),
+      id: nextId,
     };
   }
 

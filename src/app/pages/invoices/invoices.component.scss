@@ -110,7 +110,7 @@
       }
 
       .avatar {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
         background: $hover-color2;
@@ -119,11 +119,14 @@
         width: 36px;
         height: 36px;
         font-weight: bold;
-        font-size: 0.9em;
         text-transform: uppercase;
-        margin-right: 8px;
-        transition: background 0.2s;
         aspect-ratio: 1;
+        transition: font-size 0.2s;
+        font-size: 0.8em;
+        overflow: scroll;
+          &::-webkit-scrollbar {
+            display: none;
+          }
       }
 
       .object {
@@ -248,16 +251,16 @@
 
       .form-fields {
         display: flex;
-        flex-direction: column; // Aligne les champs verticalement
-        gap: 20px; // Ajoute un espace entre les champs
+        flex-direction: column;
+        gap: 20px;
       }
 
       mat-form-field {
-        width: 100%; // Les champs prennent toute la largeur disponible
+        width: 100%;
       }
 
       input, select, textarea {
-        width: 100%; // Assure que les éléments internes prennent toute la largeur
+        width: 100%;
       }
     }
   }
@@ -343,6 +346,15 @@
           }
         }
       }
+    }
+  }
+
+  .sub-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+
+    span {
+      color: #a1bcff;
     }
   }
 }
