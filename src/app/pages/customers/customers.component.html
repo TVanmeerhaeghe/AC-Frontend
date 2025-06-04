@@ -28,7 +28,7 @@
                         {{ customer.name ? customer.name[0] : '' }}{{ customer.surname ? customer.surname[0] : '' }}
                       </span>
                       <span class="fullname">
-                        {{ customer.name }} {{ customer.surname }}
+                        {{ (customer.name + ' ' + customer.surname).length > 14 ? (customer.name + ' ' + customer.surname | slice:0:14) + '...' : customer.name + ' ' + customer.surname }}
                       </span>
                     </div>
                     <div class="actions-cell">
@@ -64,7 +64,9 @@
       <h2 class="sub-title">
         {{ editMode ? 'Modifier' : 'Créer' }}
         <ng-container *ngIf="createForm.name && createForm.surname; else defaultTitle">
-          <span class="client-name"> {{ createForm.name }} {{ createForm.surname }} </span>
+          <span class="client-name">
+            {{ (createForm.name + ' ' + createForm.surname).length > 14 ? (createForm.name + ' ' + createForm.surname | slice:0:14) + '...' : createForm.name + ' ' + createForm.surname }}
+          </span>
         </ng-container>
         <ng-template #defaultTitle> un client</ng-template>
       </h2>

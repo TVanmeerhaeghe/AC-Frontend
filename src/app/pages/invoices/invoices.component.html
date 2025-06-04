@@ -27,8 +27,8 @@
                     <span class="avatar">
                       {{ invoice.object ? invoice.object[0] : '' }}
                     </span>
-                    <span class="fullname">
-                      {{ invoice.object }}
+                    <span class="object">
+                      {{ invoice.object.length > 14 ? (invoice.object | slice:0:14) + '...' : invoice.object }}
                     </span>
                   </div>
                   <div class="actions-cell">
@@ -58,7 +58,9 @@
         <h2 class="sub-title">
           {{ editMode ? 'Modifier' : 'Créer' }}
           <ng-container *ngIf="createForm.object; else defaultTitle">
-            <span class="client-name"> {{ createForm.object }} </span>
+            <span class="form-object">
+                {{ createForm.object.length > 14 ? (createForm.object | slice:0:14) + '...' : createForm.object }}
+            </span>
           </ng-container>
           <ng-template #defaultTitle> une facture</ng-template>
         </h2>
@@ -127,7 +129,9 @@
           <h2 class="sub-title">
             Détails
             <ng-container *ngIf="viewInvoiceData?.object; else defaultViewTitle">
-              <span class="client-name"> {{ viewInvoiceData?.object }} </span>
+              <span class="form-object">
+                {{ (viewInvoiceData?.object?.length ?? 0) > 24 ? (viewInvoiceData?.object ?? '' | slice:0:24) + '...' : (viewInvoiceData?.object ?? '') }}
+              </span>
             </ng-container>
             <ng-template #defaultViewTitle> d'une facture</ng-template>
           </h2>
