@@ -1,7 +1,7 @@
 @use '../../../styles/shared' as *;
 
 
-.invoices-main {
+.invoices-main{
   display: flex;
   flex-direction: row;
   max-height: fit-content;
@@ -69,7 +69,7 @@
     border-radius: 25px;
     flex-grow: 1;
     transition: width 0.3s;
-    max-height: 600px;
+    max-height: 100%;
     overflow-y: auto;
     &::-webkit-scrollbar {
       display: none;
@@ -186,7 +186,7 @@
     top: 0;
     right: 0;
     width: 100%;
-    max-height: auto;
+    max-height: 100%;
     background: #fff;
     border-radius: 25px;
     box-shadow: -2px 0 8px rgba(0,0,0,0.08);
@@ -208,6 +208,11 @@
       flex-direction: column;
       flex: 1;
       margin-top: 40px;
+
+      .form-field{
+        display: flex;
+        flex-direction: column;
+      }
 
       .form-actions {
         display: flex;
@@ -239,6 +244,20 @@
           background-color: #1c3222;
           color: white;
         }
+      }
+
+      .form-fields {
+        display: flex;
+        flex-direction: column; // Aligne les champs verticalement
+        gap: 20px; // Ajoute un espace entre les champs
+      }
+
+      mat-form-field {
+        width: 100%; // Les champs prennent toute la largeur disponible
+      }
+
+      input, select, textarea {
+        width: 100%; // Assure que les éléments internes prennent toute la largeur
       }
     }
   }
@@ -327,12 +346,4 @@
     }
   }
 }
-
-  .invoices-main.pushed {
-    max-width: 40%;
-    margin-right: 20px;
-    height: 600px;
-    display: flex;
-    flex-direction: row;
-  }
 

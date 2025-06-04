@@ -4,8 +4,14 @@
       <div class="invoices-menu">
         <h2 class="sub-title">Outils</h2>
         <div class="actions">
+          <button title="Télécharger la base de données de factures" (click)="openCreateForm()">
+            <span class="iconify" data-icon="radix-icons:download" data-inline="true"></span>
+          </button>
+          <button title="Imprimer une facture" (click)="openCreateForm()">
+            <span class="iconify" data-icon="tabler:printer" data-inline="true"></span>
+          </button>
           <button title="Ajouter une facture" (click)="openCreateForm()">
-            <span class="iconify" data-icon="iconoir:plus" data-inline="true"></span>
+            <span class="iconify" data-icon="lucide:file-plus" data-inline="true"></span>
           </button>
         </div>
       </div>
@@ -30,11 +36,11 @@
                       <button title="Voir" (click)="viewInvoice(invoice)">
                         <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
                       </button>
+                      <button title="Envoyer par mail">
+                        <span class="iconify" data-icon="material-symbols:mail-outline" data-inline="true"></span>
+                      </button>
                       <button title="Éditer" (click)="openEditForm(invoice)">
                         <span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span>
-                      </button>
-                      <button title="Supprimer" (click)="deleteInvoice(invoice.id)">
-                        <span class="iconify" data-icon="mdi:delete" data-inline="true"></span>
                       </button>
                     </div>
                   </div>
@@ -47,129 +53,139 @@
       </div>
     </div>
 
-    <!-- Formulaire création/modif -->
-    <div class="create-invoice-form" *ngIf="showCreateForm">
-      <h2 class="sub-title">
-        {{ editMode ? 'Modifier' : 'Créer' }} une facture
-      </h2>
-      <form (ngSubmit)="submitForm()" #f="ngForm">
-        <mat-form-field appearance="fill">
-          <mat-label>Objet</mat-label>
-          <input matInput [(ngModel)]="createForm.object" name="object" required />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Statut</mat-label>
-          <select matInput [(ngModel)]="createForm.status" name="status" required>
-            <option *ngFor="let status of invoiceStatuses" [value]="status">{{ status }}</option>
-          </select>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Note admin</mat-label>
-          <input matInput [(ngModel)]="createForm.adminNote" name="adminNote" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Client ID</mat-label>
-          <input matInput type="number" [(ngModel)]="createForm.customerId" name="customerId" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Produit ID</mat-label>
-          <input matInput type="number" [(ngModel)]="createForm.productId" name="productId" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Nom remise</mat-label>
-          <input matInput [(ngModel)]="createForm.discountName" name="discountName" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Valeur remise</mat-label>
-          <input matInput type="number" [(ngModel)]="createForm.discountValue" name="discountValue" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Date de création</mat-label>
-          <input matInput type="date" [(ngModel)]="createForm.creationDate" name="creationDate" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Date de validité</mat-label>
-          <input matInput type="date" [(ngModel)]="createForm.validityDate" name="validityDate" />
-        </mat-form-field>
-        <div class="form-actions">
-          <button mat-stroked-button color="warn" type="button" class="cancel" (click)="closeCreateForm()">Annuler</button>
-          <button
-            mat-flat-button
-            type="submit"
-            class="create"
-            [ngStyle]="editMode ? {'background-color': '#007AFF', 'color': '#fff'} : {}"
-            [disabled]="f.invalid">
-            {{ editMode ? 'Modifier' : 'Créer' }}
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Vue facture -->
-    <div class="view-invoice-form" *ngIf="showViewForm">
-      <div class="top-view">
+      <!-- Formulaire création/modif -->
+      <div class="create-invoice-form" *ngIf="showCreateForm">
         <h2 class="sub-title">
-          Détails
-          <ng-container *ngIf="viewInvoiceData?.object; else defaultViewTitle">
-            <span class="client-name"> {{ viewInvoiceData?.object }} </span>
+          {{ editMode ? 'Modifier' : 'Créer' }}
+          <ng-container *ngIf="createForm.object; else defaultTitle">
+            <span class="client-name"> {{ createForm.object }} </span>
           </ng-container>
-          <ng-template #defaultViewTitle> d'une facture</ng-template>
+          <ng-template #defaultTitle> une facture</ng-template>
         </h2>
-        <div class="view-actions">
-          <button class="btn-small" title="Fermer" (click)="closeViewForm()">Fermer</button>
-          <button class="btn-small" title="Éditer" (click)="viewInvoiceData && openEditForm(viewInvoiceData)">Éditer</button>
-          <button class="btn-small" title="Supprimer" (click)="deleteInvoice(viewInvoiceData?.id)">Supprimer</button>
-        </div>
-      </div>
-
-      <mat-tab-group color="primary" animationDuration="1000ms" fitInkBarToContent>
-        <mat-tab label="Informations">
-          <form>
+        <form (ngSubmit)="submitForm()" #f="ngForm">
+          <div class="form-fields">
             <mat-form-field appearance="fill">
               <mat-label>Objet</mat-label>
-              <input matInput [value]="viewInvoiceData?.object" disabled />
+              <input matInput [(ngModel)]="createForm.object" name="object" required />
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Statut</mat-label>
-              <input matInput [value]="viewInvoiceData?.status" disabled />
+              <mat-select [(ngModel)]="createForm.status" name="status" required>
+                <mat-option *ngFor="let status of invoiceStatuses" [value]="status">{{ status }}</mat-option>
+              </mat-select>
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Note admin</mat-label>
-              <input matInput [value]="viewInvoiceData?.adminNote" disabled />
+              <input matInput [(ngModel)]="createForm.adminNote" name="adminNote" />
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Client ID</mat-label>
-              <input matInput [value]="viewInvoiceData?.customerId" disabled />
+              <input matInput type="number" [(ngModel)]="createForm.customerId" name="customerId" />
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Produit ID</mat-label>
-              <input matInput [value]="viewInvoiceData?.productId" disabled />
+              <input matInput type="number" [(ngModel)]="createForm.productId" name="productId" />
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Nom remise</mat-label>
-              <input matInput [value]="viewInvoiceData?.discountName" disabled />
+              <input matInput [(ngModel)]="createForm.discountName" name="discountName" />
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Valeur remise</mat-label>
-              <input matInput [value]="viewInvoiceData?.discountValue" disabled />
+              <input matInput type="number" [(ngModel)]="createForm.discountValue" name="discountValue" />
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Date de création</mat-label>
-              <input matInput [value]="viewInvoiceData?.creationDate | date:'yyyy-MM-dd'" disabled />
+              <input matInput [matDatepicker]="picker1" [(ngModel)]="createForm.creationDate" name="creationDate" required>
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Date de validité</mat-label>
-              <input matInput [value]="viewInvoiceData?.validityDate | date:'yyyy-MM-dd'" disabled />
+              <input matInput [matDatepicker]="picker2" [(ngModel)]="createForm.validityDate" name="validityDate" required>
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
             </mat-form-field>
-          </form>
-        </mat-tab>
-        <mat-tab label="Produits">
-        </mat-tab>
-        <mat-tab label="Paiements">
-        </mat-tab>
-        <mat-tab label="Historique">
-        </mat-tab>
-      </mat-tab-group>
-    </div>
+          </div>
+          <div class="form-actions">
+            <button mat-stroked-button color="warn" type="button" class="cancel" (click)="closeCreateForm()">Annuler</button>
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              class="create"
+              [disabled]="f.invalid">
+              {{ editMode ? 'Modifier' : 'Créer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Vue facture -->
+      <div class="view-invoice-form" *ngIf="showViewForm">
+        <div class="top-view">
+          <h2 class="sub-title">
+            Détails
+            <ng-container *ngIf="viewInvoiceData?.object; else defaultViewTitle">
+              <span class="client-name"> {{ viewInvoiceData?.object }} </span>
+            </ng-container>
+            <ng-template #defaultViewTitle> d'une facture</ng-template>
+          </h2>
+          <div class="view-actions">
+            <button class="btn-small" title="Fermer" (click)="closeViewForm()">Fermer</button>
+            <button class="btn-small" title="Éditer" (click)="viewInvoiceData && openEditForm(viewInvoiceData)">Éditer</button>
+            <button class="btn-small" title="Supprimer" (click)="deleteInvoice(viewInvoiceData?.id)">Supprimer</button>
+          </div>
+        </div>
+
+        <mat-tab-group color="primary" animationDuration="1000ms" fitInkBarToContent>
+          <mat-tab label="Informations">
+            <form>
+              <mat-form-field appearance="fill">
+                <mat-label>Objet</mat-label>
+                <input matInput [value]="viewInvoiceData?.object" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Statut</mat-label>
+                <input matInput [value]="viewInvoiceData?.status" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Note admin</mat-label>
+                <input matInput [value]="viewInvoiceData?.adminNote" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Client ID</mat-label>
+                <input matInput [value]="viewInvoiceData?.customerId" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Produit ID</mat-label>
+                <input matInput [value]="viewInvoiceData?.productId" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Nom remise</mat-label>
+                <input matInput [value]="viewInvoiceData?.discountName" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Valeur remise</mat-label>
+                <input matInput [value]="viewInvoiceData?.discountValue" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Date de création</mat-label>
+                <input matInput [value]="viewInvoiceData?.creationDate | date:'yyyy-MM-dd'" disabled />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Date de validité</mat-label>
+                <input matInput [value]="viewInvoiceData?.validityDate | date:'yyyy-MM-dd'" disabled />
+              </mat-form-field>
+            </form>
+          </mat-tab>
+          <mat-tab label="Produits">
+          </mat-tab>
+          <mat-tab label="Paiements">
+          </mat-tab>
+          <mat-tab label="Historique">
+          </mat-tab>
+        </mat-tab-group>
+      </div>
   </div>
 </div>
