@@ -65,6 +65,16 @@ $showcase-bleu: #007AFF;
     }
 }
 
+.txt-for-empty{
+    font-family: 'Josefin Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    color: $showcase-text-color;
+    text-align: center;
+    margin-top: 20px;
+}
+
 // Vue client
 
 .showcase-title{

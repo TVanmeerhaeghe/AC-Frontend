@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { Invoice, InvoiceStatus } from '../../models/invoices.model';
+import { Invoice, InvoiceStatus, InvoiceProductInput } from '../../models/invoices.model';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -35,14 +35,14 @@ export class InvoicesComponent implements OnInit {
   filteredProducts: Product[] = [];
   loading = false;
   showCreateForm = false;
-  createForm: Partial<Invoice> = {
+  createForm: Partial<Invoice> & { products: InvoiceProductInput[] } = {
     object: '',
     status: InvoiceStatus.Brouillon,
     admin_note: '',
     customer_id: null,
     discount_name: '',
     discount_value: 0,
-    product_id: null,
+    products: [],
     creation_date: new Date().toISOString().substring(0, 10),
     validity_date: new Date().toISOString().substring(0, 10),
   };
@@ -112,7 +112,7 @@ export class InvoicesComponent implements OnInit {
       customer_id: null,
       discount_name: '',
       discount_value: 0,
-      product_id: null,
+      products: [{ product_id: null as any, quantity: 1 }],
       creation_date: new Date().toISOString().substring(0, 10),
       validity_date: new Date().toISOString().substring(0, 10),
       id: nextId,
@@ -130,10 +130,26 @@ export class InvoicesComponent implements OnInit {
     this.editMode = true;
     this.showCreateForm = true;
     this.editInvoiceId = invoice.id ?? null;
-    this.createForm = { ...invoice };
+    this.createForm = {
+      ...invoice,
+      products: invoice.products
+        ? invoice.products.map(p => ({ product_id: p.product_id, quantity: p.quantity }))
+        : [{ product_id: null as any, quantity: 1 }],
+    };
+  }
+
+  addProductToForm() {
+    this.createForm.products.push({ product_id: null as any, quantity: 1 });
+  }
+
+  removeProductFromForm(index: number) {
+    this.createForm.products.splice(index, 1);
   }
 
   submitForm() {
+    const filteredProducts = this.createForm.products.filter(
+      p => p.product_id && p.quantity && p.quantity > 0
+    );
     const formToSubmit = {
       ...this.createForm,
       creation_date: this.createForm.creation_date
@@ -142,7 +158,10 @@ export class InvoicesComponent implements OnInit {
       validity_date: this.createForm.validity_date
         ? new Date(this.createForm.validity_date).toISOString().substring(0, 10)
         : '',
+      products: filteredProducts,
     };
+
+    console.log('POST invoice:', formToSubmit);
 
     if (this.editMode && this.editInvoiceId) {
       this.apiService.updateInvoice(this.editInvoiceId, formToSubmit).subscribe({
@@ -205,5 +224,9 @@ export class InvoicesComponent implements OnInit {
         product.name.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     }
+  }
+
+  trackByIndex(index: number, item: any) {
+    return index;
   }
 }

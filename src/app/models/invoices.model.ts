@@ -6,13 +6,13 @@ export interface Invoice {
     status: InvoiceStatus;
     admin_note?: string | null;
     customer_id?: number | null;
-    product_id?: number | null;
     discount_name?: string | null;
     discount_value: number;
     total_ht?: number;
     total_tva?: number;
     createdAt?: string;
     updatedAt?: string;
+    products?: InvoiceProductInput[];
 }
 
 export enum InvoiceStatus {
@@ -20,4 +20,9 @@ export enum InvoiceStatus {
     Envoye = 'Envoyé',
     Paye = 'Payé',
     Annule = 'Annulé'
+}
+
+export interface InvoiceProductInput {
+  product_id: number;
+  quantity: number;
 }
