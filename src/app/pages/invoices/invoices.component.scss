@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: row;
   max-height: fit-content;
+  max-height: 80vh;
 
   .left-view {
     width: 100%;
@@ -16,6 +17,7 @@
 
     .left-view.pushed {
     max-width: 20%;
+    max-height: 80vh;
   }
 
   .invoices-menu {
@@ -70,7 +72,7 @@
     flex-grow: 1;
     transition: width 0.3s;
     max-height: 100%;
-    overflow-y: auto;
+    overflow-y: scroll;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -314,36 +316,39 @@
       flex: 1;
       margin-top: 40px;
 
+      .user-invoice {
+        display: flex;
+        align-items: center;
+        border-radius: 55px;
+        width: 98%;
+        background-color: $hover-color2;
+        padding: 15px 0px 15px 25px;
+        margin-bottom: 30px;
+
+        font-family: 'Josefin Sans';
+        font-style: normal;
+        font-weight: bold;
+        font-size: 25px;
+        color: rgb(53, 53, 53);
+
+        .user-invoice-avatar {
+          border-radius: 100%;
+          width: 40px;
+          height: 40px;
+          color: black;
+          background-color: $color2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 20px;
+        }
+      }
+
       mat-form-field {
 
         
         .mat-input-element {
           background-color: #0077ff;
-        }
-      }
-    }
-
-    .tabs-container {
-      margin-bottom: 20px;
-      ul.tabs {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        gap: 20px;
-        li {
-          cursor: pointer;
-          padding: 8px 16px;
-          border-bottom: 2px solid transparent;
-          transition: border-color 0.2s;
-          color: #49454f;
-          &:hover {
-            border-bottom-color: #007aff;
-          }
-          &.active {
-            border-bottom-color: #007aff;
-            font-weight: bold;
-          }
         }
       }
     }
