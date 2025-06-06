@@ -98,6 +98,10 @@ export class ApiService {
     return this.http.get<Product[]>(`${this.baseUrl}products/`);
   }
 
+    getProductById(productId: number): Observable<Product> {
+    return this.http.get<Product>(`${this.baseUrl}products/${productId}`);
+  }
+
   getProductsByCategory(categoryId: number): Observable<Product[]> {
     return this.http.get<Product[]>(
       `${this.baseUrl}categories/${categoryId}/products`
