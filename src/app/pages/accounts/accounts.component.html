@@ -1,0 +1,77 @@
+<div class="app-content">
+  <div class="accounts-main">
+    <div class="left-view" [class.pushed]="showCreateForm">
+      <div class="accounts-menu">
+        <h2 class="sub-title">Outils</h2>
+        <div class="actions">
+          <button title="Ajouter un compte" (click)="openCreateForm()">
+            <span class="iconify" data-icon="mdi:plus"></span>
+          </button>
+        </div>
+      </div>
+      <div class="accounts-list">
+        <h2 class="sub-title">Liste des comptes</h2>
+        <div *ngIf="loading" class="loading">Chargement...</div>
+        <table *ngIf="!loading && users.length > 0" class="account-table">
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td colspan="2" class="row-cell">
+                <div class="row-bg">
+                  <div class="identity-cell">
+                    <span class="avatar">
+                      <span class="iconify" data-icon="mdi:account-circle-outline"></span>
+                    </span>
+                    <span class="fullname">
+                      {{ user.name }} {{ user.surname }}
+                    </span>
+                  </div>
+                  <div class="actions-cell">
+                    <div class="actions">
+                      <button title="Supprimer" (click)="deleteUser(user)">
+                        <span class="iconify" data-icon="ic:round-delete" data-inline="true"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!loading && users.length === 0" class="txt-for-empty">Aucun compte trouvé.</div>
+      </div>
+    </div>
+
+    <!-- Formulaire création -->
+    <div class="create-account-form" *ngIf="showCreateForm">
+      <h2 class="sub-title">Créer un compte</h2>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="fill">
+          <mat-label>Nom</mat-label>
+          <input matInput formControlName="name" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Prénom</mat-label>
+          <input matInput formControlName="surname" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email_adress" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput type="password" formControlName="password" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Rôle</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option value="ADMIN">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="form-actions">
+          <button mat-stroked-button color="warn" type="button" class="cancel" (click)="closeCreateForm()">Annuler</button>
+          <button mat-flat-button type="submit" class="create" [disabled]="form.invalid">Créer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

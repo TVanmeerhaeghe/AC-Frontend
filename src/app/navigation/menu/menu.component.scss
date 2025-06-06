@@ -45,6 +45,9 @@ nav {
       flex-grow: 1;
       margin-inline-start: 30px;
       padding-top: 25px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
   
       li {
         margin-bottom: 1rem;
@@ -84,7 +87,11 @@ nav {
           }
         }
       }
+
+      .admin-link {
+        margin-top: auto;
+        margin-bottom: 2.5rem;
+      }
       
     }
   }
-  

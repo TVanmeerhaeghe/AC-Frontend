@@ -16,6 +16,7 @@ import { GalleryDetailsComponent } from './pages/gallery-details/gallery-details
 import { GalleryContactComponent } from './pages/gallery-contact/gallery-contact.component';
 import { GalleryAboutUsComponent } from './pages/gallery-about-us/gallery-about-us.component';
 import { CategoriesComponent } from './pages/categories/categories.component';
+import { AccountsComponent } from './pages/accounts/accounts.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
@@ -31,6 +32,7 @@ export const routes: Routes = [
             { path: 'estimates', component: EstimatesComponent , data: { title: 'Devis' } },
             { path: 'categories', component: CategoriesComponent ,data: { title: 'Catégories' } },
             { path: 'product', component: ProductsComponent ,data: { title: 'Produits' } },
+            { path: 'account', component: AccountsComponent , data: { title: 'Comptes' } },
             { path: 'parameters', component: ParametersComponent , data: { title: 'Paramètres' } },
           ]
         },
