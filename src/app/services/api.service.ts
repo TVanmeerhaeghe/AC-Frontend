@@ -101,6 +101,18 @@ export class ApiService {
     return this.http.get<Product[]>(`${this.baseUrl}products/search?q=${q}`);
   }
 
+  createProduct(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/products/`, formData);
+  }
+
+  updateProduct(id: number, formData: FormData): Observable<any> {
+    return this.http.put(`${this.baseUrl}/products/${id}`, formData);
+  }
+
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/products/${id}`);
+  }
+
   // Customers
   getAllCustomers(): Observable<Customer[]> {
     return this.http.get<Customer[]>(`${this.baseUrl}customers/`);

@@ -1,0 +1,265 @@
+<div class="app-content">
+  <div class="products-main">
+    <div class="left-view" [class.pushed]="showCreateForm || showViewForm">
+      <div class="products-menu">
+        <h2 class="sub-title">Outils</h2>
+        <div class="actions">
+          <button title="Ajouter un produit" (click)="openCreateForm()">
+            <span class="iconify" data-icon="mdi:plus"></span>
+          </button>
+          <button title="Télécharger la liste des produits au format CSV">
+            <span class="iconify" data-icon="radix-icons:download" data-inline="true"></span>
+          </button>
+          <button title="Importer des produits via CSV">
+            <span class="iconify" data-icon="tabler:file-plus" data-inline="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="products-list">
+        <h2 class="sub-title">Liste des produits</h2>
+        <div *ngIf="loading" class="loading">Chargement...</div>
+        <table *ngIf="!loading && products.length > 0 && categories.length > 0" class="product-table">
+          <tbody>
+            <tr *ngFor="let product of products">
+              <td colspan="2" class="row-cell">
+                <div class="row-bg">
+                  <div class="identity-cell">
+                    <span class="avatar">
+                      <img *ngIf="product.imageUrl" [src]="product.imageUrl" alt="Produit" />
+                      <span *ngIf="!product.imageUrl">{{ product.name ? product.name[0] : '' }}</span>
+                    </span>
+                    <span class="fullname">
+                      {{ product.name.length > 18 ? (product.name | slice:0:18) + '...' : product.name }}
+                    </span>
+                  </div>
+                  <div class="actions-cell">
+                    <div class="actions">
+                      <button title="Voir" (click)="openViewForm(product)">
+                        <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
+                      </button>
+                      <a
+                        title="Voir sur le site"
+                        [routerLink]="[
+                          '/galerie',
+                          'produits',
+                          getCategorySlug(product),
+                          slugify(product.name)
+                        ]"
+                        target="_blank"
+                        style="background: none; border: none; cursor: pointer; padding: 0; color:#007AFF"
+                      >
+                        <span class="iconify" data-icon="mdi:web" data-inline="true"></span>
+                      </a>
+                      <button title="Éditer" (click)="openEditForm(product)">
+                        <span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!loading && products.length === 0" class="txt-for-empty">Aucun produit trouvé.</div>
+      </div>
+    </div>
+
+    <!-- Formulaire création/modification -->
+    <div class="create-product-form" *ngIf="showCreateForm">
+      <h2 class="sub-title">
+        {{ editMode ? 'Modifier' : 'Créer' }}
+        <ng-container *ngIf="productForm.name; else defaultTitle">
+          <span class="product-name">
+            {{ productForm.name.length > 18 ? (productForm.name | slice:0:18) + '...' : productForm.name }}
+          </span>
+        </ng-container>
+        <ng-template #defaultTitle> un produit</ng-template>
+      </h2>
+      <form (ngSubmit)="submitForm()" #f="ngForm">
+        <mat-form-field appearance="fill">
+          <mat-label>Nom</mat-label>
+          <input matInput [(ngModel)]="productForm.name" name="name" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <input matInput [(ngModel)]="productForm.description" name="description" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Catégorie</mat-label>
+          <mat-select [(ngModel)]="productForm.category_id" name="category_id" required>
+            <mat-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>État</mat-label>
+          <mat-select [(ngModel)]="productForm.condition" name="condition" required>
+            <mat-option value="Nef">Neuf</mat-option>
+            <mat-option value="Presque Neuf">Presque neuf</mat-option>
+            <mat-option value="Bon">Bon</mat-option>
+            <mat-option value="Passable">Passable</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Prix (€)</mat-label>
+          <input matInput type="number" [(ngModel)]="productForm.price" name="price" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Quantité</mat-label>
+          <input matInput type="number" [(ngModel)]="productForm.quantity" name="quantity" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Matériau</mat-label>
+          <input matInput [(ngModel)]="productForm.material" name="material" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Style</mat-label>
+          <input matInput [(ngModel)]="productForm.style" name="style" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Vendu</mat-label>
+          <mat-select [(ngModel)]="productForm.sellState" name="sellState">
+            <mat-option [value]="true">Oui</mat-option>
+            <mat-option [value]="false">Non</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Acheteur</mat-label>
+          <mat-select [(ngModel)]="productForm.buy_by" name="buy_by">
+            <mat-option [value]="null">Sans acheteur</mat-option>
+            <mat-option *ngFor="let customer of customers" [value]="customer.id">
+              {{ customer.name }} {{ customer.surname }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Champ d'upload stylisé comme un bouton -->
+        <div class="file-field">
+          <label for="image-upload" class="upload-btn">
+            <span class="iconify" data-icon="mdi:camera-plus-outline"></span>
+            Ajouter une image
+          </label>
+          <input id="image-upload" type="file" (change)="onImageChange($event)" name="images" multiple hidden />
+        </div>
+
+        <div class="images-tabs" *ngIf="(editMode && productForm.imageUrls?.length) || selectedImages.length">
+          <ul class="tabs">
+            <li *ngFor="let img of (editMode ? productForm.imageUrls : selectedImages); let i = index"
+                [class.active]="selectedImageTab === i"
+                (click)="selectedImageTab = i">
+              Photo {{ i + 1 }}
+            </li>
+          </ul>
+          <div class="tab-content">
+            <img *ngIf="editMode && productForm.imageUrls?.length"
+                 [src]="productForm.imageUrls[selectedImageTab]"
+                 alt="Image produit" class="image-preview" />
+            <img *ngIf="!editMode && selectedImages.length"
+                 [src]="getImagePreview(selectedImages[selectedImageTab])"
+                 alt="Image sélectionnée" class="image-preview" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button mat-stroked-button color="warn" type="button" class="cancel" (click)="closeCreateForm()">Annuler</button>
+          <button
+            mat-flat-button
+            type="submit"
+            class="create"
+            [ngStyle]="editMode ? {'background-color': '#007AFF', 'color': '#fff'} : {}"
+            [disabled]="f.invalid">
+            {{ editMode ? 'Modifier' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Vue détail produit -->
+    <div class="view-product-form" *ngIf="showViewForm">
+      <div class="top-view">
+        <h2 class="sub-title">
+          Détail
+          <ng-container *ngIf="viewProductData?.name; else defaultViewTitle">
+            <span class="product-name"> {{ viewProductData?.name }} </span>
+          </ng-container>
+          <ng-template #defaultViewTitle> d'un produit</ng-template>
+        </h2>
+        <div class="view-actions">
+          <button class="btn-small" title="Fermer" (click)="closeViewForm()">Fermer</button>
+          <button class="btn-small" title="Éditer" (click)="viewProductData && openEditForm(viewProductData)">Éditer</button>
+          <button class="btn-small" title="Supprimer" (click)="deleteProduct(viewProductData?.id)">Supprimer</button>
+        </div>
+      </div>
+      <form>
+        <mat-form-field appearance="fill">
+          <mat-label>Nom</mat-label>
+          <input matInput [value]="viewProductData?.name" disabled />
+        </mat-form-field>
+        <div class="buyer-chip">
+          <span class="buyer-avatar">
+            <span class="iconify" data-icon="mdi:account-circle-outline"></span>
+          </span>
+          <span class="buyer-name">
+            {{ buyerDetails ? (buyerDetails.name + ' ' + buyerDetails.surname) : 'Sans acheteur' }}
+          </span>
+        </div>
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <input matInput [value]="viewProductData?.description" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Catégorie</mat-label>
+          <input matInput [value]="getCategoryName(viewProductData?.category_id)" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>État</mat-label>
+          <input matInput [value]="viewProductData?.condition" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Prix (€)</mat-label>
+          <input matInput [value]="viewProductData?.price" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Quantité</mat-label>
+          <input matInput [value]="viewProductData?.quantity" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Matériau</mat-label>
+          <input matInput [value]="viewProductData?.material" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Style</mat-label>
+          <input matInput [value]="viewProductData?.style" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Vendu</mat-label>
+          <input
+            matInput
+            [value]="viewProductData && viewProductData.sell_state != null && +viewProductData.sell_state === 1 ? 'Oui' : 'Non'"
+            disabled
+          />
+        </mat-form-field>
+        <div class="video-preview" *ngIf="viewProductData?.video">
+          <video controls [src]="viewProductData?.video" width="220"></video>
+        </div>
+      </form>
+
+      <div class="images-tabs" *ngIf="viewProductData?.imageUrls?.length">
+        <ul class="tabs">
+          <li *ngFor="let img of viewProductData?.imageUrls; let i = index"
+              [class.active]="selectedImageTab === i"
+              (click)="selectedImageTab = i">
+            Photo {{ i + 1 }}
+          </li>
+        </ul>
+        <div class="tab-content">
+          <img
+            *ngIf="viewProductData?.imageUrls?.[selectedImageTab]"
+            [src]="viewProductData?.imageUrls?.[selectedImageTab]"
+            alt="Image produit"
+            class="image-preview"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
