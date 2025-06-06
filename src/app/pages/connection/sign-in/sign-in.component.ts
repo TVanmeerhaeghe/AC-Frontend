@@ -10,10 +10,14 @@ import { UserMenuComponent } from '../../../navigation/user-menu/user-menu.compo
   selector: 'app-sign-in',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, UserMenuComponent],
-  templateUrl: './sign-in.component.html'
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
   form!: FormGroup;
+  showForgotForm = false;
+  forgotForm!: FormGroup;
+  errorMessage = '';
 
   constructor(
     private readonly fb: FormBuilder,
@@ -27,10 +31,14 @@ export class SignInComponent implements OnInit {
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/home']);
     }
-  
+
     this.form = this.fb.group({
       email_adress: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
+    });
+
+    this.forgotForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
     });
   }
   
@@ -38,11 +46,31 @@ export class SignInComponent implements OnInit {
   submit() {
     if (this.form.valid) {
       this.apiService.signIn(this.form.value).subscribe({
-        next: res => {
+        next: (res) => {
+          this.errorMessage = '';
           this.authService.setToken(res.token);
-          this.router.navigate(['/dashboard']);
+          this.zone.run(() => this.router.navigate(['/dashboard']));
         },
-        error: err => console.error('❌ Erreur', err)
+        error: (err) => {
+          if (err.status === 401) {
+            this.errorMessage = 'Identifiant ou mot de passe incorrect.';
+          } else {
+            this.errorMessage = 'Erreur lors de la connexion.';
+          }
+        }
+      });
+    }
+  }
+
+  sendForgotMail() {
+    if (this.forgotForm.valid) {
+      this.apiService.forgotPassword(this.forgotForm.value.email).subscribe({
+        next: () => {
+          alert('Un mail de réinitialisation a été envoyé si l\'adresse existe.');
+          this.showForgotForm = false;
+          this.forgotForm.reset();
+        },
+        error: () => alert('Erreur lors de l\'envoi du mail.')
       });
     }
   }

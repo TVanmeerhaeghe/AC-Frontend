@@ -1,9 +1,8 @@
 @use '../../../styles/shared' as *;
 
-.products-main {
+.accounts-main {
   display: flex;
   flex-direction: row;
-  max-height: fit-content;
   max-height: 80vh;
 
   .left-view {
@@ -12,29 +11,33 @@
     display: flex;
     flex-direction: column;
     margin-right: 20px;
+
+    &.pushed {
+      max-width: 20%;
+      max-height: 80vh;
+    }
   }
 
-  .left-view.pushed {
-    max-width: 20%;
-    max-height: 80vh;
-  }
-
-  .products-menu {
+  .accounts-menu {
     background-color: $white;
     padding: 10px 55px 40px 55px;
     border-radius: 25px;
-    flex-grow: 1;
-    margin: 0px 0px 10px 0px;
-    box-sizing: border-box;
+    margin-bottom: 10px;
     max-width: fit-content;
     height: fit-content;
+
+    .sub-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: $blue;
+      margin-bottom: 10px;
+    }
 
     .actions {
       display: flex;
       gap: 30px;
       justify-content: center;
       align-items: center;
-      background-color: $white;
       margin-top: 15px;
 
       button {
@@ -48,35 +51,35 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: 0.3s;
 
         &:hover {
           background: #e3f0ff;
-          border-radius: 50%;
           scale: 1.1;
-          transition: 0.5s;
         }
-
         &:active {
           scale: 0.9;
-          transition: 0.3s;
         }
       }
     }
   }
 
-  .products-list {
+  .accounts-list {
     background-color: $white;
     padding: 29px;
     border-radius: 25px;
     flex-grow: 1;
-    transition: width 0.3s;
     max-height: 65vh;
     overflow-y: auto;
-    &::-webkit-scrollbar {
-      display: none;
+
+    .sub-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: $blue;
+      margin-bottom: 18px;
     }
 
-    .product-table {
+    .account-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0 5px;
@@ -120,12 +123,9 @@
         height: 38px;
         overflow: hidden;
 
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          border-radius: 50%;
-          display: block;
+        .iconify {
+          font-size: 2rem;
+          color: $blue;
         }
       }
 
@@ -169,27 +169,23 @@
         padding: 0.3rem;
         font-size: 1.1rem;
         cursor: pointer;
-        transition: background 0.2s;
         color: $blue;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: background 0.2s;
       }
 
       .actions button:hover {
         background: #e3f0ff;
         border-radius: 50%;
         transform: scale(1.1);
-        transition: transform 0.5s;
       }
     }
   }
 
-  .create-product-form, .view-product-form {
-    top: 0;
-    right: 0;
+  .create-account-form {
     width: 100%;
-    max-height: auto;
     background: #fff;
     border-radius: 25px;
     box-shadow: -2px 0 8px rgba(0,0,0,0.08);
@@ -198,19 +194,19 @@
     flex-direction: column;
     z-index: 10;
     overflow-y: auto;
-    &::-webkit-scrollbar {
-      display: none;
-    }
 
-    .product-name {
-      color: $color2;
+    .sub-title {
+      color: $blue;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 18px;
     }
 
     form {
       display: flex;
       flex-direction: column;
       flex: 1;
-      margin-top: 40px;
+      margin-top: 20px;
 
       .form-actions {
         display: flex;
@@ -243,156 +239,6 @@
           color: white;
         }
       }
-    }
-
-    .images-preview {
-      display: flex;
-      gap: 10px;
-      margin: 16px 0;
-      .image-thumb {
-        width: 80px;
-        height: 80px;
-        border-radius: 10px;
-        overflow: hidden;
-        border: 1px solid #e3e3e3;
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-    }
-
-    .video-preview {
-      margin: 16px 0;
-      video {
-        border-radius: 10px;
-        border: 1px solid #e3e3e3;
-      }
-    }
-
-    .top-view {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-
-      .view-actions {
-        display: flex;
-        gap: 10px;
-
-        button:nth-child(1) {
-          background: rgba(133, 133, 133, 0.5);
-        }
-        button:nth-child(2) {
-          background: $blue;
-        }
-        button:nth-child(3) {
-          background: #ff8686;
-        }
-      }
-    }
-  }
-
-  .file-field {
-    margin-bottom: 16px;
-    .upload-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #e3f0ff;
-      color: $blue;
-      border-radius: 12px;
-      padding: 10px 24px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      border: none;
-      transition: background 0.2s;
-      &:hover {
-        background: #cce3ff;
-      }
-      .iconify {
-        font-size: 1.5rem;
-      }
-    }
-  }
-
-  .images-tabs {
-    margin-top: 18px;
-    .tabs {
-      display: flex;
-      gap: 24px;
-      list-style: none;
-      padding: 0;
-      margin: 0 0 8px 0;
-      li {
-        cursor: pointer;
-        padding: 8px 18px;
-        border-bottom: 2px solid transparent;
-        color: #49454f;
-        font-weight: 500;
-        transition: border-color 0.2s, color 0.2s;
-        &:hover {
-          border-bottom-color: #007aff;
-          color: #007aff;
-        }
-        &.active {
-          border-bottom-color: #007aff;
-          color: #007aff;
-          font-weight: bold;
-        }
-      }
-    }
-    .tab-content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 180px;
-      .image-preview {
-        max-width: 320px;
-        max-height: 180px;
-        border-radius: 12px;
-        background: #e3f0ff;
-        object-fit: contain;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        border: 1.5px solid #b3d4fc;
-        padding: 8px;
-      }
-    }
-  }
-
-  .buyer-chip {
-    display: flex;
-    align-items: center;
-    background: #e3f0ff;
-    border-radius: 20px;
-    padding: 6px 18px 6px 10px;
-    margin: 0 0 12px 0;
-    min-width: 180px;
-    max-width: 500px;
-
-    .buyer-avatar {
-      background: #cce3ff;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-
-      .iconify {
-        font-size: 1.3rem;
-        color: #007aff;
-      }
-    }
-
-    .buyer-name {
-      font-weight: 500;
-      color: #222;
-      font-size: 20px;
-      letter-spacing: 0.5px;
     }
   }
 }

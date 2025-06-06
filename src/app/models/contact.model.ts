@@ -11,5 +11,5 @@ export interface Contact {
   product_id?: number;
   createdAt: string;
   updatedAt: string;
-  product?: Product;  // relation facultative
+  product?: Product;
 }

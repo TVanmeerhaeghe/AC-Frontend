@@ -1,13 +1,34 @@
 <div class="sign-in-layout">
+  <div class="header-bar">
+    <span class="main-title">Le village des brocanteurs</span>
+  </div>
   <app-user-menu></app-user-menu>
-  <div class="sign-in-content">
-    <h1>Connexion</h1>
-
-    <form [formGroup]="form" (ngSubmit)="submit()">
-        <input type="email" formControlName="email_adress" placeholder="Email" />
+  <div class="sign-in-content-wrapper">
+    <h1 class="connexion-title">Connexion</h1>
+    <div class="sign-in-content">
+      <!-- Formulaire de connexion -->
+      <form *ngIf="!showForgotForm" [formGroup]="form" (ngSubmit)="submit()">
+        <input type="email" formControlName="email_adress" placeholder="Identifiant" />
         <input type="password" formControlName="password" placeholder="Mot de passe" />
-        <button type="submit">Se connecter</button>
+        <div *ngIf="errorMessage && !showForgotForm" class="error-message">
+          {{ errorMessage }}
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="login-btn">Se connecter</button>
+        </div>
+        <div class="forgot-link">
+          <a href="#" (click)="showForgotForm = true; $event.preventDefault()">Mot de passe oublié&nbsp;?</a>
+        </div>
       </form>
+
+      <!-- Formulaire mot de passe oublié -->
+      <form *ngIf="showForgotForm" [formGroup]="forgotForm" (ngSubmit)="sendForgotMail()">
+        <input type="email" formControlName="email" placeholder="Votre email" required />
+        <div class="form-actions">
+          <button type="submit" class="login-btn" [disabled]="forgotForm.invalid">Envoyer le mail de réinitialisation</button>
+        </div>
+          <button type="button" class="annul-btn" (click)="showForgotForm = false">Annuler</button>
+      </form>
+    </div>
   </div>
 </div>
-  

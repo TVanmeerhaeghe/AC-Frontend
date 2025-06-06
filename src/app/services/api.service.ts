@@ -28,6 +28,14 @@ export class ApiService {
   signIn(data: Credentials): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}users/signin`, data);
   }
+  
+  resetPassword(new_password: string, token: string) {
+    return this.http.put(`${this.baseUrl}users/reset-password?token=${token}`, { new_password });
+  }
+
+  forgotPassword(email: string) {
+    return this.http.post(`${this.baseUrl}users/forgot-password`, { email });
+  }
 
   // User
   getAllUsers(): Observable<User[]> {
@@ -90,6 +98,10 @@ export class ApiService {
     return this.http.get<Product[]>(`${this.baseUrl}products/`);
   }
 
+    getProductById(productId: number): Observable<Product> {
+    return this.http.get<Product>(`${this.baseUrl}products/${productId}`);
+  }
+
   getProductsByCategory(categoryId: number): Observable<Product[]> {
     return this.http.get<Product[]>(
       `${this.baseUrl}categories/${categoryId}/products`
@@ -99,6 +111,18 @@ export class ApiService {
   searchProducts(query: string): Observable<Product[]> {
     const q = encodeURIComponent(query.trim());
     return this.http.get<Product[]>(`${this.baseUrl}products/search?q=${q}`);
+  }
+
+  createProduct(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/products/`, formData);
+  }
+
+  updateProduct(id: number, formData: FormData): Observable<any> {
+    return this.http.put(`${this.baseUrl}/products/${id}`, formData);
+  }
+
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/products/${id}`);
   }
 
   // Customers
@@ -171,6 +195,28 @@ export class ApiService {
 
   deleteContact(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/contacts/${id}`);
+  }
+
+  //Category
+
+  getCategories() {
+    return this.http.get<Category[]>('http://diawd.fr/acbrocante/api/categories/');
+  }
+
+  getCategory(id: number) {
+    return this.http.get<Category>(`http://diawd.fr/acbrocante/api/categories/${id}`);
+  }
+
+  updateCategory(id: number, data: { name: string; description: string; icon: string; }) {
+    return this.http.put(`http://diawd.fr/acbrocante/api/categories/${id}`, data);
+  }
+
+  createCategory(data: Partial<Category>) {
+    return this.http.post<Category>('http://diawd.fr/acbrocante/api/categories/', data);
+  }
+
+  deleteCategory(id: number) {
+    return this.http.delete(`http://diawd.fr/acbrocante/api/categories/${id}`);
   }
 }
 

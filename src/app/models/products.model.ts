@@ -1,3 +1,5 @@
+import { Customer } from './customers.model';
+
 export interface Product {
     id: number;
     name: string;
@@ -5,19 +7,20 @@ export interface Product {
     category_id: number;
     condition: Condition;
     price: number;
-    sellState: boolean;
+    sell_state: boolean;
     imageUrl: string;
     imageUrls: string[];
     image: string;
     video: string;
     quantity: number;
-    material:string;
-    style:string;
+    material: string;
+    style: string;
+    buy_by?: Customer;
 }
 
 export enum Condition {
-    Neuf = 'NEUF',
-    PresqueNeuf = 'PRESQUE_NEUF',
-    Bon = 'BON',
-    Passable = 'PASSABLE'
+    Neuf = 'Nef',
+    PresqueNeuf = 'Presque Neuf',
+    Bon = 'Bon',
+    Passable = 'Passable'
 }

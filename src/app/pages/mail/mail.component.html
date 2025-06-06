@@ -1,0 +1,86 @@
+<div class="app-content">
+  <div class="accounts-main">
+    <div class="left-view">
+      <div class="accounts-list">
+        <h2 class="sub-title">Liste des contacts</h2>
+        <div *ngIf="loading" class="loading">Chargement...</div>
+        <table *ngIf="!loading && contacts.length > 0" class="account-table">
+          <tbody>
+            <tr *ngFor="let contact of contacts">
+              <td colspan="2" class="row-cell">
+                <div class="row-bg" [class.selected]="selectedContact?.id === contact.id">
+                  <div class="identity-cell">
+                    <span class="avatar">
+                      <span class="iconify" data-icon="mdi:account-circle-outline"></span>
+                    </span>
+                    <span class="fullname">
+                      {{ contact.name }} {{ contact.surname }}
+                    </span>
+                    <span class="subject">
+                      — {{ contact.subject }}
+                    </span>
+                  </div>
+                  <div class="actions-cell">
+                    <div class="actions">
+                      <button title="Détails" (click)="selectContact(contact)">
+                        <span class="iconify" data-icon="mdi:email-open-outline"></span>
+                      </button>
+                      <a
+                        [href]="'mailto:' + contact.email +
+                          '?subject=Re: ' +
+                          encode((contact.product ? 'Produit : ' + contact.product.name + ' - ' : '') + contact.subject) +
+                          '&body=' + encode('\n\n---\n' + contact.message)"
+                        title="Répondre"
+                        target="_blank"
+                      >
+                        <span class="iconify" data-icon="mdi:email-outline"></span>
+                      </a>
+                      <button title="Supprimer" (click)="deleteContact(contact); $event.stopPropagation()">
+                        <span class="iconify" data-icon="ic:round-delete" data-inline="true"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!loading && contacts.length === 0" class="txt-for-empty">Aucun contact trouvé.</div>
+      </div>
+    </div>
+
+    <!-- Détail du contact sélectionné -->
+    <div class="mail-details" *ngIf="selectedContact">
+      <div class="mail-header">
+        <div class="mail-from">
+          <strong>De :</strong> {{ selectedContact.name }} {{ selectedContact.surname }} &lt;{{ selectedContact.email }}&gt;
+        </div>
+        <div class="mail-phone" *ngIf="selectedContact.phone">
+          <strong>Tél :</strong> {{ selectedContact.phone }}
+        </div>
+        <div class="mail-product" *ngIf="selectedContact.product">
+          <strong>Produit :</strong> {{ selectedContact.product.name }}
+          <img *ngIf="productImageUrl" [src]="productImageUrl" alt="Photo produit" class="product-img" />
+        </div>
+        <div class="mail-subject">
+          <strong>Sujet :</strong> {{ selectedContact.subject }}
+        </div>
+        <div class="mail-date">
+          <strong>Reçu le :</strong> {{ selectedContact.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        </div>
+      </div>
+      <div class="mail-body">
+        {{ selectedContact.message }}
+      </div>
+      <a
+        [href]="'mailto:' + selectedContact.email +
+          '?subject=Re: ' +
+          encode((selectedContact.product ? 'Produit : ' + selectedContact.product.name + ' - ' : '') + selectedContact.subject) +
+          '&body=' + encode('\n\n---\n' + selectedContact.message)"
+        class="reply-link"
+      >
+        Répondre
+      </a>
+    </div>
+  </div>
+</div>
