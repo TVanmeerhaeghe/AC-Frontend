@@ -10,7 +10,8 @@ import { UserMenuComponent } from '../../../navigation/user-menu/user-menu.compo
   selector: 'app-sign-in',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, UserMenuComponent],
-  templateUrl: './sign-in.component.html'
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
   form!: FormGroup;

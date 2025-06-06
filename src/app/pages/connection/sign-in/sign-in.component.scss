@@ -1,1 +1,197 @@
-@use '../../styles/shared' as *;
+@use '../../../../styles/shared' as *;
+
+.sign-in-layout {
+  min-height: 100vh;
+  background: #b3caff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+
+  app-user-menu {
+    position: absolute;
+    top: 40px;
+    right: 40px; 
+    z-index: 2;
+  }
+
+  .sign-in-content {
+    background: #fff;
+    border-radius: 32px;
+    box-shadow: 0 4px 32px #0001;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    min-width: 400px;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h1 {
+      color: #fff;
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      margin-top: -2.5rem;
+      text-align: left;
+      width: 100%;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #0002;
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+
+      input {
+        background: #e3f0ff;
+        border: none;
+        border-radius: 8px;
+        padding: 1.1rem 1.2rem;
+        font-size: 1.1rem;
+        color: #222;
+        margin-bottom: 0.2rem;
+        outline: none;
+        box-shadow: 0 1px 4px #0001;
+        transition: box-shadow 0.2s;
+        &:focus {
+          box-shadow: 0 2px 8px #007aff33;
+        }
+      }
+
+      button[type="submit"] {
+        margin-top: 1.2rem;
+        background: #19c37d;
+        color: #fff;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.9rem 2.2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 8px #19c37d22;
+        transition: background 0.2s;
+        &:hover {
+          background: #13a76a;
+        }
+      }
+    }
+  }
+
+  .header-bar {
+    width: 100vw;
+    background: #3935a7;
+    padding: 2.5rem 0 1.5rem 0;
+    text-align: center;
+    box-shadow: 0 16px 32px #0001;
+    z-index: 10;
+    min-height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .main-title {
+      color: #fff;
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #0002;
+      border-bottom: 2px solid #fff;
+      padding-bottom: 0.2rem;
+    }
+  }
+
+  .sign-in-content-wrapper {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .connexion-title {
+    color: #fff;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    margin-top: 2.5rem;
+    text-align: center;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px #0002;
+  }
+
+  .sign-in-content {
+    background: #fff;
+    border-radius: 32px;
+    box-shadow: 0 4px 32px #0001;
+    padding: 3.5rem 3.5rem 2.5rem 3.5rem;
+    min-width: 900px;
+    max-width: 98vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+  }
+
+  input {
+    background: #e3f0ff;
+    border: none;
+    border-radius: 8px;
+    padding: 1.1rem 1.2rem;
+    font-size: 1.1rem;
+    color: #222;
+    margin-bottom: 0.2rem;
+    outline: none;
+    box-shadow: 0 1px 4px #0001;
+    transition: box-shadow 0.2s;
+    &:focus {
+      box-shadow: 0 2px 8px #3935a733;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+  }
+
+  .register-btn {
+    background: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #007aff22;
+    transition: background 0.2s;
+    &:hover {
+      background: #005fcc;
+    }
+  }
+
+  .login-btn {
+    background: #19c37d;
+    color: #fff;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #19c37d22;
+    transition: background 0.2s;
+    &:hover {
+      background: #13a76a;
+    }
+  }
+}
