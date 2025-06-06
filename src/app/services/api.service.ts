@@ -28,6 +28,14 @@ export class ApiService {
   signIn(data: Credentials): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}users/signin`, data);
   }
+  
+  resetPassword(new_password: string, token: string) {
+    return this.http.put(`${this.baseUrl}users/reset-password?token=${token}`, { new_password });
+  }
+
+  forgotPassword(email: string) {
+    return this.http.post(`${this.baseUrl}users/forgot-password`, { email });
+  }
 
   // User
   getAllUsers(): Observable<User[]> {

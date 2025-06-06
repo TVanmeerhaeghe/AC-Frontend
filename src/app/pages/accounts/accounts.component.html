@@ -27,6 +27,9 @@
                   </div>
                   <div class="actions-cell">
                     <div class="actions">
+                      <button title="Réinitialiser le mot de passe" (click)="sendResetMail(user)">
+                        <span class="iconify" data-icon="mdi:lock-reset"></span>
+                      </button>
                       <button title="Supprimer" (click)="deleteUser(user)">
                         <span class="iconify" data-icon="ic:round-delete" data-inline="true"></span>
                       </button>

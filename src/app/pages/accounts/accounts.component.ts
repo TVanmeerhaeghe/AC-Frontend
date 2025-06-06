@@ -85,4 +85,13 @@ export class AccountsComponent implements OnInit {
       });
     }
   }
+
+  sendResetMail(user: User) {
+    if (confirm(`Envoyer un mail de réinitialisation à ${user.email_adress} ?`)) {
+      this.api.forgotPassword(user.email_adress).subscribe({
+        next: () => alert('Mail de réinitialisation envoyé !'),
+        error: () => alert('Erreur lors de l\'envoi du mail.')
+      });
+    }
+  }
 }

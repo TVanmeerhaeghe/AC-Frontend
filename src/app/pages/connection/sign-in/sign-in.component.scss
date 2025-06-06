@@ -87,7 +87,7 @@
     text-align: center;
     box-shadow: 0 16px 32px #0001;
     z-index: 10;
-    min-height: 80px;
+    min-height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -160,7 +160,6 @@
     display: flex;
     justify-content: center;
     gap: 1.2rem;
-    margin-top: 1.5rem;
   }
 
   .register-btn {
@@ -194,4 +193,46 @@
       background: #13a76a;
     }
   }
+
+  .forgot-link {
+    text-align: right;
+    a {
+      color: #007aff;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 0.98rem;
+      &:hover {
+        color: #005fcc;
+      }
+    }
+  }
+
+  .annul-btn {
+    background: none;
+    border: none;
+    color: #007aff;
+    padding: 0;
+    margin-left: 1.2rem;
+    font-size: 0.98rem;
+    cursor: pointer;
+    text-decoration: underline;
+    box-shadow: none;
+    transition: color 0.2s;
+    &:hover {
+      color: #005fcc;
+      text-decoration: underline;
+    }
+  }
+
+  .error-message {
+    color: #e53935;
+    margin-top: -0.8rem;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+    text-align: center;
+  }
+}
+
+.toggleMenu{
+  display: none !important;
 }
