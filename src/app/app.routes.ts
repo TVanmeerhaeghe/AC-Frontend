@@ -36,7 +36,7 @@ export const routes: Routes = [
             { path: 'categories', component: CategoriesComponent ,data: { title: 'Catégories' } },
             { path: 'product', component: ProductsComponent ,data: { title: 'Produits' } },
             { path: 'account', component: AccountsComponent , data: { title: 'Comptes' } },
-            { path: 'mail', component: MailComponent , data: { title: 'Emails' } },
+            { path: 'mail', component: MailComponent , data: { title: 'Contacts' } },
             { path: 'parameters', component: ParametersComponent , data: { title: 'Paramètres' } },
           ]
         },
