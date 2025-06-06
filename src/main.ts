@@ -10,6 +10,7 @@ import { inject } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import localeFr from '@angular/common/locales/fr';
 
+
 registerLocaleData(localeFr);
 
 

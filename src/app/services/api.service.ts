@@ -172,5 +172,27 @@ export class ApiService {
   deleteContact(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/contacts/${id}`);
   }
+
+  //Category
+
+  getCategories() {
+    return this.http.get<Category[]>('http://diawd.fr/acbrocante/api/categories/');
+  }
+
+  getCategory(id: number) {
+    return this.http.get<Category>(`http://diawd.fr/acbrocante/api/categories/${id}`);
+  }
+
+  updateCategory(id: number, data: { name: string; description: string; icon: string; }) {
+    return this.http.put(`http://diawd.fr/acbrocante/api/categories/${id}`, data);
+  }
+
+  createCategory(data: Partial<Category>) {
+    return this.http.post<Category>('http://diawd.fr/acbrocante/api/categories/', data);
+  }
+
+  deleteCategory(id: number) {
+    return this.http.delete(`http://diawd.fr/acbrocante/api/categories/${id}`);
+  }
 }
 

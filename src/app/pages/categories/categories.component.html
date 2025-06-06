@@ -1,0 +1,125 @@
+<div class="app-content">
+  <div class="categories-main">
+    <div class="left-view" [class.pushed]="showCreateForm || showViewForm">
+      <div class="categories-menu">
+        <h2 class="sub-title">Outils</h2>
+        <div class="actions">
+          <button title="Ajouter une catégorie" (click)="openCreateForm()">
+            <span class="iconify" data-icon="iconoir:plus" data-inline="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="categories-list">
+        <h2 class="sub-title">Liste des catégories</h2>
+        <div *ngIf="loading" class="loading">Chargement...</div>
+        <table *ngIf="!loading && categories.length > 0" class="category-table">
+          <tbody>
+            <tr *ngFor="let category of categories">
+              <td colspan="2" class="row-cell">
+                <div class="row-bg">
+                  <div class="identity-cell">
+                    <span class="avatar">
+                      {{ category.name ? category.name[0] : '' }}
+                    </span>
+                    <span class="fullname">
+                      {{ category.name.length > 18 ? (category.name | slice:0:18) + '...' : category.name }}
+                    </span>
+                  </div>
+                  <div class="actions-cell">
+                    <div class="actions">
+                      <button title="Voir" (click)="openViewForm(category)">
+                        <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
+                      </button>
+                      <button title="Éditer" (click)="openEditForm(category)">
+                        <span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!loading && categories.length === 0" class="txt-for-empty">Aucune catégorie trouvée.</div>
+      </div>
+    </div>
+
+    <!-- Formulaire création/modification -->
+    <div class="create-category-form" *ngIf="showCreateForm">
+      <h2 class="sub-title">
+        {{ editMode ? 'Modifier' : 'Créer' }}
+        <ng-container *ngIf="categoryForm.name; else defaultTitle">
+          <span class="category-name">
+            {{ categoryForm.name.length > 18 ? (categoryForm.name | slice:0:18) + '...' : categoryForm.name }}
+          </span>
+        </ng-container>
+        <ng-template #defaultTitle> une catégorie</ng-template>
+      </h2>
+      <form (ngSubmit)="submitForm()" #f="ngForm">
+        <mat-form-field appearance="fill">
+          <mat-label>Nom</mat-label>
+          <input matInput [(ngModel)]="categoryForm.name" name="name" required />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <input matInput [(ngModel)]="categoryForm.description" name="description" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Icône (nom MDI, ex: mdi:star)</mat-label>
+          <input matInput [(ngModel)]="categoryForm.icon" name="icon" />
+          <a href="https://icon-sets.iconify.design/mdi/" target="_blank" style="margin-left:8px;font-size:0.9em;">
+            Choisir une icône
+          </a>
+        </mat-form-field>
+        <div *ngIf="categoryForm.icon" class="icon-preview">
+          <span class="iconify" [attr.data-icon]="categoryForm.icon" style="font-size:2rem;"></span>
+          <span style="margin-left:8px;">{{ categoryForm.icon }}</span>
+        </div>
+
+        <div class="form-actions">
+          <button mat-stroked-button color="warn" type="button" class="cancel" (click)="closeCreateForm()">Annuler</button>
+          <button
+            mat-flat-button
+            type="submit"
+            class="create"
+            [ngStyle]="editMode ? {'background-color': '#007AFF', 'color': '#fff'} : {}"
+            [disabled]="f.invalid">
+            {{ editMode ? 'Modifier' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Vue détail -->
+    <div class="view-category-form" *ngIf="showViewForm">
+      <div class="top-view">
+        <h2 class="sub-title">
+          Détails
+          <ng-container *ngIf="viewCategoryData?.name; else defaultViewTitle">
+            <span class="category-name"> {{ viewCategoryData?.name }} </span>
+          </ng-container>
+          <ng-template #defaultViewTitle> d'une catégorie</ng-template>
+        </h2>
+        <div class="view-actions">
+          <button class="btn-small" title="Fermer" (click)="closeViewForm()">Fermer</button>
+          <button class="btn-small" title="Éditer" (click)="viewCategoryData && openEditForm(viewCategoryData)">Éditer</button>
+          <button class="btn-small" title="Supprimer" (click)="deleteCategory(viewCategoryData?.id)">Supprimer</button>
+        </div>
+      </div>
+      <form>
+        <mat-form-field appearance="fill">
+          <mat-label>Nom</mat-label>
+          <input matInput [value]="viewCategoryData?.name" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <input matInput [value]="viewCategoryData?.description" disabled />
+        </mat-form-field>
+
+        <div *ngIf="viewCategoryData?.icon" class="icon-preview" style="margin-bottom: 16px;">
+          <span class="iconify" [attr.data-icon]="viewCategoryData?.icon" style="font-size:2.5rem;"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
