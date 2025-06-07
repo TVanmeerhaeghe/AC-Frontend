@@ -17,7 +17,7 @@ export class AuthComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService 
   ) {}
 
   ngOnInit(): void {

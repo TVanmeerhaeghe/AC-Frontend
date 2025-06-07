@@ -38,6 +38,8 @@ export class CalendarComponent implements OnInit {
   confirmTitle = '';
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
+  showCreateForm = false;
+  selectedEventIndex = 0;
 
   constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
@@ -130,11 +132,21 @@ export class CalendarComponent implements OnInit {
   
   onDateChange(date: Date | null): void {
     this.selectedDate = date;
+    this.showCreateForm = false;
+    this.selectedEventIndex = 0;
     if (date) {
       this.filterEventsByDate(date);
     } else {
       this.filteredEvents = [];
     }
+  }
+
+  prevEvent() {
+    if (this.selectedEventIndex > 0) this.selectedEventIndex--;
+  }
+
+  nextEvent() {
+    if (this.selectedEventIndex < this.filteredEvents.length - 1) this.selectedEventIndex++;
   }
 
   filterEventsByDate(date: Date): void {
@@ -168,11 +180,22 @@ export class CalendarComponent implements OnInit {
   }
 
   dateClass = (date: Date): string => {
+    const dateString = date.toISOString().split('T')[0];
+
+    const hasEvent = this.events.some(event => {
+      const start = new Date(event.start_date).toISOString().split('T')[0];
+      const end = new Date(event.end_date).toISOString().split('T')[0];
+      return dateString >= start && dateString <= end;
+    });
+
+    if (hasEvent) return 'calendar-has-event';
+
     if (this.selectedRange.start && this.selectedRange.end) {
       const start = this.selectedRange.start;
       const end = this.selectedRange.end;
-      return date >= start && date <= end ? 'selected-range' : '';
+      if (date >= start && date <= end) return 'selected-range';
     }
+
     return '';
   };
 
