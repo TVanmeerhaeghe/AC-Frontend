@@ -12,6 +12,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { RouterModule } from '@angular/router';
 import { slugify } from '../../services/slugify.service';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-products',
@@ -53,7 +54,7 @@ export class ProductsComponent implements OnInit {
   selectedImageTab: number = 0;
   buyerDetails: Customer | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.fetchProducts();
@@ -160,6 +161,10 @@ export class ProductsComponent implements OnInit {
         next: () => {
           this.fetchProducts();
           this.closeViewForm();
+          this.snackBar.open('Produit supprimé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression du produit', 'Fermer', { duration: 3000 });
         }
       });
     };
@@ -224,14 +229,26 @@ export class ProductsComponent implements OnInit {
     }
 
     if (this.editMode && this.productForm.id) {
-      this.apiService.updateProduct(this.productForm.id, formData).subscribe(() => {
-        this.fetchProducts();
-        this.closeCreateForm();
+      this.apiService.updateProduct(this.productForm.id, formData).subscribe({
+        next: () => {
+          this.fetchProducts();
+          this.closeCreateForm();
+          this.snackBar.open('Produit modifié avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la modification du produit', 'Fermer', { duration: 3000 });
+        }
       });
     } else {
-      this.apiService.createProduct(formData).subscribe(() => {
-        this.fetchProducts();
-        this.closeCreateForm();
+      this.apiService.createProduct(formData).subscribe({
+        next: () => {
+          this.fetchProducts();
+          this.closeCreateForm();
+          this.snackBar.open('Produit créé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la création du produit', 'Fermer', { duration: 3000 });
+        }
       });
     }
   }

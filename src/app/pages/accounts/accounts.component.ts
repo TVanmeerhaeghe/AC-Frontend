@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-accounts',
@@ -38,7 +39,11 @@ export class AccountsComponent implements OnInit {
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
 
-  constructor(private api: ApiService, private fb: FormBuilder) {}
+  constructor(
+    private api: ApiService,
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -81,6 +86,10 @@ export class AccountsComponent implements OnInit {
         next: () => {
           this.fetchUsers();
           this.closeCreateForm();
+          this.snackBar.open('Compte créé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la création du compte', 'Fermer', { duration: 3000 });
         }
       });
     }
@@ -99,7 +108,13 @@ export class AccountsComponent implements OnInit {
     this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
     this.confirmAction = () => {
       this.api.deleteUser(user.id).subscribe({
-        next: () => this.fetchUsers()
+        next: () => {
+          this.fetchUsers();
+          this.snackBar.open('Compte supprimé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression du compte', 'Fermer', { duration: 3000 });
+        }
       });
     };
     this.showConfirm = true;
@@ -112,11 +127,11 @@ export class AccountsComponent implements OnInit {
       this.api.forgotPassword(user.email_adress).subscribe({
         next: () => {
           this.showConfirm = false;
-          alert('Mail de réinitialisation envoyé !');
+          this.snackBar.open('Mail de réinitialisation envoyé !', 'Fermer', { duration: 3000 });
         },
         error: () => {
           this.showConfirm = false;
-          alert('Erreur lors de l\'envoi du mail.');
+          this.snackBar.open('Erreur lors de l\'envoi du mail.', 'Fermer', { duration: 3000 });
         }
       });
     };

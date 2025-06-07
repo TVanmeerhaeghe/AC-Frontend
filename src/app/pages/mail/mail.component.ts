@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { Contact } from '../../models/contact.model';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-mail',
@@ -22,7 +23,7 @@ export class MailComponent implements OnInit {
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.loading = true;
@@ -51,9 +52,15 @@ export class MailComponent implements OnInit {
     this.confirmTitle = `Supprimer le contact <span class="popup-highlight">${contact.name} ${contact.surname}</span> ?`;
     this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
     this.confirmAction = () => {
-      this.api.deleteContact(contact.id).subscribe(() => {
-        this.contacts = this.contacts.filter(c => c.id !== contact.id);
-        if (this.selectedContact?.id === contact.id) this.selectedContact = undefined;
+      this.api.deleteContact(contact.id).subscribe({
+        next: () => {
+          this.contacts = this.contacts.filter(c => c.id !== contact.id);
+          if (this.selectedContact?.id === contact.id) this.selectedContact = undefined;
+          this.snackBar.open('Contact supprimé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression du contact', 'Fermer', { duration: 3000 });
+        }
       });
     };
     this.showConfirm = true;

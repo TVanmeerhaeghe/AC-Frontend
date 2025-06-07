@@ -12,6 +12,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { Customer } from '../../models/customers.model';
 import { Product } from '../../models/products.model';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-invoices',
@@ -61,7 +62,7 @@ export class InvoicesComponent implements OnInit {
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadInvoices();
@@ -168,13 +169,15 @@ export class InvoicesComponent implements OnInit {
       products: filteredProducts,
     };
 
-    console.log('POST invoice:', formToSubmit);
-
     if (this.editMode && this.editInvoiceId) {
       this.apiService.updateInvoice(this.editInvoiceId, formToSubmit).subscribe({
         next: () => {
           this.closeCreateForm();
           this.loadInvoices();
+          this.snackBar.open('Facture modifiée avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la modification de la facture', 'Fermer', { duration: 3000 });
         }
       });
     } else {
@@ -182,6 +185,10 @@ export class InvoicesComponent implements OnInit {
         next: () => {
           this.closeCreateForm();
           this.loadInvoices();
+          this.snackBar.open('Facture créée avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la création de la facture', 'Fermer', { duration: 3000 });
         }
       });
     }
@@ -214,6 +221,10 @@ export class InvoicesComponent implements OnInit {
         next: () => {
           this.closeViewForm();
           this.loadInvoices();
+          this.snackBar.open('Facture supprimée avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression de la facture', 'Fermer', { duration: 3000 });
         }
       });
     };

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-customers',
@@ -39,7 +40,7 @@ export class CustomersComponent implements OnInit {
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadCustomers();
@@ -113,6 +114,10 @@ export class CustomersComponent implements OnInit {
         next: () => {
           this.closeCreateForm();
           this.loadCustomers();
+          this.snackBar.open('Client modifié avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la modification du client', 'Fermer', { duration: 3000 });
         }
       });
     } else {
@@ -120,6 +125,10 @@ export class CustomersComponent implements OnInit {
         next: () => {
           this.closeCreateForm();
           this.loadCustomers();
+          this.snackBar.open('Client créé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la création du client', 'Fermer', { duration: 3000 });
         }
       });
     }
@@ -149,6 +158,10 @@ export class CustomersComponent implements OnInit {
         next: () => {
           this.closeViewForm();
           this.loadCustomers();
+          this.snackBar.open('Client supprimé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression du client', 'Fermer', { duration: 3000 });
         }
       });
     };

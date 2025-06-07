@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-calendar',
@@ -38,7 +39,7 @@ export class CalendarComponent implements OnInit {
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.selectedDate = new Date();
@@ -100,23 +101,29 @@ export class CalendarComponent implements OnInit {
       end_date: endDateTime.toISOString(),
     };
 
-    console.log('Payload envoyé au backend :', payload);
-
     if (this.formData.id) {
       this.apiService.updateCalendarEvent(this.formData.id, payload).subscribe({
         next: () => {
           this.loadEvents();
           this.resetForm();
+          this.snackBar.open('Événement mis à jour avec succès', 'Fermer', { duration: 3000 });
         },
-        error: (err) => console.error('Erreur de mise à jour :', err),
+        error: (err) => {
+          console.error('Erreur de mise à jour :', err);
+          this.snackBar.open('Erreur lors de la mise à jour de l\'événement', 'Fermer', { duration: 3000 });
+        },
       });
     } else {
       this.apiService.createCalendarEvent(payload).subscribe({
         next: () => {
           this.loadEvents();
           this.resetForm();
+          this.snackBar.open('Événement créé avec succès', 'Fermer', { duration: 3000 });
         },
-        error: (err) => console.error('Erreur de création :', err),
+        error: (err) => {
+          console.error('Erreur de création :', err);
+          this.snackBar.open('Erreur lors de la création de l\'événement', 'Fermer', { duration: 3000 });
+        },
       });
     }
   }
@@ -192,8 +199,12 @@ export class CalendarComponent implements OnInit {
           this.events = this.events.filter(event => event.id !== this.formData.id);
           this.filterEventsByDate(this.selectedDate!);
           this.resetForm();
+          this.snackBar.open('Événement supprimé avec succès', 'Fermer', { duration: 3000 });
         },
-        error: (err) => console.error('Erreur de suppression :', err),
+        error: (err) => {
+          console.error('Erreur de suppression :', err);
+          this.snackBar.open('Erreur lors de la suppression de l\'événement', 'Fermer', { duration: 3000 });
+        },
       });
     };
     this.showConfirm = true;
