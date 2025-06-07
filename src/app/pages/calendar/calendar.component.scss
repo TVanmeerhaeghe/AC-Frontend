@@ -216,3 +216,66 @@
     margin-top: 10px;
   }
 }
+
+.event-list-of-day {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 600px;
+
+  .event-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    .sub-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  }
+
+  .event-list-scroll {
+    overflow-y: auto;
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-right: 4px;
+  }
+}
+
+.event-card {
+  background: #d9ebff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px #0001;
+}
+
+.event-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+}
+
+::ng-deep .calendar-has-event .mat-calendar-body-cell-content {
+  background: #3935a7;
+  color: #fff;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+::ng-deep .calendar-has-event:hover .mat-calendar-body-cell-content,
+::ng-deep .mat-calendar-body-cell.calendar-has-event:hover .mat-calendar-body-cell-content {
+  background: #28226d !important;
+  color: #fff;
+}

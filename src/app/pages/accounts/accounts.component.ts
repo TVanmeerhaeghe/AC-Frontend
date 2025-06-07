@@ -7,13 +7,24 @@ import { User } from '../../models/users.model';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOption, MatOptionModule } from '@angular/material/core';
+import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-accounts',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, MatOptionModule, MatSelectModule, MatInputModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatInputModule,
+    ConfirmPopupComponent
+  ],
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.scss']
 })
@@ -23,7 +34,16 @@ export class AccountsComponent implements OnInit {
   form!: FormGroup;
   loading = false;
 
-  constructor(private api: ApiService, private fb: FormBuilder) {}
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
+
+  constructor(
+    private api: ApiService,
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -66,32 +86,66 @@ export class AccountsComponent implements OnInit {
         next: () => {
           this.fetchUsers();
           this.closeCreateForm();
+          this.snackBar.open('Compte créé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la création du compte', 'Fermer', { duration: 3000 });
         }
       });
     }
   }
 
-  deleteUser(user: User) {
+  askDeleteUser(user: User) {
     const adminCount = this.users.filter(u => u.role === 'ADMIN').length;
-
     if (user.role === 'ADMIN' && adminCount <= 2) {
-      alert("Il doit toujours rester au moins deux comptes admin.");
+      this.confirmTitle = 'Suppression impossible';
+      this.confirmMessage = "Il doit toujours rester au moins deux comptes admin.";
+      this.confirmAction = null;
+      this.showConfirm = true;
       return;
     }
-
-    if (confirm(`Supprimer le compte de ${user.name} ${user.surname} ?`)) {
+    this.confirmTitle = `Supprimer le compte de <span class="popup-highlight">${user.name} ${user.surname}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
       this.api.deleteUser(user.id).subscribe({
-        next: () => this.fetchUsers()
+        next: () => {
+          this.fetchUsers();
+          this.snackBar.open('Compte supprimé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression du compte', 'Fermer', { duration: 3000 });
+        }
       });
-    }
+    };
+    this.showConfirm = true;
   }
 
-  sendResetMail(user: User) {
-    if (confirm(`Envoyer un mail de réinitialisation à ${user.email_adress} ?`)) {
+  askResetMail(user: User) {
+    this.confirmTitle = `Réinitialiser le mot de passe de <span class="popup-highlight">${user.name} ${user.surname}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
       this.api.forgotPassword(user.email_adress).subscribe({
-        next: () => alert('Mail de réinitialisation envoyé !'),
-        error: () => alert('Erreur lors de l\'envoi du mail.')
+        next: () => {
+          this.showConfirm = false;
+          this.snackBar.open('Mail de réinitialisation envoyé !', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.showConfirm = false;
+          this.snackBar.open('Erreur lors de l\'envoi du mail.', 'Fermer', { duration: 3000 });
+        }
       });
+    };
+    this.showConfirm = true;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) {
+      this.confirmAction();
     }
+    this.showConfirm = false;
+  }
+
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 }

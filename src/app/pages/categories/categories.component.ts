@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-categories',
@@ -14,7 +16,8 @@ import { MatInputModule } from '@angular/material/input';
     CommonModule,
     FormsModule,
     MatFormFieldModule, 
-    MatInputModule
+    MatInputModule,
+    ConfirmPopupComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
@@ -29,7 +32,12 @@ export class CategoriesComponent implements OnInit {
   categoryForm: Partial<Category> = {};
   viewCategoryData: Category | null = null;
 
-  constructor(private apiService: ApiService) {}
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
+
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -79,15 +87,27 @@ export class CategoriesComponent implements OnInit {
             description: this.categoryForm.description,
             icon: this.categoryForm.icon ?? ''
           }
-        ).subscribe(() => {
-          this.fetchCategories();
-          this.closeCreateForm();
+        ).subscribe({
+          next: () => {
+            this.fetchCategories();
+            this.closeCreateForm();
+            this.snackBar.open('Catégorie modifiée avec succès', 'Fermer', { duration: 3000 });
+          },
+          error: () => {
+            this.snackBar.open('Erreur lors de la modification de la catégorie', 'Fermer', { duration: 3000 });
+          }
         });
       }
     } else {
-      this.apiService.createCategory(this.categoryForm).subscribe(() => {
-        this.fetchCategories();
-        this.closeCreateForm();
+      this.apiService.createCategory(this.categoryForm).subscribe({
+        next: () => {
+          this.fetchCategories();
+          this.closeCreateForm();
+          this.snackBar.open('Catégorie créée avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la création de la catégorie', 'Fermer', { duration: 3000 });
+        }
       });
     }
   }
@@ -103,13 +123,30 @@ export class CategoriesComponent implements OnInit {
     this.viewCategoryData = null;
   }
 
-  deleteCategory(id: number | undefined) {
-    if (!id) return;
-    if (confirm('Supprimer cette catégorie ?')) {
-      this.apiService.deleteCategory(id).subscribe(() => {
-        this.fetchCategories();
-        this.closeViewForm();
+  askDeleteCategory(category: Category | null) {
+    if (!category?.id) return;
+    this.confirmTitle = `Supprimer la catégorie <span class="popup-highlight">${category.name}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteCategory(category.id!).subscribe({
+        next: () => {
+          this.fetchCategories();
+          this.closeViewForm();
+          this.snackBar.open('Catégorie supprimée avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression de la catégorie', 'Fermer', { duration: 3000 });
+        }
       });
-    }
+    };
+    this.showConfirm = true;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 }

@@ -103,7 +103,7 @@
         <div class="view-actions">
           <button class="btn-small" title="Fermer" (click)="closeViewForm()">Fermer</button>
           <button class="btn-small" title="Éditer" (click)="viewCategoryData && openEditForm(viewCategoryData)">Éditer</button>
-          <button class="btn-small" title="Supprimer" (click)="deleteCategory(viewCategoryData?.id)">Supprimer</button>
+          <button class="btn-small" title="Supprimer" (click)="askDeleteCategory(viewCategoryData)">Supprimer</button>
         </div>
       </div>
       <form>
@@ -123,3 +123,10 @@
     </div>
   </div>
 </div>
+<app-confirm-popup
+  [show]="showConfirm"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  (confirm)="onConfirmPopup()"
+  (cancel)="onCancelPopup()"
+></app-confirm-popup>

@@ -6,13 +6,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatTabsModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatTabsModule, ConfirmPopupComponent],
 })
 export class CustomersComponent implements OnInit {
   customers: Customer[] = [];
@@ -33,8 +35,12 @@ export class CustomersComponent implements OnInit {
   viewCustomerData: Customer | null = null;
   showViewForm = false;
   selectedTab: string = 'informations';
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadCustomers();
@@ -108,6 +114,10 @@ export class CustomersComponent implements OnInit {
         next: () => {
           this.closeCreateForm();
           this.loadCustomers();
+          this.snackBar.open('Client modifié avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la modification du client', 'Fermer', { duration: 3000 });
         }
       });
     } else {
@@ -115,6 +125,10 @@ export class CustomersComponent implements OnInit {
         next: () => {
           this.closeCreateForm();
           this.loadCustomers();
+          this.snackBar.open('Client créé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la création du client', 'Fermer', { duration: 3000 });
         }
       });
     }
@@ -135,13 +149,30 @@ export class CustomersComponent implements OnInit {
     this.viewCustomerData = null;
   }
 
-  deleteCustomer(id: number | undefined) {
-    if (!id) return;
-    this.apiService.deleteCustomer(id).subscribe({
-      next: () => {
-        this.closeViewForm();
-        this.loadCustomers();
-      }
-    });
+  askDeleteCustomer(customer: Customer | null) {
+    if (!customer?.id) return;
+    this.confirmTitle = `Supprimer le client <span class="popup-highlight">${customer.name} ${customer.surname}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteCustomer(customer.id!).subscribe({
+        next: () => {
+          this.closeViewForm();
+          this.loadCustomers();
+          this.snackBar.open('Client supprimé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression du client', 'Fermer', { duration: 3000 });
+        }
+      });
+    };
+    this.showConfirm = true;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 }

@@ -159,7 +159,7 @@
         <div class="view-actions">
           <button class="btn-small" title="Fermer" (click)="closeViewForm()">Fermer</button>
           <button class="btn-small" title="Éditer" (click)="viewInvoiceData && openEditForm(viewInvoiceData)">Éditer</button>
-          <button class="btn-small" title="Supprimer" (click)="deleteInvoice(viewInvoiceData?.id)">Supprimer</button>
+          <button class="btn-small" title="Supprimer" (click)="askDeleteInvoice(viewInvoiceData)">Supprimer</button>
         </div>
       </div>
       <form>
@@ -208,3 +208,10 @@
     </div>
   </div>
 </div>
+<app-confirm-popup
+  [show]="showConfirm"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  (confirm)="onConfirmPopup()"
+  (cancel)="onCancelPopup()"
+></app-confirm-popup>

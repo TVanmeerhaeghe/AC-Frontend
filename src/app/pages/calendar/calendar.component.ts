@@ -8,6 +8,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-calendar',
@@ -21,7 +23,8 @@ import { CommonModule } from '@angular/common';
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatButtonModule
+    MatButtonModule,
+    ConfirmPopupComponent
   ],
 })
 export class CalendarComponent implements OnInit {
@@ -31,7 +34,14 @@ export class CalendarComponent implements OnInit {
   formData: Partial<CalendarEvent> = {};
   selectedRange: { start: Date | null; end: Date | null } = { start: null, end: null };
 
-  constructor(private apiService: ApiService) {}
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
+  showCreateForm = false;
+  selectedEventIndex = 0;
+
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.selectedDate = new Date();
@@ -93,34 +103,50 @@ export class CalendarComponent implements OnInit {
       end_date: endDateTime.toISOString(),
     };
 
-    console.log('Payload envoyé au backend :', payload);
-
     if (this.formData.id) {
       this.apiService.updateCalendarEvent(this.formData.id, payload).subscribe({
         next: () => {
           this.loadEvents();
           this.resetForm();
+          this.snackBar.open('Événement mis à jour avec succès', 'Fermer', { duration: 3000 });
         },
-        error: (err) => console.error('Erreur de mise à jour :', err),
+        error: (err) => {
+          console.error('Erreur de mise à jour :', err);
+          this.snackBar.open('Erreur lors de la mise à jour de l\'événement', 'Fermer', { duration: 3000 });
+        },
       });
     } else {
       this.apiService.createCalendarEvent(payload).subscribe({
         next: () => {
           this.loadEvents();
           this.resetForm();
+          this.snackBar.open('Événement créé avec succès', 'Fermer', { duration: 3000 });
         },
-        error: (err) => console.error('Erreur de création :', err),
+        error: (err) => {
+          console.error('Erreur de création :', err);
+          this.snackBar.open('Erreur lors de la création de l\'événement', 'Fermer', { duration: 3000 });
+        },
       });
     }
   }
   
   onDateChange(date: Date | null): void {
     this.selectedDate = date;
+    this.showCreateForm = false;
+    this.selectedEventIndex = 0;
     if (date) {
       this.filterEventsByDate(date);
     } else {
       this.filteredEvents = [];
     }
+  }
+
+  prevEvent() {
+    if (this.selectedEventIndex > 0) this.selectedEventIndex--;
+  }
+
+  nextEvent() {
+    if (this.selectedEventIndex < this.filteredEvents.length - 1) this.selectedEventIndex++;
   }
 
   filterEventsByDate(date: Date): void {
@@ -154,11 +180,22 @@ export class CalendarComponent implements OnInit {
   }
 
   dateClass = (date: Date): string => {
+    const dateString = date.toISOString().split('T')[0];
+
+    const hasEvent = this.events.some(event => {
+      const start = new Date(event.start_date).toISOString().split('T')[0];
+      const end = new Date(event.end_date).toISOString().split('T')[0];
+      return dateString >= start && dateString <= end;
+    });
+
+    if (hasEvent) return 'calendar-has-event';
+
     if (this.selectedRange.start && this.selectedRange.end) {
       const start = this.selectedRange.start;
       const end = this.selectedRange.end;
-      return date >= start && date <= end ? 'selected-range' : '';
+      if (date >= start && date <= end) return 'selected-range';
     }
+
     return '';
   };
 
@@ -175,17 +212,33 @@ export class CalendarComponent implements OnInit {
     this.selectedRange = { start: null, end: null };
   }
 
-  onDelete(): void {
+  askDeleteEvent(): void {
     if (!this.formData.id) return;
+    this.confirmTitle = `Supprimer l'événement <span class="popup-highlight">${this.formData.name}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteCalendarEvent(this.formData.id!).subscribe({
+        next: () => {
+          this.events = this.events.filter(event => event.id !== this.formData.id);
+          this.filterEventsByDate(this.selectedDate!);
+          this.resetForm();
+          this.snackBar.open('Événement supprimé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error('Erreur de suppression :', err);
+          this.snackBar.open('Erreur lors de la suppression de l\'événement', 'Fermer', { duration: 3000 });
+        },
+      });
+    };
+    this.showConfirm = true;
+  }
 
-    this.apiService.deleteCalendarEvent(this.formData.id).subscribe({
-      next: () => {
-        this.events = this.events.filter(event => event.id !== this.formData.id);
-        this.filterEventsByDate(this.selectedDate!);
-        this.resetForm();
-      },
-      error: (err) => console.error('Erreur de suppression :', err),
-    });
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 
   calculateDuration(): number {

@@ -11,13 +11,24 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { RouterModule } from '@angular/router';
 import { slugify } from '../../services/slugify.service';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatSelectModule, RouterModule]
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
+    RouterModule,
+    ConfirmPopupComponent
+  ]
 })
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
@@ -30,6 +41,11 @@ export class ProductsComponent implements OnInit {
   showCreateForm = false;
   showViewForm = false;
   editMode = false;
+  showConfirm = false;
+
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
 
   productForm: any = {};
   viewProductData: Product | null = null;
@@ -38,7 +54,7 @@ export class ProductsComponent implements OnInit {
   selectedImageTab: number = 0;
   buyerDetails: Customer | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.fetchProducts();
@@ -136,14 +152,31 @@ export class ProductsComponent implements OnInit {
     this.viewProductData = null;
   }
 
-  deleteProduct(id: number | undefined) {
-    if (!id) return;
-    this.apiService.deleteProduct(id).subscribe({
-      next: () => {
-        this.fetchProducts();
-        this.closeViewForm();
-      }
-    });
+  askDeleteProduct(product: Product | null) {
+    if (!product?.id) return;
+    this.confirmTitle = `Supprimer le produit <span class="popup-highlight">${product.name}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteProduct(product.id!).subscribe({
+        next: () => {
+          this.fetchProducts();
+          this.closeViewForm();
+          this.snackBar.open('Produit supprimé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la suppression du produit', 'Fermer', { duration: 3000 });
+        }
+      });
+    };
+    this.showConfirm = true;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 
   onImageChange(event: any) {
@@ -196,14 +229,26 @@ export class ProductsComponent implements OnInit {
     }
 
     if (this.editMode && this.productForm.id) {
-      this.apiService.updateProduct(this.productForm.id, formData).subscribe(() => {
-        this.fetchProducts();
-        this.closeCreateForm();
+      this.apiService.updateProduct(this.productForm.id, formData).subscribe({
+        next: () => {
+          this.fetchProducts();
+          this.closeCreateForm();
+          this.snackBar.open('Produit modifié avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la modification du produit', 'Fermer', { duration: 3000 });
+        }
       });
     } else {
-      this.apiService.createProduct(formData).subscribe(() => {
-        this.fetchProducts();
-        this.closeCreateForm();
+      this.apiService.createProduct(formData).subscribe({
+        next: () => {
+          this.fetchProducts();
+          this.closeCreateForm();
+          this.snackBar.open('Produit créé avec succès', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de la création du produit', 'Fermer', { duration: 3000 });
+        }
       });
     }
   }
