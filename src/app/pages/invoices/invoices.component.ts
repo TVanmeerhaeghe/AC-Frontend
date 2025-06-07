@@ -11,6 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { Customer } from '../../models/customers.model';
 import { Product } from '../../models/products.model';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'app-invoices',
@@ -25,7 +26,8 @@ import { Product } from '../../models/products.model';
     MatTabsModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    ConfirmPopupComponent
   ],
 })
 export class InvoicesComponent implements OnInit {
@@ -53,6 +55,11 @@ export class InvoicesComponent implements OnInit {
   selectedTab: string = 'informations';
   invoiceStatuses = Object.values(InvoiceStatus);
   searchQuery: string = '';
+
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -198,14 +205,19 @@ export class InvoicesComponent implements OnInit {
     this.viewInvoiceData = null;
   }
 
-  deleteInvoice(id: number | undefined) {
-    if (!id) return;
-    this.apiService.deleteInvoice(id).subscribe({
-      next: () => {
-        this.closeViewForm();
-        this.loadInvoices();
-      }
-    });
+  askDeleteInvoice(invoice: Invoice | null) {
+    if (!invoice?.id) return;
+    this.confirmTitle = `Supprimer la <span class="popup-highlight">facture#${invoice.id}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteInvoice(invoice.id!).subscribe({
+        next: () => {
+          this.closeViewForm();
+          this.loadInvoices();
+        }
+      });
+    };
+    this.showConfirm = true;
   }
 
   getCustomerFullName(customer_id: number): string {
@@ -228,5 +240,13 @@ export class InvoicesComponent implements OnInit {
 
   trackByIndex(index: number, item: any) {
     return index;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 }

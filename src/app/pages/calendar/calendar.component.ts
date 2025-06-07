@@ -8,6 +8,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'app-calendar',
@@ -21,7 +22,8 @@ import { CommonModule } from '@angular/common';
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatButtonModule
+    MatButtonModule,
+    ConfirmPopupComponent
   ],
 })
 export class CalendarComponent implements OnInit {
@@ -30,6 +32,11 @@ export class CalendarComponent implements OnInit {
   selectedDate: Date | null = null;
   formData: Partial<CalendarEvent> = {};
   selectedRange: { start: Date | null; end: Date | null } = { start: null, end: null };
+
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -175,17 +182,29 @@ export class CalendarComponent implements OnInit {
     this.selectedRange = { start: null, end: null };
   }
 
-  onDelete(): void {
+  askDeleteEvent(): void {
     if (!this.formData.id) return;
+    this.confirmTitle = `Supprimer l'événement <span class="popup-highlight">${this.formData.name}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteCalendarEvent(this.formData.id!).subscribe({
+        next: () => {
+          this.events = this.events.filter(event => event.id !== this.formData.id);
+          this.filterEventsByDate(this.selectedDate!);
+          this.resetForm();
+        },
+        error: (err) => console.error('Erreur de suppression :', err),
+      });
+    };
+    this.showConfirm = true;
+  }
 
-    this.apiService.deleteCalendarEvent(this.formData.id).subscribe({
-      next: () => {
-        this.events = this.events.filter(event => event.id !== this.formData.id);
-        this.filterEventsByDate(this.selectedDate!);
-        this.resetForm();
-      },
-      error: (err) => console.error('Erreur de suppression :', err),
-    });
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 
   calculateDuration(): number {

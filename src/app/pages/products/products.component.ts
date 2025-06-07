@@ -11,13 +11,23 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { RouterModule } from '@angular/router';
 import { slugify } from '../../services/slugify.service';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatSelectModule, RouterModule]
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
+    RouterModule,
+    ConfirmPopupComponent
+  ]
 })
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
@@ -30,6 +40,11 @@ export class ProductsComponent implements OnInit {
   showCreateForm = false;
   showViewForm = false;
   editMode = false;
+  showConfirm = false;
+
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
 
   productForm: any = {};
   viewProductData: Product | null = null;
@@ -136,14 +151,27 @@ export class ProductsComponent implements OnInit {
     this.viewProductData = null;
   }
 
-  deleteProduct(id: number | undefined) {
-    if (!id) return;
-    this.apiService.deleteProduct(id).subscribe({
-      next: () => {
-        this.fetchProducts();
-        this.closeViewForm();
-      }
-    });
+  askDeleteProduct(product: Product | null) {
+    if (!product?.id) return;
+    this.confirmTitle = `Supprimer le produit <span class="popup-highlight">${product.name}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteProduct(product.id!).subscribe({
+        next: () => {
+          this.fetchProducts();
+          this.closeViewForm();
+        }
+      });
+    };
+    this.showConfirm = true;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 
   onImageChange(event: any) {

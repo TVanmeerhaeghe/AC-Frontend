@@ -6,13 +6,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatTabsModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatTabsModule, ConfirmPopupComponent],
 })
 export class CustomersComponent implements OnInit {
   customers: Customer[] = [];
@@ -33,6 +34,10 @@ export class CustomersComponent implements OnInit {
   viewCustomerData: Customer | null = null;
   showViewForm = false;
   selectedTab: string = 'informations';
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -135,13 +140,26 @@ export class CustomersComponent implements OnInit {
     this.viewCustomerData = null;
   }
 
-  deleteCustomer(id: number | undefined) {
-    if (!id) return;
-    this.apiService.deleteCustomer(id).subscribe({
-      next: () => {
-        this.closeViewForm();
-        this.loadCustomers();
-      }
-    });
+  askDeleteCustomer(customer: Customer | null) {
+    if (!customer?.id) return;
+    this.confirmTitle = `Supprimer le client <span class="popup-highlight">${customer.name} ${customer.surname}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteCustomer(customer.id!).subscribe({
+        next: () => {
+          this.closeViewForm();
+          this.loadCustomers();
+        }
+      });
+    };
+    this.showConfirm = true;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 }

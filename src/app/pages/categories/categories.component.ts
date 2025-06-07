@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'app-categories',
@@ -14,7 +15,8 @@ import { MatInputModule } from '@angular/material/input';
     CommonModule,
     FormsModule,
     MatFormFieldModule, 
-    MatInputModule
+    MatInputModule,
+    ConfirmPopupComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
@@ -28,6 +30,11 @@ export class CategoriesComponent implements OnInit {
 
   categoryForm: Partial<Category> = {};
   viewCategoryData: Category | null = null;
+
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -103,13 +110,24 @@ export class CategoriesComponent implements OnInit {
     this.viewCategoryData = null;
   }
 
-  deleteCategory(id: number | undefined) {
-    if (!id) return;
-    if (confirm('Supprimer cette catégorie ?')) {
-      this.apiService.deleteCategory(id).subscribe(() => {
+  askDeleteCategory(category: Category | null) {
+    if (!category?.id) return;
+    this.confirmTitle = `Supprimer la catégorie <span class="popup-highlight">${category.name}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
+      this.apiService.deleteCategory(category.id!).subscribe(() => {
         this.fetchCategories();
         this.closeViewForm();
       });
-    }
+    };
+    this.showConfirm = true;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 }

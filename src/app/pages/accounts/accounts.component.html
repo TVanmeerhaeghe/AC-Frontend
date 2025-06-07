@@ -27,10 +27,10 @@
                   </div>
                   <div class="actions-cell">
                     <div class="actions">
-                      <button title="Réinitialiser le mot de passe" (click)="sendResetMail(user)">
+                      <button title="Réinitialiser le mot de passe" (click)="askResetMail(user)">
                         <span class="iconify" data-icon="mdi:lock-reset"></span>
                       </button>
-                      <button title="Supprimer" (click)="deleteUser(user)">
+                      <button title="Supprimer" (click)="askDeleteUser(user)">
                         <span class="iconify" data-icon="ic:round-delete" data-inline="true"></span>
                       </button>
                     </div>
@@ -77,4 +77,12 @@
       </form>
     </div>
   </div>
+
+  <app-confirm-popup
+    [show]="showConfirm"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    (confirm)="onConfirmPopup()"
+    (cancel)="onCancelPopup()"
+  ></app-confirm-popup>
 </div>

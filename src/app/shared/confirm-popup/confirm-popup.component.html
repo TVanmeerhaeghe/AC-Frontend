@@ -1,0 +1,11 @@
+<div class="popup-backdrop" *ngIf="show">
+  <div class="popup">
+    <h2 class="popup-title" [innerHTML]="title"></h2>
+    <div class="popup-message" [innerHTML]="message"></div>
+    <ng-content></ng-content>
+    <div class="actions">
+      <button class="cancel" (click)="onCancel()">{{ cancelText }}</button>
+      <button class="confirm" (click)="onConfirm()">{{ confirmText }}</button>
+    </div>
+  </div>
+</div>

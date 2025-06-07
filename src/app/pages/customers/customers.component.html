@@ -130,7 +130,7 @@
         <div class="view-actions">
           <button class="btn-small" title="Fermer le détail de {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="closeViewForm()">Fermer</button>
           <button class="btn-small" title="Éditer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="viewCustomerData && openEditForm(viewCustomerData)">Éditer</button>  
-          <button class="btn-small" title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="deleteCustomer(viewCustomerData?.id)">Supprimer</button>
+          <button class="btn-small" title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="askDeleteCustomer(viewCustomerData)">Supprimer</button>
         </div>
       </div>
 
@@ -180,4 +180,12 @@
       </mat-tab-group>
     </div>
   </div>
+
+  <app-confirm-popup
+  [show]="showConfirm"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  (confirm)="onConfirmPopup()"
+  (cancel)="onCancelPopup()"
+></app-confirm-popup>
 </div>

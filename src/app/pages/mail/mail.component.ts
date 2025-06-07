@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { Contact } from '../../models/contact.model';
+import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'app-mail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmPopupComponent],
   templateUrl: './mail.component.html',
   styleUrls: ['./mail.component.scss']
 })
@@ -15,6 +16,11 @@ export class MailComponent implements OnInit {
   selectedContact?: Contact;
   productImageUrl?: string;
   loading = true;
+
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmAction: (() => void) | null = null;
 
   constructor(private api: ApiService) {}
 
@@ -41,13 +47,24 @@ export class MailComponent implements OnInit {
     }
   }
 
-  deleteContact(contact: Contact) {
-    if (confirm('Supprimer ce contact ?')) {
+  askDeleteContact(contact: Contact) {
+    this.confirmTitle = `Supprimer le contact <span class="popup-highlight">${contact.name} ${contact.surname}</span> ?`;
+    this.confirmMessage = `Cette action est définitive, vous pourrez néanmoins le créer de nouveau par la suite.`;
+    this.confirmAction = () => {
       this.api.deleteContact(contact.id).subscribe(() => {
         this.contacts = this.contacts.filter(c => c.id !== contact.id);
         if (this.selectedContact?.id === contact.id) this.selectedContact = undefined;
       });
-    }
+    };
+    this.showConfirm = true;
+  }
+
+  onConfirmPopup() {
+    if (this.confirmAction) this.confirmAction();
+    this.showConfirm = false;
+  }
+  onCancelPopup() {
+    this.showConfirm = false;
   }
 
   encode(val: string): string {

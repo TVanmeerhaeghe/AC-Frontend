@@ -35,7 +35,7 @@
                       >
                         <span class="iconify" data-icon="mdi:email-outline"></span>
                       </a>
-                      <button title="Supprimer" (click)="deleteContact(contact); $event.stopPropagation()">
+                      <button title="Supprimer" (click)="askDeleteContact(contact); $event.stopPropagation()">
                         <span class="iconify" data-icon="ic:round-delete" data-inline="true"></span>
                       </button>
                     </div>
@@ -84,3 +84,10 @@
     </div>
   </div>
 </div>
+<app-confirm-popup
+  [show]="showConfirm"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  (confirm)="onConfirmPopup()"
+  (cancel)="onCancelPopup()"
+></app-confirm-popup>

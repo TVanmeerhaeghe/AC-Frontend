@@ -32,7 +32,7 @@
       <div *ngIf="formData.id || true">
         <div class="top-form">
           <h2 class="sub-title">{{ formData.id ? 'Modifier l\'événement' : 'Créer un événement' }}</h2>
-          <button type="button" (click)="onDelete()" *ngIf="formData.id">
+          <button type="button" (click)="askDeleteEvent()" *ngIf="formData.id">
             <span class="iconify" data-icon="lucide:trash-2" data-inline="true"></span>
           </button>
         </div>
@@ -85,4 +85,12 @@
       </div>
     </div>
   </div>
+
+  <app-confirm-popup
+    [show]="showConfirm"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    (confirm)="onConfirmPopup()"
+    (cancel)="onCancelPopup()"
+  ></app-confirm-popup>
 </div>
