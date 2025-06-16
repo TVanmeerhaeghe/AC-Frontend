@@ -1,0 +1,65 @@
+<div class="home-page">
+
+  <div class="home-grid">
+    <div class="left-column">
+      <div class="home-block recette-block">
+        <h2>Recette</h2>
+        <div class="recette-tabs">
+          <button [class.active]="recetteTab === 'week'" (click)="recetteTab = 'week'; loadRecette()">Semaine</button>
+          <button [class.active]="recetteTab === 'month'" (click)="recetteTab = 'month'; loadRecette()">Mois</button>
+          <button [class.active]="recetteTab === 'year'" (click)="recetteTab = 'year'; loadRecette()">Annuelle</button>
+        </div>
+        <div class="home-charts">
+            <ngx-charts-bar-vertical
+            [results]="chartData"
+            [scheme]="colorScheme"
+            [xAxis]="true"
+            [yAxis]="true"
+            [showXAxisLabel]="false"
+            [showYAxisLabel]="false"
+            [roundEdges]="true"
+            [barPadding]="8"
+            [animations]="true"
+            ></ngx-charts-bar-vertical>
+        </div>
+
+      </div>
+
+      <div class="home-block quick-access-block">
+        <h2>Accès rapide</h2>
+        <div class="quick-access-list">
+          <button (click)="goToCreate('client')" title="Créer un client">
+            <span class="iconify" data-icon="lucide:user-plus"></span>
+          </button>
+          <button (click)="goToCreate('facture')" title="Créer une facture">
+            <span class="iconify" data-icon="lucide:file-text"></span>
+          </button>
+          <button (click)="goToCreate('devis')" title="Créer un devis">
+            <span class="iconify" data-icon="lucide:file-plus"></span>
+          </button>
+          <button (click)="goToCreate('produit')" title="Créer un produit">
+            <span class="iconify" data-icon="lucide:package-plus"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-column">
+      <div class="home-block calendar-block">
+        <h2>Calendrier</h2>
+        <mat-form-field appearance="outline">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="homePicker" [(ngModel)]="calendarDate">
+          <mat-datepicker-toggle matSuffix [for]="homePicker"></mat-datepicker-toggle>
+          <mat-datepicker #homePicker></mat-datepicker>
+        </mat-form-field>
+        <mat-calendar [(selected)]="calendarDate"></mat-calendar>
+        <div class="calendar-events">
+          <div *ngFor="let event of upcomingEvents">
+            <strong>{{ event.name }}</strong> - {{ event.start_date | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
