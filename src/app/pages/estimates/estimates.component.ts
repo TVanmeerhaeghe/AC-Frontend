@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-estimates',
@@ -6,6 +7,14 @@ import { Component } from '@angular/core';
   templateUrl: './estimates.component.html',
   styleUrl: './estimates.component.scss'
 })
-export class EstimatesComponent {
+export class EstimatesComponent implements OnInit {
+  constructor(private route: ActivatedRoute) {}
 
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['create'] === '1') {
+        console.log('Paramètre create=1 détecté (formulaire à ouvrir ici)');
+      }
+    });
+  }
 }

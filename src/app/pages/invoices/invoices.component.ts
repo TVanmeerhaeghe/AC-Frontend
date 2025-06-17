@@ -13,6 +13,7 @@ import { Customer } from '../../models/customers.model';
 import { Product } from '../../models/products.model';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-invoices',
@@ -62,12 +63,22 @@ export class InvoicesComponent implements OnInit {
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
 
-  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
+  constructor(
+    private apiService: ApiService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.loadInvoices();
     this.loadCustomers();
     this.loadProducts();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['create'] === '1') {
+        this.openCreateForm();
+      }
+    });
   }
 
   loadInvoices() {

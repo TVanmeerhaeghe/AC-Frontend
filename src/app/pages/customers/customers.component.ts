@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-customers',
@@ -40,10 +41,21 @@ export class CustomersComponent implements OnInit {
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
 
-  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
+  constructor(
+    private apiService: ApiService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute // <-- Ajouté
+  ) {}
 
   ngOnInit(): void {
     this.loadCustomers();
+
+    // Ouvre le formulaire de création si ?create=1 dans l'URL
+    this.route.queryParams.subscribe(params => {
+      if (params['create'] === '1') {
+        this.openCreateForm();
+      }
+    });
   }
 
   loadCustomers() {

@@ -50,16 +50,16 @@ export class HomePageComponent implements OnInit {
   goToCreate(type: 'client' | 'facture' | 'devis' | 'produit') {
     switch (type) {
       case 'client':
-        this.router.navigate(['/clients'], { queryParams: { create: 1 } });
+        this.router.navigate(['/dashboard/customers'], { queryParams: { create: 1 } });
         break;
       case 'facture':
-        this.router.navigate(['/factures'], { queryParams: { create: 1 } });
+        this.router.navigate(['/dashboard/invoices'], { queryParams: { create: 1 } });
         break;
       case 'devis':
-        this.router.navigate(['/devis'], { queryParams: { create: 1 } });
+        this.router.navigate(['/dashboard/estimates'], { queryParams: { create: 1 } });
         break;
       case 'produit':
-        this.router.navigate(['/products'], { queryParams: { create: 1 } });
+        this.router.navigate(['/dashboard/product'], { queryParams: { create: 1 } });
         break;
     }
   }
