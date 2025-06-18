@@ -53,13 +53,28 @@
           <mat-datepicker-toggle matSuffix [for]="homePicker"></mat-datepicker-toggle>
           <mat-datepicker #homePicker></mat-datepicker>
         </mat-form-field>
-        <mat-calendar [(selected)]="calendarDate"></mat-calendar>
-        <div class="calendar-events">
-          <div *ngFor="let event of upcomingEvents">
-            <strong>{{ event.name }}</strong> - {{ event.start_date | date:'dd/MM/yyyy HH:mm' }}
-          </div>
-        </div>
+        <mat-calendar
+          #calendar
+          [(selected)]="selectedDate"
+          (selectedChange)="onCalendarDateChange($event)"
+          [dateClass]="dateClass">
+        </mat-calendar>
+
       </div>
+    </div>
+  </div>
+
+  <div class="event-popup-backdrop" *ngIf="showEventPopup" (click)="closeEventPopup()"></div>
+  <div class="event-popup" *ngIf="showEventPopup">
+    <div class="event-popup-header">
+      <span>Événements du {{ popupDate | date:'dd/MM/yyyy' }}</span>
+      <button (click)="closeEventPopup()">✕</button>
+    </div>
+    <div *ngIf="popupEvents.length === 0">Aucun événement ce jour.</div>
+    <div *ngFor="let event of popupEvents" class="event-popup-item">
+      <strong>{{ event.name }}</strong><br>
+      <span>{{ event.start_date | date:'HH:mm' }} - {{ event.end_date | date:'HH:mm' }}</span><br>
+      <span>{{ event.description }}</span>
     </div>
   </div>
 </div>

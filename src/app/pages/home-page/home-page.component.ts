@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDatepickerModule, MatCalendar } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { NgxChartsModule, Color, ScaleType } from '@swimlane/ngx-charts';
@@ -32,6 +32,7 @@ export class HomePageComponent implements OnInit {
   recetteTotal = 0;
   calendarDate: Date = new Date();
   upcomingEvents: any[] = [];
+  selectedDayEvents: any[] = [];
   chartData: any[] = [];
   colorScheme = {
     name: 'customScheme',
@@ -39,6 +40,14 @@ export class HomePageComponent implements OnInit {
     group: ScaleType.Ordinal,
     domain: ['#007AFF']
   };
+  selectedDate: Date | null = new Date();
+  events: any[] = []; 
+  filteredEvents: any[] = [];
+  showEventPopup = false;
+  popupEvents: any[] = [];
+  popupDate: Date | null = null;
+
+  @ViewChild(MatCalendar) calendar!: MatCalendar<any>;
 
   constructor(private router: Router, private api: ApiService, private snackBar: MatSnackBar) {}
 
@@ -182,12 +191,58 @@ export class HomePageComponent implements OnInit {
   loadUpcomingEvents() {
     this.api.getAllCalendarEvents().subscribe({
       next: (events) => {
-        const now = new Date();
-        this.upcomingEvents = events
-          .filter(e => new Date(e.start_date) >= now)
-          .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
-          .slice(0, 5);
+        this.events = events;
+        this.filterEventsByDate(this.selectedDate || new Date());
+        setTimeout(() => {
+          if (this.calendar) {
+            this.calendar.updateTodaysDate();
+          }
+        });
       }
     });
   }
+
+  onCalendarDateChange(date: Date | null): void {
+    this.selectedDate = date;
+    this.filterEventsByDate(date || new Date());
+
+    if (date) {
+      const eventsOfDay = this.events.filter(event => {
+        const eventDate = new Date(event.start_date);
+        return eventDate.getFullYear() === date.getFullYear() &&
+               eventDate.getMonth() === date.getMonth() &&
+               eventDate.getDate() === date.getDate();
+      });
+      this.popupEvents = eventsOfDay;
+      this.popupDate = date;
+      this.showEventPopup = eventsOfDay.length > 0;
+    } else {
+      this.showEventPopup = false;
+    }
+  }
+
+  filterEventsByDate(date: Date): void {
+    const selectedDateString = date.toISOString().split('T')[0];
+    this.filteredEvents = this.events.filter(event => {
+      const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
+      const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
+      return selectedDateString >= eventStartDate && selectedDateString <= eventEndDate;
+    });
+  }
+
+  dateClass = (date: Date): string => {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const hasEvent = this.events.some(event => {
+      const start = new Date(event.start_date);
+      const end = new Date(event.end_date);
+      const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const e = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+      return d >= s && d <= e;
+    });
+    return hasEvent ? 'calendar-has-event' : '';
+  };
+
+  closeEventPopup() {
+  this.showEventPopup = false;
+  };
 }
