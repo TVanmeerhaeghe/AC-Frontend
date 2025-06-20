@@ -279,3 +279,7 @@
   background: #28226d !important;
   color: #fff;
 }
+
+::ng-deep .mat-calendar-body-label {
+  opacity : 0; 
+}

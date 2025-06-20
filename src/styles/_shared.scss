@@ -100,3 +100,9 @@ $showcase-bleu: #007AFF;
     height: 20px;
     color: #000000;
 }
+
+::ng-deep .calendar-has-event .mat-calendar-body-cell-content {
+  background: #28226d !important;
+  color: #fff !important;
+  border-radius: 50%;
+}

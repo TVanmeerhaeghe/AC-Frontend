@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select'; 
 import { MatOptionModule } from '@angular/material/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { slugify } from '../../services/slugify.service';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -54,12 +54,22 @@ export class ProductsComponent implements OnInit {
   selectedImageTab: number = 0;
   buyerDetails: Customer | null = null;
 
-  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
+  constructor(
+    private apiService: ApiService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.fetchProducts();
     this.fetchCategories();
     this.fetchCustomers();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['create'] === '1') {
+        setTimeout(() => this.openCreateForm(), 0);
+      }
+    });
   }
 
   fetchProducts() {

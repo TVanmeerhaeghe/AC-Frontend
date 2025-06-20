@@ -125,6 +125,10 @@ export class ApiService {
     return this.http.delete(`${this.baseUrl}/products/${id}`);
   }
 
+  getSoldProductRevenue() {
+    return this.http.get<{ period: string, total: number, dates: string[] }[]>(`${this.baseUrl}products/sold-revenue`);
+  }
+
   // Customers
   getAllCustomers(): Observable<Customer[]> {
     return this.http.get<Customer[]>(`${this.baseUrl}customers/`);
@@ -173,6 +177,10 @@ export class ApiService {
 
   searchInvoices(query: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}invoices/search?q=${encodeURIComponent(query)}`);
+  }
+
+  getPaidInvoiceRevenue() {
+    return this.http.get<{ period: string, total: number, dates: string[] }[]>(`${this.baseUrl}invoices/paid-revenue`);
   }
 
   //Contact

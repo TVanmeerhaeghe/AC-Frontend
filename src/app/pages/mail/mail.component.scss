@@ -197,7 +197,7 @@
       font-size: 1.05rem;
 
       &:hover {
-        color: darken($blue, 10%);
+        color: scale($blue, -10%);
       }
     }
   }

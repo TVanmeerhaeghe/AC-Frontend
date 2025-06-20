@@ -9,6 +9,7 @@ import { appConfig } from './app/app.config';
 import { inject } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import localeFr from '@angular/common/locales/fr';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 
 registerLocaleData(localeFr);
@@ -22,7 +23,8 @@ bootstrapApplication(AppComponent, appConfig).then(() => {
     provideHttpClient(
       withInterceptors([authInterceptor]),
       withXsrfConfiguration({ cookieName: 'XSRF-TOKEN' })
-    )
+    ),
+    provideAnimations()
     
   ]
 })

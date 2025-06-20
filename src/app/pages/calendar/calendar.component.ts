@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { CalendarEvent } from '../../models/calendar-event.model';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +10,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatCalendar } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-calendar',
@@ -41,6 +42,8 @@ export class CalendarComponent implements OnInit {
   showCreateForm = false;
   selectedEventIndex = 0;
 
+  @ViewChild(MatCalendar) calendar!: MatCalendar<any>;
+
   constructor(private apiService: ApiService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
@@ -53,9 +56,11 @@ export class CalendarComponent implements OnInit {
     this.apiService.getAllCalendarEvents().subscribe({
       next: (data) => {
         this.events = data;
-        console.log('Événements chargés :', this.events);
         if (this.selectedDate) {
           this.filterEventsByDate(this.selectedDate);
+        }
+        if (this.calendar) {
+          this.calendar.updateTodaysDate();
         }
       },
       error: (err) => console.error('Erreur de récupération :', err),
@@ -149,13 +154,18 @@ export class CalendarComponent implements OnInit {
     if (this.selectedEventIndex < this.filteredEvents.length - 1) this.selectedEventIndex++;
   }
 
-  filterEventsByDate(date: Date): void {
-    const selectedDateString = date.toISOString().split('T')[0];
-    this.filteredEvents = this.events.filter(event => {
-      const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
-      const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
+  isSameOrBetween(date: Date, start: Date, end: Date): boolean {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const e = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    return d >= s && d <= e;
+  }
 
-      return selectedDateString >= eventStartDate && selectedDateString <= eventEndDate;
+  filterEventsByDate(date: Date): void {
+    this.filteredEvents = this.events.filter(event => {
+      const eventStart = new Date(event.start_date);
+      const eventEnd = new Date(event.end_date);
+      return this.isSameOrBetween(date, eventStart, eventEnd);
     });
   }
 
@@ -165,10 +175,10 @@ export class CalendarComponent implements OnInit {
 
     this.formData = {
       ...event,
-      start_date: startDateTime.toISOString().split('T')[0], // Date au format YYYY-MM-DD
-      end_date: endDateTime.toISOString().split('T')[0],     // Date au format YYYY-MM-DD
-      start_time: startDateTime.toTimeString().split(' ')[0], // Heure au format HH:mm:ss
-      end_time: endDateTime.toTimeString().split(' ')[0],     // Heure au format HH:mm:ss
+      start_date: startDateTime.toISOString().split('T')[0], 
+      end_date: endDateTime.toISOString().split('T')[0],     
+      start_time: startDateTime.toTimeString().split(' ')[0],
+      end_time: endDateTime.toTimeString().split(' ')[0],    
     };
   }
 
@@ -180,23 +190,15 @@ export class CalendarComponent implements OnInit {
   }
 
   dateClass = (date: Date): string => {
-    const dateString = date.toISOString().split('T')[0];
-
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     const hasEvent = this.events.some(event => {
-      const start = new Date(event.start_date).toISOString().split('T')[0];
-      const end = new Date(event.end_date).toISOString().split('T')[0];
-      return dateString >= start && dateString <= end;
+      const start = new Date(event.start_date);
+      const end = new Date(event.end_date);
+      const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const e = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+      return d >= s && d <= e;
     });
-
-    if (hasEvent) return 'calendar-has-event';
-
-    if (this.selectedRange.start && this.selectedRange.end) {
-      const start = this.selectedRange.start;
-      const end = this.selectedRange.end;
-      if (date >= start && date <= end) return 'selected-range';
-    }
-
-    return '';
+    return hasEvent ? 'calendar-has-event' : '';
   };
 
   resetForm(): void {
