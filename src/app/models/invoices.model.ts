@@ -12,7 +12,7 @@ export interface Invoice {
     total_tva?: number;
     createdAt?: string;
     updatedAt?: string;
-    products?: InvoiceProductInput[];
+    products?: InvoiceProduct[];
 }
 
 export enum InvoiceStatus {
@@ -22,7 +22,24 @@ export enum InvoiceStatus {
     Annule = 'Annulé'
 }
 
-export interface InvoiceProductInput {
-  product_id: number;
+export interface InvoiceProduct {
+  id: number;
+  name: string;
+  description?: string;
+  category_id?: number;
+  condition?: string;
+  price: number;
+  sell_state?: boolean;
+  images?: string;
+  video?: string | null;
+  buy_by?: number | null;
   quantity: number;
+  material?: string | null;
+  style?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  InvoiceProduct?: { quantity: number };
+  imageUrl?: string;
+  imageUrls?: string[];
+  videoUrl?: string | null;
 }

@@ -189,50 +189,36 @@
             }}
           </span>
         </div>
-
-        <h2 class="sub-title">Détail <span>produit</span></h2>
         <mat-form-field appearance="fill">
+          <mat-label>Statut</mat-label>
+          <input matInput [value]="viewInvoiceData?.status" disabled />
+        </mat-form-field>
+        <h2 class="sub-title">Détail <span>produit</span></h2>
+          <div *ngIf="(viewInvoiceData?.products?.length || 0) > 0">
+            <mat-chip-set aria-label="Fish selection" *ngFor="let prod of (viewInvoiceData?.products ?? [])">
+              <mat-chip>{{ prod.name }} {{ prod.InvoiceProduct?.quantity || prod.quantity }}</mat-chip>
+            </mat-chip-set>
+          </div>
+        <!-- <mat-form-field appearance="fill">
           <mat-label>Nom remise</mat-label>
           <input matInput [value]="viewInvoiceData?.discount_name" disabled />
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>Valeur remise</mat-label>
           <input matInput [value]="viewInvoiceData?.discount_value" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Note admin</mat-label>
-          <input matInput [value]="viewInvoiceData?.admin_note" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Statut</mat-label>
-          <input matInput [value]="viewInvoiceData?.status" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
+        </mat-form-field> -->
+        <!-- <mat-form-field appearance="fill">
           <mat-label>Date de création</mat-label>
           <input matInput [value]="viewInvoiceData?.creation_date" disabled />
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>Date de validité</mat-label>
           <input matInput [value]="viewInvoiceData?.validity_date" disabled />
+        </mat-form-field> -->
+        <mat-form-field appearance="fill">
+          <mat-label>Note</mat-label>
+          <input matInput [value]="viewInvoiceData?.admin_note" disabled />
         </mat-form-field>
-
-        <div *ngIf="(viewInvoiceData?.products?.length || 0) > 0">
-          <h3>Produits achetés</h3>
-          <table style="width:100%;margin-bottom:16px;">
-            <thead>
-              <tr>
-                <th style="text-align:left;">Produit</th>
-                <th style="text-align:right;">Quantité</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let prod of viewInvoiceData?.products">
-                <td>{{ getProductName(prod.product_id) }}</td>
-                <td style="text-align:right;">{{ prod.quantity }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </form>
     </div>
   </div>

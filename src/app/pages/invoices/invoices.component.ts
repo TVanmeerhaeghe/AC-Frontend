@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { Invoice, InvoiceStatus, InvoiceProductInput } from '../../models/invoices.model';
+import { Invoice, InvoiceStatus, InvoiceProduct } from '../../models/invoices.model';
+import { Customer } from '../../models/customers.model';
+import { Product } from '../../models/products.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,12 +13,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { Customer } from '../../models/customers.model';
-import { Product } from '../../models/products.model';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatChipsModule } from '@angular/material/chips';
+
+interface InvoiceProductInput {
+  product_id: number;
+  quantity: number;
+}
 
 @Component({
   selector: 'app-invoices',
@@ -31,7 +37,8 @@ import { MatRadioModule } from '@angular/material/radio';
     MatDatepickerModule,
     MatNativeDateModule,
     ConfirmPopupComponent,
-    MatRadioModule
+    MatRadioModule,
+    MatChipsModule
   ],
 })
 export class InvoicesComponent implements OnInit {
@@ -41,7 +48,7 @@ export class InvoicesComponent implements OnInit {
   filteredProducts: Product[] = [];
   loading = false;
   showCreateForm = false;
-  createForm: Partial<Invoice> & { products: InvoiceProductInput[] } = {
+  createForm: Omit<Partial<Invoice>, 'products'> & { products: InvoiceProductInput[] } = {
     object: '',
     status: InvoiceStatus.Brouillon,
     admin_note: '',
@@ -56,16 +63,14 @@ export class InvoicesComponent implements OnInit {
   editInvoiceId: number | null = null;
   viewInvoiceData: Invoice | null = null;
   showViewForm = false;
-  selectedTab: string = 'informations';
   invoiceStatuses = Object.values(InvoiceStatus);
   searchQuery: string = '';
+  invoiceType: 'achat' | 'prestation' = 'achat';
 
   showConfirm = false;
   confirmTitle = '';
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
-
-  invoiceType: 'achat' | 'prestation' = 'achat';
 
   constructor(
     private apiService: ApiService,
@@ -126,7 +131,7 @@ export class InvoicesComponent implements OnInit {
     this.showCreateForm = true;
     this.editMode = false;
     this.editInvoiceId = null;
-    this.invoiceType = 'achat'; // Réinitialise le type à chaque ouverture
+    this.invoiceType = 'achat';
     const maxId = this.invoices.length > 0 ? Math.max(...this.invoices.map(invoice => invoice.id ?? 0)) : 0;
     const nextId = maxId + 1;
     this.createForm = {
@@ -154,17 +159,18 @@ export class InvoicesComponent implements OnInit {
     this.editMode = true;
     this.showCreateForm = true;
     this.editInvoiceId = invoice.id ?? null;
-    // Cloner les produits pour éviter les références partagées, et utiliser -1 si besoin
     this.createForm = {
       ...invoice,
       products: invoice.products
-        ? invoice.products.map(p => ({ product_id: p.product_id ?? -1, quantity: p.quantity }))
+        ? invoice.products.map(p => ({
+            product_id: p.id,
+            quantity: (p as any).InvoiceProduct?.quantity ?? (p as any).quantity ?? 1
+          }))
         : [{ product_id: -1, quantity: 1 }],
     };
   }
 
   addProductToForm() {
-    // Utiliser -1 pour product_id par défaut
     this.createForm.products = [
       ...this.createForm.products,
       { product_id: -1, quantity: 1 }
