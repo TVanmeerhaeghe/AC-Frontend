@@ -14,6 +14,7 @@ import { Product } from '../../models/products.model';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
   selector: 'app-invoices',
@@ -29,7 +30,8 @@ import { ActivatedRoute } from '@angular/router';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    ConfirmPopupComponent
+    ConfirmPopupComponent,
+    MatRadioModule
   ],
 })
 export class InvoicesComponent implements OnInit {
@@ -62,6 +64,8 @@ export class InvoicesComponent implements OnInit {
   confirmTitle = '';
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
+
+  invoiceType: 'achat' | 'prestation' = 'achat';
 
   constructor(
     private apiService: ApiService,
@@ -122,6 +126,7 @@ export class InvoicesComponent implements OnInit {
     this.showCreateForm = true;
     this.editMode = false;
     this.editInvoiceId = null;
+    this.invoiceType = 'achat'; // Réinitialise le type à chaque ouverture
     const maxId = this.invoices.length > 0 ? Math.max(...this.invoices.map(invoice => invoice.id ?? 0)) : 0;
     const nextId = maxId + 1;
     this.createForm = {
@@ -131,7 +136,7 @@ export class InvoicesComponent implements OnInit {
       customer_id: null,
       discount_name: '',
       discount_value: 0,
-      products: [{ product_id: null as any, quantity: 1 }],
+      products: [{ product_id: -1, quantity: 1 }],
       creation_date: new Date().toISOString().substring(0, 10),
       validity_date: new Date().toISOString().substring(0, 10),
       id: nextId,
@@ -149,27 +154,36 @@ export class InvoicesComponent implements OnInit {
     this.editMode = true;
     this.showCreateForm = true;
     this.editInvoiceId = invoice.id ?? null;
+    // Cloner les produits pour éviter les références partagées, et utiliser -1 si besoin
     this.createForm = {
       ...invoice,
       products: invoice.products
-        ? invoice.products.map(p => ({ product_id: p.product_id, quantity: p.quantity }))
-        : [{ product_id: null as any, quantity: 1 }],
+        ? invoice.products.map(p => ({ product_id: p.product_id ?? -1, quantity: p.quantity }))
+        : [{ product_id: -1, quantity: 1 }],
     };
   }
 
   addProductToForm() {
-    this.createForm.products.push({ product_id: null as any, quantity: 1 });
+    // Utiliser -1 pour product_id par défaut
+    this.createForm.products = [
+      ...this.createForm.products,
+      { product_id: -1, quantity: 1 }
+    ];
   }
 
   removeProductFromForm(index: number) {
-    this.createForm.products.splice(index, 1);
+    this.createForm.products = this.createForm.products.filter((_, i) => i !== index);
   }
 
   submitForm() {
-    const filteredProducts = this.createForm.products.filter(
-      p => p.product_id && p.quantity && p.quantity > 0
-    );
-    const formToSubmit = {
+    const filteredProducts = (this.createForm.products || [])
+      .filter(p => p.product_id !== -1 && p.quantity && p.quantity > 0)
+      .map(p => ({
+        product_id: Number(p.product_id),
+        quantity: Number(p.quantity)
+      }));
+
+    const formToSubmit: any = {
       ...this.createForm,
       creation_date: this.createForm.creation_date
         ? new Date(this.createForm.creation_date).toISOString().substring(0, 10)
@@ -177,8 +191,17 @@ export class InvoicesComponent implements OnInit {
       validity_date: this.createForm.validity_date
         ? new Date(this.createForm.validity_date).toISOString().substring(0, 10)
         : '',
-      products: filteredProducts,
     };
+
+    if (this.invoiceType === 'achat') {
+      if (filteredProducts.length === 0) {
+        this.snackBar.open('Veuillez ajouter au moins un produit avec une quantité valide.', 'Fermer', { duration: 3000 });
+        return;
+      }
+      formToSubmit.products = filteredProducts;
+    } else {
+      delete formToSubmit.products;
+    }
 
     if (this.editMode && this.editInvoiceId) {
       this.apiService.updateInvoice(this.editInvoiceId, formToSubmit).subscribe({

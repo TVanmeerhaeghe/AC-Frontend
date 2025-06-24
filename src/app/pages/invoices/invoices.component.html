@@ -85,29 +85,40 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Rechercher un produit</mat-label>
-              <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onSearchQueryChange()" name="searchQuery" />
-            </mat-form-field>
 
-            <div *ngFor="let prod of createForm.products; let i = index; trackBy: trackByIndex" class="product-row" style="display: flex; gap: 8px; align-items: center;">
-              <mat-form-field appearance="fill" style="flex:2;">
-                <mat-label>Produit</mat-label>
-                <mat-select [(ngModel)]="prod.product_id" name="product_id_{{i}}" required [ngModelOptions]="{standalone: true}">
-                  <mat-option *ngFor="let product of filteredProducts" [value]="product.id">
-                    {{ product.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="fill" style="flex:1;">
-                <mat-label>Quantité</mat-label>
-                <input matInput type="number" min="1" [(ngModel)]="prod.quantity" name="quantity_{{i}}" required [ngModelOptions]="{standalone: true}" />
-              </mat-form-field>
-              <button mat-icon-button color="warn" type="button" (click)="removeProductFromForm(i)" *ngIf="createForm.products.length > 1">
-                <span class="iconify" data-icon="mdi:delete"></span>
-              </button>
+            <div style="margin-bottom: 16px;">
+              <mat-radio-group [(ngModel)]="invoiceType" name="invoiceType">
+                <mat-radio-button value="achat">Facture d'achat</mat-radio-button>
+                <mat-radio-button value="prestation">Facture de prestations</mat-radio-button>
+              </mat-radio-group>
             </div>
-            <button mat-stroked-button color="primary" type="button" (click)="addProductToForm()">Ajouter un produit</button>
+
+            <div *ngIf="invoiceType === 'achat'">
+              <mat-form-field appearance="fill">
+                <mat-label>Rechercher un produit</mat-label>
+                <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onSearchQueryChange()" name="searchQuery" />
+              </mat-form-field>
+
+              <div *ngFor="let prod of createForm.products; let i = index; trackBy: trackByIndex" class="product-row" style="display: flex; gap: 8px; align-items: center;">
+                <mat-form-field appearance="fill" style="flex:2;">
+                  <mat-label>Produit</mat-label>
+                  <mat-select [(ngModel)]="prod.product_id" name="product_id_{{i}}" required [ngModelOptions]="{standalone: true}">
+                    <mat-option [value]="-1" disabled>Choisir un produit</mat-option>
+                    <mat-option *ngFor="let product of filteredProducts" [value]="product.id">
+                      {{ product.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="fill" style="flex:1;">
+                  <mat-label>Quantité</mat-label>
+                  <input matInput type="number" min="1" [(ngModel)]="prod.quantity" name="quantity_{{i}}" required [ngModelOptions]="{standalone: true}" />
+                </mat-form-field>
+                <button mat-icon-button color="warn" type="button" (click)="removeProductFromForm(i)" *ngIf="createForm.products.length > 1">
+                  <span class="iconify" data-icon="mdi:delete"></span>
+                </button>
+              </div>
+              <button mat-stroked-button color="primary" type="button" (click)="addProductToForm()">Ajouter un produit</button>
+            </div>
 
             <mat-form-field appearance="fill">
               <mat-label>Nom remise</mat-label>
@@ -204,6 +215,24 @@
           <mat-label>Date de validité</mat-label>
           <input matInput [value]="viewInvoiceData?.validity_date" disabled />
         </mat-form-field>
+
+        <div *ngIf="(viewInvoiceData?.products?.length || 0) > 0">
+          <h3>Produits achetés</h3>
+          <table style="width:100%;margin-bottom:16px;">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Produit</th>
+                <th style="text-align:right;">Quantité</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let prod of viewInvoiceData?.products">
+                <td>{{ getProductName(prod.product_id) }}</td>
+                <td style="text-align:right;">{{ prod.quantity }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </form>
     </div>
   </div>

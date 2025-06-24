@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Customer } from '../../models/customers.model';
+import { Invoice } from '../../models/invoices.model';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -40,11 +41,14 @@ export class CustomersComponent implements OnInit {
   confirmTitle = '';
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
+  invoices: Invoice[] = [];
+  filteredInvoices: Invoice[] = [];
+  invoiceSearch: string = '';
 
   constructor(
     private apiService: ApiService,
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute // <-- Ajouté
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -152,8 +156,26 @@ export class CustomersComponent implements OnInit {
       next: (data) => {
         this.viewCustomerData = data;
         this.showViewForm = true;
+        this.loadInvoicesForCustomer(data.id);
       }
     });
+  }
+
+  loadInvoicesForCustomer(customerId: number) {
+    this.apiService.getAllInvoices().subscribe({
+      next: (invoices: Invoice[]) => {
+        this.invoices = invoices.filter(inv => inv.customer_id === customerId);
+        this.filteredInvoices = this.invoices;
+      }
+    });
+  }
+
+  filterInvoices() {
+    const search = this.invoiceSearch.toLowerCase();
+    this.filteredInvoices = this.invoices.filter(inv =>
+      (`Facture#${inv.id}`.toLowerCase().includes(search) ||
+        (inv.object && inv.object.toLowerCase().includes(search)))
+    );
   }
 
   closeViewForm() {

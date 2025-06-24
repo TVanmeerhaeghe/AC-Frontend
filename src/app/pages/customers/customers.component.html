@@ -172,7 +172,40 @@
             </form>
           </mat-tab>
           <mat-tab label="Facture">
-          </mat-tab>
+          <div class="invoice-toolbar">
+            <div class="search-bar">
+              <input type="text" [(ngModel)]="invoiceSearch" (ngModelChange)="filterInvoices()" placeholder="Rechercher par numéro de facture" />
+              <span class="iconify" data-icon="material-symbols:search" data-inline="true"></span>
+            </div>
+            <div class="invoice-toolbar-actions">
+              <button mat-icon-button title="Télécharger la liste des factures">
+                <span class="iconify" data-icon="lucide:share" data-inline="true"></span>
+              </button>
+              <button mat-icon-button title="Ajouter une facture">
+                <span class="iconify" data-icon="mage:printer" data-inline="true"></span>
+              </button>
+              <button mat-icon-button title="Importer des factures">
+                <span class="iconify" data-icon="tabler:file-plus" data-inline="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="filteredInvoices.length === 0">
+            <span>Aucune facture trouvée pour ce client.</span>
+          </div>
+
+          <div *ngIf="filteredInvoices.length > 0" class="invoice-list">
+            <div *ngFor="let invoice of filteredInvoices" class="invoice-row">
+              <span class="invoice-ref">Facture#{{ invoice.id }}</span>
+              <div class="invoice-actions">
+                <button title="Voir">
+                  <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
+                </button>
+                <input type="checkbox" title="Sélectionner cette facture"/>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
           <mat-tab label="Devis">
           </mat-tab>
           <mat-tab label="Achats">
