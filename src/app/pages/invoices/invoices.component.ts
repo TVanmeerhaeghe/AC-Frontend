@@ -16,6 +16,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
+import { Task } from '../../models/tasks.model';
 
 interface InvoiceProductInput {
   product_id: number;
@@ -66,6 +67,8 @@ export class InvoicesComponent implements OnInit {
   invoiceStatuses = Object.values(InvoiceStatus);
   searchQuery: string = '';
   invoiceType: 'achat' | 'prestation' = 'achat';
+  prestationTasks: Partial<Task>[] = [];
+  tvaValues: string[] = [];
 
   showConfirm = false;
   confirmTitle = '';
@@ -82,6 +85,10 @@ export class InvoicesComponent implements OnInit {
     this.loadInvoices();
     this.loadCustomers();
     this.loadProducts();
+    this.apiService.getTvaValues().subscribe({
+      next: (values) => { this.tvaValues = values; },
+      error: () => { this.tvaValues = ['20.00', '21.20']; }
+    });
 
     this.route.queryParams.subscribe(params => {
       if (params['create'] === '1') {
@@ -132,6 +139,7 @@ export class InvoicesComponent implements OnInit {
     this.editMode = false;
     this.editInvoiceId = null;
     this.invoiceType = 'achat';
+    this.prestationTasks = [];
     const maxId = this.invoices.length > 0 ? Math.max(...this.invoices.map(invoice => invoice.id ?? 0)) : 0;
     const nextId = maxId + 1;
     this.createForm = {
@@ -168,6 +176,13 @@ export class InvoicesComponent implements OnInit {
           }))
         : [],
     };
+    this.invoiceType = invoice.products && invoice.products.length > 0 ? 'achat' : 'prestation';
+    this.prestationTasks = [];
+    if (this.invoiceType === 'prestation' && invoice.id) {
+      this.apiService.getAllTasks().subscribe(tasks => {
+        this.prestationTasks = tasks.filter(t => t.invoice_id === invoice.id);
+      });
+    }
   }
 
   addProductToForm() {
@@ -179,6 +194,20 @@ export class InvoicesComponent implements OnInit {
 
   removeProductFromForm(index: number) {
     this.createForm.products = this.createForm.products.filter((_, i) => i !== index);
+  }
+
+  addPrestationTask() {
+    this.prestationTasks.push({
+      name: '',
+      description: '',
+      hours: 1,
+      tva: this.tvaValues[0] || '20.00',
+      hourly_rate: 0
+    });
+  }
+
+  removePrestationTask(index: number) {
+    this.prestationTasks.splice(index, 1);
   }
 
   submitForm() {
@@ -203,6 +232,63 @@ export class InvoicesComponent implements OnInit {
       discount_value: this.createForm.discount_value,
       products: filteredProducts
     };
+
+    if (this.invoiceType === 'prestation') {
+      const formToSubmit: any = {
+        ...this.createForm,
+        products: [],
+      };
+      if (this.editMode && this.editInvoiceId) {
+        this.apiService.updateInvoice(this.editInvoiceId, formToSubmit).subscribe({
+          next: (invoice) => {
+            const invoiceId = invoice?.id ?? this.editInvoiceId;
+            const saveTasks$ = this.prestationTasks.map(task => {
+              if (task.id) {
+                return this.apiService.updateTask(task.id, { ...task, invoice_id: invoiceId });
+              } else {
+                return this.apiService.createTask({ ...task, invoice_id: invoiceId });
+              }
+            });
+            Promise.all(saveTasks$.map(obs => obs.toPromise())).then(() => {
+              this.closeCreateForm();
+              this.loadInvoices();
+              this.snackBar.open('Facture modifiée avec succès', 'Fermer', { duration: 3000 });
+            });
+          },
+          error: () => {
+            this.snackBar.open('Erreur lors de la modification de la facture', 'Fermer', { duration: 3000 });
+          }
+        });
+      } else {
+        this.apiService.createInvoice(formToSubmit).subscribe({
+          next: (invoice) => {
+            console.log('Invoice response:', invoice);
+            const invoiceId =
+              invoice?.id ??
+              invoice?.data?.id ??
+              invoice?.invoice?.id ??
+              invoice?.invoice_id ??
+              invoice?.[0]?.id;
+            if (!invoiceId) {
+              this.snackBar.open('Erreur : id de facture introuvable', 'Fermer', { duration: 3000 });
+              return;
+            }
+            const saveTasks$ = this.prestationTasks.map(task =>
+              this.apiService.createTask({ ...task, invoice_id: invoiceId }).toPromise()
+            );
+            Promise.all(saveTasks$).then(() => {
+              this.closeCreateForm();
+              this.loadInvoices();
+              this.snackBar.open('Facture et tâches créées avec succès', 'Fermer', { duration: 3000 });
+            });
+          },
+          error: () => {
+            this.snackBar.open('Erreur lors de la création de la facture', 'Fermer', { duration: 3000 });
+          }
+        });
+      }
+      return;
+    }
 
     if (this.editMode && this.editInvoiceId) {
       this.apiService.updateInvoice(this.editInvoiceId, formToSubmit).subscribe({
@@ -235,6 +321,13 @@ export class InvoicesComponent implements OnInit {
       next: (data) => {
         this.viewInvoiceData = data;
         this.showViewForm = true;
+        if (!data.products || data.products.length === 0) {
+          this.apiService.getAllTasks().subscribe(tasks => {
+            this.prestationTasks = tasks.filter(t => t.invoice_id === data.id);
+          });
+        } else {
+          this.prestationTasks = [];
+        }
       },
       error: () => {
         console.error('Erreur lors de la récupération de la facture');

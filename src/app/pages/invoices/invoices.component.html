@@ -133,6 +133,37 @@
                 </mat-chip-set>
               </div>
             </div>
+            <div *ngIf="invoiceType === 'prestation'">
+              <div>
+                <button type="button" (click)="addPrestationTask()">Ajouter une tâche</button>
+              </div>
+              <div *ngFor="let task of prestationTasks; let i = index" style="margin-bottom: 12px;">
+                <mat-form-field appearance="fill">
+                  <mat-label>Nom de la tâche</mat-label>
+                  <input matInput [(ngModel)]="task.name" name="task_name_{{i}}" required />
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label>Description</mat-label>
+                  <input matInput [(ngModel)]="task.description" name="task_desc_{{i}}" />
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label>Heures</mat-label>
+                  <input matInput type="number" [(ngModel)]="task.hours" name="task_hours_{{i}}" required />
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label>Taux horaire</mat-label>
+                  <input matInput type="number" [(ngModel)]="task.hourly_rate" name="task_rate_{{i}}" required />
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label>TVA</mat-label>
+                  <mat-select [(ngModel)]="task.tva" name="task_tva_{{i}}">
+                    <mat-option *ngFor="let tva of tvaValues" [value]="tva">{{ tva }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <button type="button" (click)="removePrestationTask(i)">Supprimer</button>
+                <hr>
+              </div>
+            </div>
 
             <mat-form-field appearance="fill">
               <mat-label>Nom remise</mat-label>
@@ -216,41 +247,49 @@
             <span class="highlight-color2"> de la facture</span>
           </ng-template>
         </h2>
-          <div class="products-chips" *ngIf="(viewInvoiceData?.products?.length || 0) > 0">
-            <mat-chip-set aria-label="product selection" *ngFor="let prod of (viewInvoiceData?.products ?? [])">
-              <mat-chip>{{ prod.name }} x{{ prod.InvoiceProduct?.quantity || prod.quantity }}</mat-chip>
-            </mat-chip-set>
-          </div>
-          <ng-container *ngIf="viewInvoiceData?.customer_id as cid">
-            <mat-form-field appearance="fill">
-              <mat-label>Adresse</mat-label>
-              <input matInput [value]="getCustomerField(cid, 'adress')" disabled />
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Code postal</mat-label>
-              <input matInput [value]="getCustomerField(cid, 'postal_code')" disabled />
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Ville</mat-label>
-              <input matInput [value]="getCustomerField(cid, 'city')" disabled />
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Entreprise</mat-label>
-              <input matInput [value]="getCustomerField(cid, 'company')" disabled />
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Téléphone</mat-label>
-              <input matInput [value]="getCustomerField(cid, 'phone')" disabled />
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Nom</mat-label>
-              <input matInput [value]="getCustomerField(cid, 'name')" disabled />
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Email</mat-label>
-              <input matInput [value]="getCustomerField(cid, 'email')" disabled />
-            </mat-form-field>
-          </ng-container>
+        <div class="products-chips" *ngIf="(viewInvoiceData?.products?.length || 0) > 0">
+          <mat-chip-set aria-label="product selection" *ngFor="let prod of (viewInvoiceData?.products ?? [])">
+            <mat-chip>{{ prod.name }} x{{ prod.InvoiceProduct?.quantity || prod.quantity }}</mat-chip>
+          </mat-chip-set>
+        </div>
+        <div *ngIf="(viewInvoiceData?.products?.length || 0) === 0 && prestationTasks.length > 0">
+          <h3>Tâches associées :</h3>
+          <ul>
+            <li *ngFor="let task of prestationTasks">
+              <b>{{ task.name }}</b> - {{ task.description }} ({{ task.hours }}h x {{ task.hourly_rate }}€, TVA {{ task.tva }}%)
+            </li>
+          </ul>
+        </div>
+        <ng-container *ngIf="viewInvoiceData?.customer_id as cid">
+          <mat-form-field appearance="fill">
+            <mat-label>Adresse</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'adress')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Code postal</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'postal_code')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Ville</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'city')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Entreprise</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'company')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Téléphone</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'phone')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Nom</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'name')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'email')" disabled />
+          </mat-form-field>
+        </ng-container>
         <mat-form-field appearance="fill">
           <mat-label>Note</mat-label>
           <input matInput [value]="viewInvoiceData?.admin_note" disabled />

@@ -12,6 +12,7 @@ import { Product } from '../models/products.model';
 import { Customer } from '../models/customers.model';
 import { Contact } from '../models/contact.model';
 import { Estimate } from '../models/estimates.model';
+import { Task } from '../models/tasks.model';
 
 @Injectable({
   providedIn: 'root',
@@ -251,6 +252,31 @@ export class ApiService {
 
   searchEstimates(query: string) {
     return this.http.get<Estimate[]>(`${this.baseUrl}estimates/search?q=${encodeURIComponent(query)}`);
+  }
+
+  // Tasks (Prestations)
+  getAllTasks(): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.baseUrl}tasks/`);
+  }
+
+  getTask(id: number): Observable<Task> {
+    return this.http.get<Task>(`${this.baseUrl}tasks/${id}`);
+  }
+
+  createTask(task: Partial<Task>): Observable<Task> {
+    return this.http.post<Task>(`${this.baseUrl}tasks/`, task);
+  }
+
+  updateTask(id: number, task: Partial<Task>): Observable<Task> {
+    return this.http.put<Task>(`${this.baseUrl}tasks/${id}`, task);
+  }
+
+  deleteTask(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}tasks/${id}`);
+  }
+
+  getTvaValues(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}tasks/tva/values`);
   }
 }
 
