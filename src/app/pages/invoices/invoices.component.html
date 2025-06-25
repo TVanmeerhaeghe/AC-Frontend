@@ -137,9 +137,9 @@
               <div>
                 <button type="button" (click)="addPrestationTask()">Ajouter une tâche</button>
               </div>
-              <div *ngFor="let task of prestationTasks; let i = index" style="margin-bottom: 12px;">
+              <div *ngFor="let task of prestationTasks; let i = index" class="task-row-fields">
                 <mat-form-field appearance="fill">
-                  <mat-label>Nom de la tâche</mat-label>
+                  <mat-label>Nom</mat-label>
                   <input matInput [(ngModel)]="task.name" name="task_name_{{i}}" required />
                 </mat-form-field>
                 <mat-form-field appearance="fill">
@@ -161,7 +161,6 @@
                   </mat-select>
                 </mat-form-field>
                 <button type="button" (click)="removePrestationTask(i)">Supprimer</button>
-                <hr>
               </div>
             </div>
 
@@ -241,10 +240,10 @@
         <h2 class="sub-title">
           Détail
           <ng-container *ngIf="(viewInvoiceData?.products?.length || 0) > 0; else noProduct">
-            <span class="highlight-color2"> produit</span>
+            <span class="highlight-color2"> des produits</span>
           </ng-container>
           <ng-template #noProduct>
-            <span class="highlight-color2"> de la facture</span>
+            <span class="highlight-color2"> des taches</span>
           </ng-template>
         </h2>
         <div class="products-chips" *ngIf="(viewInvoiceData?.products?.length || 0) > 0">
@@ -253,12 +252,17 @@
           </mat-chip-set>
         </div>
         <div *ngIf="(viewInvoiceData?.products?.length || 0) === 0 && prestationTasks.length > 0">
-          <h3>Tâches associées :</h3>
-          <ul>
-            <li *ngFor="let task of prestationTasks">
-              <b>{{ task.name }}</b> - {{ task.description }} ({{ task.hours }}h x {{ task.hourly_rate }}€, TVA {{ task.tva }}%)
-            </li>
-          </ul>
+          <div class="tasks-preview-list">
+            <ng-container *ngFor="let task of prestationTasks; let last = last">
+              <div class="task-preview-row">
+                <span class="task-name">{{ task.name }}</span>
+                <span class="task-price">
+                  {{ (task.hours ?? 0) * (task.hourly_rate ?? 0) | number:'1.2-2' }} €
+                </span>
+              </div>
+              <hr *ngIf="!last" class="task-separator" />
+            </ng-container>
+          </div>
         </div>
         <ng-container *ngIf="viewInvoiceData?.customer_id as cid">
           <mat-form-field appearance="fill">
