@@ -1,6 +1,5 @@
 @use '../../../styles/shared' as *;
 
-
 .invoices-main{
   display: flex;
   flex-direction: row;
@@ -253,7 +252,7 @@
       .form-fields {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 0px;
       }
 
       mat-form-field {
@@ -264,6 +263,73 @@
         width: 100%;
       }
     }
+
+      .select-products-chips{
+      display: flex;
+      flex-direction: row;
+      overflow-x: scroll;
+      gap: 8px;
+      margin-bottom: 10px;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      mat-chip-set {
+        mat-chip {
+          color: black;
+          background-color: $hover-color2;
+          border: 0.5px solid $color2;
+          button{
+            color: black;
+            background: none;
+            border: none;
+            align-items: center;
+            &:hover {
+              transform: scale(1.1);
+              transition: transform 0.5s;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
+
+        .select-products-chips {
+    mat-chip-set {
+      .product-chip {
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        .chip-label {
+          margin-right: 4px;
+
+        }
+        .chip-btn {
+          display: flex;
+          align-items: center;
+          padding: 0;
+          margin: 0 0 0 4px;
+          border-radius: 50%;
+          transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+          background: none;
+          color: #222;
+          &:hover {
+            background: none;
+          }
+          &.plus:hover {
+            color: #0077ff;
+            background: #e3f0ff;
+          }
+          &.minus:hover {
+            color: #db2828;
+            background: #ffeaea;
+          }
+        }
+      }
+    }
+  }
   }
 
   .view-invoice-form {
@@ -313,14 +379,14 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      margin-top: 40px;
+      margin-top: 0px;
 
       .user-invoice {
         display: flex;
         align-items: center;
         border-radius: 55px;
         width: 98%;
-        background-color: $hover-color2;
+        background-color: whitesmoke;
         padding: 15px 0px 15px 25px;
         margin-bottom: 30px;
 
@@ -344,22 +410,165 @@
       }
 
       mat-form-field {
-
-        
         .mat-input-element {
           background-color: #0077ff;
         }
       }
     }
-  }
 
-  .sub-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-
-    span {
-      color: #a1bcff;
+    .products-chips{
+      display: flex;
+      flex-direction: row;
+      overflow-x: scroll;
+      gap: 8px;
+      margin-bottom: 10px;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      mat-chip-set {
+        mat-chip {
+          color: black;
+          background-color: whitesmoke;
+          border: 0.5px solid #bbbbbb90;
+        }
+      }
     }
   }
+
+  .header-with-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 24px;
+
+  .sub-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.6rem;
+    font-weight: bold;
+  }
+
+  .invoice-type-toggle {
+    margin: 0;
+  }
+}
+
+  .invoice-type-toggle {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    justify-content: flex-start;
+    border: #222;
+
+    span {
+      font-weight: 500;
+      color: #b0b0b0;
+      font-size: 1.1em;
+      transition: color 0.2s;
+      &.active {
+        color: #0077ff;
+      }
+    }
+
+    .custom-switch {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      
+
+      input[type="checkbox"] {
+        opacity: 0;
+        width: 48px;
+        height: 26px;
+        margin: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 2;
+        cursor: pointer;
+      }
+
+      label {
+        width: 48px;
+        height: 26px;
+        display: block;
+        background: #e3f0ff;
+        border-radius: 34px;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.4s;
+        box-shadow: 0 0 4px #a1bcff44;
+      }
+
+      .slider {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        background: #0077ff;
+        border-radius: 50%;
+        transition: transform 0.4s;
+        z-index: 1;
+      }
+
+      input[type="checkbox"]:checked + label .slider {
+        transform: translateX(22px);
+        background: #0077ff;
+      }
+    }
+  }
+
+    .search-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+
+    .chip-btn-product {
+      background: $hover-color2;
+      border: 0.5px solid $color2;
+      color: black;
+      border-radius: 16px;
+      padding: 6px 18px;
+      font-size: 1em;
+      font-family: inherit;
+      margin: 0 8px 8px 0;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+      outline: none;
+      box-shadow: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+
+      &:hover:not(:disabled) {
+        background: #e3f0ff;
+        color: $blue;
+        transform: scale(1.06);
+        border-color: $blue;
+      }
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: $hover-color2;
+        color: #888;
+        border-color: $color2;
+      }
+    }
+  }
+
+  .highlight-color2 {
+  color: $color2;
+}
 }
 

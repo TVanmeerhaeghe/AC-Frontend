@@ -55,12 +55,29 @@
 
       <!-- Formulaire création/modif -->
       <div class="create-invoice-form" *ngIf="showCreateForm">
-        <h2 class="sub-title">
-        {{ editMode ? 'Modifier ' : 'Créer la ' }}
-        <span [style.color]="'#a1bcff'">
-            Facture#{{ editMode ? editInvoiceId : (invoices.length > 0 ? (invoices[invoices.length - 1].id ?? 0) + 1 : 1) }}
-        </span>
-        </h2>
+        <div class="header-with-toggle">
+          <h2 class="sub-title">
+            {{ editMode ? 'Modifier ' : 'Créer la ' }}
+            <span [style.color]="'#a1bcff'">
+              Facture#{{ editMode ? editInvoiceId : (invoices.length > 0 ? (invoices[invoices.length - 1].id ?? 0) + 1 : 1) }}
+            </span>
+          </h2>
+          <div class="invoice-type-toggle">
+            <span [class.active]="invoiceType === 'achat'">Achat de produits</span>
+            <div class="custom-switch">
+              <input
+                type="checkbox"
+                id="invoiceTypeSwitch"
+                [checked]="invoiceType === 'prestation'"
+                (change)="invoiceType = invoiceType === 'achat' ? 'prestation' : 'achat'"
+              />
+              <label for="invoiceTypeSwitch">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <span [class.active]="invoiceType === 'prestation'">Prestation de service</span>
+          </div>
+        </div>
         <form (ngSubmit)="submitForm()" #f="ngForm">
           <div class="form-fields">
             <mat-form-field appearance="fill">
@@ -74,7 +91,7 @@
               </mat-select>
             </mat-form-field>
             <mat-form-field appearance="fill">
-              <mat-label>Note admin</mat-label>
+              <mat-label>Note</mat-label>
               <input matInput [(ngModel)]="createForm.admin_note" name="admin_note" />
             </mat-form-field>
             <mat-form-field appearance="fill">
@@ -86,38 +103,35 @@
               </mat-select>
             </mat-form-field>
 
-            <div style="margin-bottom: 16px;">
-              <mat-radio-group [(ngModel)]="invoiceType" name="invoiceType">
-                <mat-radio-button value="achat">Facture d'achat</mat-radio-button>
-                <mat-radio-button value="prestation">Facture de prestations</mat-radio-button>
-              </mat-radio-group>
-            </div>
-
             <div *ngIf="invoiceType === 'achat'">
               <mat-form-field appearance="fill">
                 <mat-label>Rechercher un produit</mat-label>
-                <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onSearchQueryChange()" name="searchQuery" />
+                <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onSearchQueryChange()" name="searchQuery" autocomplete="off" />
               </mat-form-field>
 
-              <div *ngFor="let prod of createForm.products; let i = index; trackBy: trackByIndex" class="product-row" style="display: flex; gap: 8px; align-items: center;">
-                <mat-form-field appearance="fill" style="flex:2;">
-                  <mat-label>Produit</mat-label>
-                  <mat-select [(ngModel)]="prod.product_id" name="product_id_{{i}}" required [ngModelOptions]="{standalone: true}">
-                    <mat-option [value]="-1" disabled>Choisir un produit</mat-option>
-                    <mat-option *ngFor="let product of filteredProducts" [value]="product.id">
-                      {{ product.name }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="fill" style="flex:1;">
-                  <mat-label>Quantité</mat-label>
-                  <input matInput type="number" min="1" [(ngModel)]="prod.quantity" name="quantity_{{i}}" required [ngModelOptions]="{standalone: true}" />
-                </mat-form-field>
-                <button mat-icon-button color="warn" type="button" (click)="removeProductFromForm(i)" *ngIf="createForm.products.length > 1">
-                  <span class="iconify" data-icon="mdi:delete"></span>
+              <div *ngIf="searchQuery && filteredProducts.length > 0" class="search-results">
+                <button
+                  *ngFor="let product of filteredProducts"
+                  class="chip-btn-product"
+                  (click)="addOrIncrementProduct(product)"
+                  [disabled]="isProductInForm(product.id)">
+                  {{ product.name }}
                 </button>
               </div>
-              <button mat-stroked-button color="primary" type="button" (click)="addProductToForm()">Ajouter un produit</button>
+
+              <div class="select-products-chips" *ngIf="createForm.products.length > 0">
+                <mat-chip-set>
+                  <mat-chip *ngFor="let prod of createForm.products; let i = index">
+                    {{ getProductName(prod.product_id) }} x{{ prod.quantity }}
+                    <button mat-icon-button color="primary" type="button" (click)="decrementProduct(i)" style="margin-left:8px;">
+                      <span class="iconify" data-icon="mdi:minus"></span>
+                    </button>
+                    <button mat-icon-button color="primary" type="button" (click)="incrementProduct(i)">
+                      <span class="iconify" data-icon="mdi:plus"></span>
+                    </button>
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
             </div>
 
             <mat-form-field appearance="fill">
@@ -193,28 +207,50 @@
           <mat-label>Statut</mat-label>
           <input matInput [value]="viewInvoiceData?.status" disabled />
         </mat-form-field>
-        <h2 class="sub-title">Détail <span>produit</span></h2>
-          <div *ngIf="(viewInvoiceData?.products?.length || 0) > 0">
-            <mat-chip-set aria-label="Fish selection" *ngFor="let prod of (viewInvoiceData?.products ?? [])">
-              <mat-chip>{{ prod.name }} {{ prod.InvoiceProduct?.quantity || prod.quantity }}</mat-chip>
+        <h2 class="sub-title">
+          Détail
+          <ng-container *ngIf="(viewInvoiceData?.products?.length || 0) > 0; else noProduct">
+            <span class="highlight-color2"> produit</span>
+          </ng-container>
+          <ng-template #noProduct>
+            <span class="highlight-color2"> de la facture</span>
+          </ng-template>
+        </h2>
+          <div class="products-chips" *ngIf="(viewInvoiceData?.products?.length || 0) > 0">
+            <mat-chip-set aria-label="product selection" *ngFor="let prod of (viewInvoiceData?.products ?? [])">
+              <mat-chip>{{ prod.name }} x{{ prod.InvoiceProduct?.quantity || prod.quantity }}</mat-chip>
             </mat-chip-set>
           </div>
-        <!-- <mat-form-field appearance="fill">
-          <mat-label>Nom remise</mat-label>
-          <input matInput [value]="viewInvoiceData?.discount_name" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Valeur remise</mat-label>
-          <input matInput [value]="viewInvoiceData?.discount_value" disabled />
-        </mat-form-field> -->
-        <!-- <mat-form-field appearance="fill">
-          <mat-label>Date de création</mat-label>
-          <input matInput [value]="viewInvoiceData?.creation_date" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Date de validité</mat-label>
-          <input matInput [value]="viewInvoiceData?.validity_date" disabled />
-        </mat-form-field> -->
+          <ng-container *ngIf="viewInvoiceData?.customer_id as cid">
+            <mat-form-field appearance="fill">
+              <mat-label>Adresse</mat-label>
+              <input matInput [value]="getCustomerField(cid, 'adress')" disabled />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Code postal</mat-label>
+              <input matInput [value]="getCustomerField(cid, 'postal_code')" disabled />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Ville</mat-label>
+              <input matInput [value]="getCustomerField(cid, 'city')" disabled />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Entreprise</mat-label>
+              <input matInput [value]="getCustomerField(cid, 'company')" disabled />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Téléphone</mat-label>
+              <input matInput [value]="getCustomerField(cid, 'phone')" disabled />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Nom</mat-label>
+              <input matInput [value]="getCustomerField(cid, 'name')" disabled />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Email</mat-label>
+              <input matInput [value]="getCustomerField(cid, 'email')" disabled />
+            </mat-form-field>
+          </ng-container>
         <mat-form-field appearance="fill">
           <mat-label>Note</mat-label>
           <input matInput [value]="viewInvoiceData?.admin_note" disabled />

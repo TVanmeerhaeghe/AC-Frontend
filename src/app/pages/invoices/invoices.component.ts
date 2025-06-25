@@ -141,7 +141,7 @@ export class InvoicesComponent implements OnInit {
       customer_id: null,
       discount_name: '',
       discount_value: 0,
-      products: [{ product_id: -1, quantity: 1 }],
+      products: [],
       creation_date: new Date().toISOString().substring(0, 10),
       validity_date: new Date().toISOString().substring(0, 10),
       id: nextId,
@@ -166,7 +166,7 @@ export class InvoicesComponent implements OnInit {
             product_id: p.id,
             quantity: (p as any).InvoiceProduct?.quantity ?? (p as any).quantity ?? 1
           }))
-        : [{ product_id: -1, quantity: 1 }],
+        : [],
     };
   }
 
@@ -188,26 +188,21 @@ export class InvoicesComponent implements OnInit {
         product_id: Number(p.product_id),
         quantity: Number(p.quantity)
       }));
-
     const formToSubmit: any = {
-      ...this.createForm,
       creation_date: this.createForm.creation_date
         ? new Date(this.createForm.creation_date).toISOString().substring(0, 10)
         : '',
       validity_date: this.createForm.validity_date
         ? new Date(this.createForm.validity_date).toISOString().substring(0, 10)
         : '',
+      object: this.createForm.object,
+      status: this.createForm.status,
+      admin_note: this.createForm.admin_note,
+      customer_id: this.createForm.customer_id,
+      discount_name: this.createForm.discount_name,
+      discount_value: this.createForm.discount_value,
+      products: filteredProducts
     };
-
-    if (this.invoiceType === 'achat') {
-      if (filteredProducts.length === 0) {
-        this.snackBar.open('Veuillez ajouter au moins un produit avec une quantité valide.', 'Fermer', { duration: 3000 });
-        return;
-      }
-      formToSubmit.products = filteredProducts;
-    } else {
-      delete formToSubmit.products;
-    }
 
     if (this.editMode && this.editInvoiceId) {
       this.apiService.updateInvoice(this.editInvoiceId, formToSubmit).subscribe({
@@ -281,6 +276,12 @@ export class InvoicesComponent implements OnInit {
     return product ? product.name : 'Produit non renseigné';
   }
 
+  getCustomerAddress(customer_id: number | null | undefined): string {
+    if (!customer_id) return '';
+    const customer = this.customers.find(c => c.id === customer_id);
+    return customer?.adress ?? 'Adresse non renseignée';
+  }
+
   onSearchQueryChange() {
     if (this.products) {
       this.filteredProducts = this.products.filter(product =>
@@ -299,5 +300,36 @@ export class InvoicesComponent implements OnInit {
   }
   onCancelPopup() {
     this.showConfirm = false;
+  }
+
+  getCustomerField(customer_id: number, field: string): string {
+    const customer = this.customers.find(c => c.id === customer_id);
+    return customer && customer[field as keyof Customer] ? String(customer[field as keyof Customer]) : '';
+  }
+
+  isProductInForm(productId: number): boolean {
+    return this.createForm.products.some(p => p.product_id === productId);
+  }
+
+  addOrIncrementProduct(product: Product) {
+    const existing = this.createForm.products.find(p => p.product_id === product.id);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      this.createForm.products.push({ product_id: product.id, quantity: 1 });
+    }
+    this.searchQuery = '';
+    this.filteredProducts = this.products;
+  }
+
+  incrementProduct(index: number) {
+    this.createForm.products[index].quantity++;
+  }
+
+  decrementProduct(index: number) {
+    this.createForm.products[index].quantity--;
+    if (this.createForm.products[index].quantity <= 0) {
+      this.createForm.products.splice(index, 1);
+    }
   }
 }
