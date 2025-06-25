@@ -19,49 +19,47 @@
   }
 
   .products-menu {
+  background-color: $white;
+  padding: 10px 55px 40px 55px;
+  border-radius: 25px;
+  margin: 0px 0px 10px 0px;
+  max-width: fit-content;
+  height: 100px;
+
+  .actions{
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
     background-color: $white;
-    padding: 10px 55px 40px 55px;
-    border-radius: 25px;
-    flex-grow: 1;
-    margin: 0px 0px 10px 0px;
-    box-sizing: border-box;
-    max-width: fit-content;
-    height: fit-content;
+    margin-top: 15px;
 
-    .actions {
+    button {
+      border: none;
+      border-radius: 100%;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 10px;
+      color: $blue;
+      background: #e3f0ff;
       display: flex;
-      gap: 30px;
-      justify-content: center;
       align-items: center;
-      background-color: $white;
-      margin-top: 15px;
+      justify-content: center;
 
-      button {
-        border: none;
-        border-radius: 100%;
-        font-size: 2rem;
-        cursor: pointer;
-        padding: 10px;
-        color: $blue;
+      &:hover {
         background: #e3f0ff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        border-radius: 50%;
+        scale: 1.1;
+        transition: 0.5s;
+      }
 
-        &:hover {
-          background: #e3f0ff;
-          border-radius: 50%;
-          scale: 1.1;
-          transition: 0.5s;
-        }
-
-        &:active {
-          scale: 0.9;
-          transition: 0.3s;
-        }
+      &:active {
+        scale: 0.9;
+        transition: 0.3s;
       }
     }
   }
+}
 
   .products-list {
     background-color: $white;

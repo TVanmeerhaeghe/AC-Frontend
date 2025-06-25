@@ -22,11 +22,9 @@
   background-color: $white;
   padding: 10px 55px 40px 55px;
   border-radius: 25px;
-  flex-grow: 1;
   margin: 0px 0px 10px 0px;
-  box-sizing: border-box;
   max-width: fit-content;
-  height: fit-content;
+  height: 100px;
 
   .actions{
     display: flex;
