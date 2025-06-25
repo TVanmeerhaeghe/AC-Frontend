@@ -31,7 +31,7 @@
                       n°{{ estimate.id }}
                     </span>
                     <span class="object">
-                      {{ estimate.object }}
+                      Devis#{{ estimate.id }}
                     </span>
                   </div>
                   <div class="actions-cell">
@@ -59,7 +59,7 @@
         <h2 class="sub-title">
           {{ editMode ? 'Modifier ' : 'Créer le ' }}
           <span [style.color]="'#a1bcff'">
-            Devis#{{ editMode ? editEstimateId : (estimates.length > 0 ? (estimates[estimates.length - 1].id ?? 0) + 1 : 1) }}
+            Devis#{{ editMode ? editEstimateId : (estimates.length > 0 ? estimates[estimates.length - 1].id + 1 : 1) }}
           </span>
         </h2>
       </div>
@@ -96,6 +96,10 @@
             <input matInput type="number" [(ngModel)]="createForm.discountValue" name="discountValue" />
           </mat-form-field>
           <mat-form-field appearance="fill">
+            <mat-label>Note finale</mat-label>
+            <input matInput [(ngModel)]="createForm.finalNote" name="finalNote" />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
             <mat-label>Date de création</mat-label>
             <input matInput [matDatepicker]="picker1" [(ngModel)]="createForm.creationDate" name="creationDate" required />
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -106,10 +110,6 @@
             <input matInput [matDatepicker]="picker2" [(ngModel)]="createForm.validityDate" name="validityDate" required />
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker #picker2></mat-datepicker>
-          </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>Note finale</mat-label>
-            <input matInput [(ngModel)]="createForm.finalNote" name="finalNote" />
           </mat-form-field>
         </div>
         <div class="form-actions">
@@ -130,7 +130,7 @@
     <div class="view-estimate-form" *ngIf="showViewForm">
       <div class="top-view">
         <h2 class="sub-title">
-          Détails
+          Détails du
           <ng-container *ngIf="viewEstimateData?.object; else defaultViewTitle">
             <span class="form-object">
               {{ (viewEstimateData?.object?.length ?? 0) > 24 ? (viewEstimateData?.object ?? '' | slice:0:24) + '...' : (viewEstimateData?.object ?? '') }}

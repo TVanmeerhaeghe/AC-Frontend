@@ -5,7 +5,7 @@ export interface Estimate {
     object: string;
     status: EstimateStatus;
     adminNote: string;
-    customerId: number;
+    customerId: number; // doit être number, pas string
     discountName: string;
     discountValue: number;
     finalNote: string;

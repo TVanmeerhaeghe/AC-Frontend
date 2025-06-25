@@ -203,13 +203,19 @@ export class EstimatesComponent implements OnInit {
     this.showConfirm = true;
   }
 
-  getCustomerFullName(customerId: number): string {
-    const customer = this.customers.find(c => c.id === customerId);
+  getCustomerFullName(customerId: number | string | null | undefined): string {
+    if (!customerId) return 'Client non renseigné';
+    // Convertir en nombre si besoin
+    const id = typeof customerId === 'string' ? parseInt(customerId, 10) : customerId;
+    const customer = this.customers.find(c => c.id === id);
     return customer ? `${customer.surname} ${customer.name}` : 'Client non renseigné';
   }
 
-  getCustomerField(customerId: number, field: string): string {
-    const customer = this.customers.find(c => c.id === customerId);
+  getCustomerField(customerId: number | string | null | undefined, field: string): string {
+    if (!customerId) return '';
+    const id = typeof customerId === 'string' ? parseInt(customerId, 10) : customerId;
+    const customer = this.customers.find(c => c.id === id);
+    // console.log('getCustomerField', { id, field, customer });
     return customer && customer[field as keyof Customer] ? String(customer[field as keyof Customer]) : '';
   }
 
