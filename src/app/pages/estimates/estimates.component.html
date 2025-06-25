@@ -1,0 +1,214 @@
+<div class="app-content">
+  <div class="estimates-main">
+    <div class="left-view" [class.pushed]="showCreateForm || showViewForm">
+      <div class="estimates-menu">
+        <h2 class="sub-title">Outils</h2>
+        <div class="actions">
+          <button title="Ajouter un devis">
+            <span class="iconify" data-icon="icon-park-outline:add" data-inline="true"></span>
+          </button>
+          <button title="Ajouter un devis">
+            <span class="iconify" data-icon="material-symbols:download-rounded" data-inline="true"></span>
+          </button>
+          <button title="Ajouter un devis">
+            <span class="iconify" data-icon="fluent:print-16-regular" data-inline="true"></span>
+          </button>
+          <button title="Ajouter un devis" (click)="openCreateForm()">
+            <span class="iconify" data-icon="lucide:file-plus" data-inline="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="estimates-list">
+        <h2 class="sub-title">Liste des devis</h2>
+        <div *ngIf="loading" class="loading">Chargement...</div>
+        <table *ngIf="!loading && filteredEstimates.length > 0" class="estimate-table">
+          <tbody>
+            <tr *ngFor="let estimate of filteredEstimates">
+              <td colspan="2" class="row-cell">
+                <div class="row-bg">
+                  <div class="identity-cell">
+                    <span class="avatar">
+                      n°{{ estimate.id }}
+                    </span>
+                    <span class="object">
+                      {{ estimate.object }}
+                    </span>
+                  </div>
+                  <div class="actions-cell">
+                    <div class="actions">
+                      <button title="Voir" (click)="viewEstimate(estimate)">
+                        <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
+                      </button>
+                      <button title="Éditer" (click)="openEditForm(estimate)">
+                        <span class="iconify" data-icon="weui:pencil-filled" data-inline="true"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!loading && filteredEstimates.length === 0">Aucun devis trouvé.</div>
+      </div>
+    </div>
+
+    <!-- Formulaire création/modif -->
+    <div class="create-estimate-form" *ngIf="showCreateForm">
+      <div class="header-with-toggle">
+        <h2 class="sub-title">
+          {{ editMode ? 'Modifier ' : 'Créer le ' }}
+          <span [style.color]="'#a1bcff'">
+            Devis#{{ editMode ? editEstimateId : (estimates.length > 0 ? (estimates[estimates.length - 1].id ?? 0) + 1 : 1) }}
+          </span>
+        </h2>
+      </div>
+      <form (ngSubmit)="submitForm()" #f="ngForm">
+        <div class="form-fields">
+          <mat-form-field appearance="fill">
+            <mat-label>Objet</mat-label>
+            <input matInput [(ngModel)]="createForm.object" name="object" required />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Statut</mat-label>
+            <mat-select [(ngModel)]="createForm.status" name="status" required>
+              <mat-option *ngFor="let status of estimateStatuses" [value]="status">{{ status }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Note</mat-label>
+            <input matInput [(ngModel)]="createForm.adminNote" name="adminNote" />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Client</mat-label>
+            <mat-select [(ngModel)]="createForm.customerId" name="customerId" required>
+              <mat-option *ngFor="let customer of customers" [value]="customer.id">
+                {{ customer.surname }} {{ customer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Nom remise</mat-label>
+            <input matInput [(ngModel)]="createForm.discountName" name="discountName" />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Valeur remise</mat-label>
+            <input matInput type="number" [(ngModel)]="createForm.discountValue" name="discountValue" />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Date de création</mat-label>
+            <input matInput [matDatepicker]="picker1" [(ngModel)]="createForm.creationDate" name="creationDate" required />
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Date de validité</mat-label>
+            <input matInput [matDatepicker]="picker2" [(ngModel)]="createForm.validityDate" name="validityDate" required />
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Note finale</mat-label>
+            <input matInput [(ngModel)]="createForm.finalNote" name="finalNote" />
+          </mat-form-field>
+        </div>
+        <div class="form-actions">
+          <button mat-stroked-button color="warn" type="button" class="cancel" (click)="closeCreateForm()">Annuler</button>
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="create"
+            [disabled]="f.invalid">
+            {{ editMode ? 'Modifier' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Vue devis -->
+    <div class="view-estimate-form" *ngIf="showViewForm">
+      <div class="top-view">
+        <h2 class="sub-title">
+          Détails
+          <ng-container *ngIf="viewEstimateData?.object; else defaultViewTitle">
+            <span class="form-object">
+              {{ (viewEstimateData?.object?.length ?? 0) > 24 ? (viewEstimateData?.object ?? '' | slice:0:24) + '...' : (viewEstimateData?.object ?? '') }}
+            </span>
+          </ng-container>
+          <ng-template #defaultViewTitle> d'un devis</ng-template>
+        </h2>
+        <div class="view-actions">
+          <button class="btn-small" title="Fermer" (click)="closeViewForm()">Fermer</button>
+          <button class="btn-small" title="Éditer" (click)="viewEstimateData && openEditForm(viewEstimateData)">Éditer</button>
+          <button class="btn-small" title="Supprimer" (click)="askDeleteEstimate(viewEstimateData)">Supprimer</button>
+        </div>
+      </div>
+      <form>
+        <mat-form-field appearance="fill">
+          <mat-label>Objet</mat-label>
+          <input matInput [value]="viewEstimateData?.object" disabled />
+        </mat-form-field>
+        <div class="user-estimate">
+          <span class="iconify user-estimate-avatar" data-icon="mynaui:user" data-inline="true"></span>
+          <span>
+            {{
+              customers.length > 0 && viewEstimateData && viewEstimateData.customerId != null
+                ? getCustomerFullName(viewEstimateData.customerId)
+                : 'Client non renseigné'
+            }}
+          </span>
+        </div>
+        <mat-form-field appearance="fill">
+          <mat-label>Statut</mat-label>
+          <input matInput [value]="viewEstimateData?.status" disabled />
+        </mat-form-field>
+        <ng-container *ngIf="viewEstimateData?.customerId as cid">
+          <mat-form-field appearance="fill">
+            <mat-label>Adresse</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'adress')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Code postal</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'postal_code')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Ville</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'city')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Entreprise</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'company')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Téléphone</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'phone')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Nom</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'name')" disabled />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput [value]="getCustomerField(cid, 'email')" disabled />
+          </mat-form-field>
+        </ng-container>
+        <mat-form-field appearance="fill">
+          <mat-label>Note</mat-label>
+          <input matInput [value]="viewEstimateData?.adminNote" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Note finale</mat-label>
+          <input matInput [value]="viewEstimateData?.finalNote" disabled />
+        </mat-form-field>
+      </form>
+    </div>
+  </div>
+</div>
+<app-confirm-popup
+  [show]="showConfirm"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  (confirm)="onConfirmPopup()"
+  (cancel)="onCancelPopup()"
+></app-confirm-popup>

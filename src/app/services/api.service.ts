@@ -11,6 +11,7 @@ import { Category } from '../models/categories.model';
 import { Product } from '../models/products.model';
 import { Customer } from '../models/customers.model';
 import { Contact } from '../models/contact.model';
+import { Estimate } from '../models/estimates.model';
 
 @Injectable({
   providedIn: 'root',
@@ -225,6 +226,31 @@ export class ApiService {
 
   deleteCategory(id: number) {
     return this.http.delete(`http://diawd.fr/acbrocante/api/categories/${id}`);
+  }
+
+  // Estimates
+  getAllEstimates() {
+    return this.http.get<Estimate[]>(`${this.baseUrl}estimates/`);
+  }
+
+  getEstimate(id: number) {
+    return this.http.get<Estimate>(`${this.baseUrl}estimates/${id}`);
+  }
+
+  createEstimate(data: Partial<Estimate>) {
+    return this.http.post<Estimate>(`${this.baseUrl}estimates/`, data);
+  }
+
+  updateEstimate(id: number, data: Partial<Estimate>) {
+    return this.http.put<Estimate>(`${this.baseUrl}estimates/${id}`, data);
+  }
+
+  deleteEstimate(id: number) {
+    return this.http.delete(`${this.baseUrl}estimates/${id}`);
+  }
+
+  searchEstimates(query: string) {
+    return this.http.get<Estimate[]>(`${this.baseUrl}estimates/search?q=${encodeURIComponent(query)}`);
   }
 }
 
