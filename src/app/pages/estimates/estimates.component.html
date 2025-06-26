@@ -62,6 +62,14 @@
             Devis#{{ editMode ? editEstimateId : (estimates.length > 0 ? estimates[estimates.length - 1].id + 1 : 1) }}
           </span>
         </h2>
+        <div class="chips-totaux-taches">
+          <mat-chip class="ht-chip" selected>
+            Total HT : {{ prestationTotalHT | number:'1.2-2' }} €
+          </mat-chip>
+          <mat-chip class="ttc-chip" selected>
+            Total TTC : {{ prestationTotalTTC | number:'1.2-2' }} €
+          </mat-chip>
+        </div>
       </div>
       <form (ngSubmit)="submitForm()" #f="ngForm">
         <div class="form-fields">
@@ -87,6 +95,48 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+
+          <!-- tache -->
+          <div>
+            <div *ngFor="let task of prestationTasks; let i = index" class="task-row-fields" style="display: flex; flex-direction: row; gap: 12px; align-items: flex-end; margin-bottom: 12px;">
+              <mat-form-field appearance="fill">
+                <mat-label>Nom</mat-label>
+                <input matInput [(ngModel)]="task.name" name="task_name_{{i}}" required />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Description</mat-label>
+                <input matInput [(ngModel)]="task.description" name="task_desc_{{i}}" />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Heures</mat-label>
+                <input matInput type="number" [(ngModel)]="task.hours" name="task_hours_{{i}}" required />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Taux horaire</mat-label>
+                <input matInput type="number" [(ngModel)]="task.hourly_rate" name="task_rate_{{i}}" required />
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>TVA</mat-label>
+                <mat-select [(ngModel)]="task.tva" name="task_tva_{{i}}">
+                  <mat-option *ngFor="let tva of tvaValues" [value]="tva">{{ tva }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <button type="button" (click)="removePrestationTask(i)">Supprimer</button>
+            </div>
+            <div class="add-task-btn-row">
+              <button
+                type="button"
+                class="add-task-btn"
+                (click)="addPrestationTask()"
+                title="Ajouter une tâche"
+                [disabled]="!isLastTaskValid()"
+              >
+                <span class="iconify" data-icon="ic:round-plus" style="font-size: 1.7em;"></span>
+              </button>
+              <span class="add-task-label" [class.disabled]="!isLastTaskValid()">Ajouter une tâche</span>
+            </div>
+          </div>
+
           <mat-form-field appearance="fill">
             <mat-label>Nom remise</mat-label>
             <input matInput [(ngModel)]="createForm.discountName" name="discountName" />
@@ -163,6 +213,22 @@
           <mat-label>Statut</mat-label>
           <input matInput [value]="viewEstimateData?.status" disabled />
         </mat-form-field>
+        <h2 class="sub-title">
+          Détail <span class="highlight-color2">des tâches</span>
+        </h2>
+        <div *ngIf="prestationTasks.length > 0">
+          <div class="tasks-preview-list">
+            <ng-container *ngFor="let task of prestationTasks; let last = last">
+              <div class="task-preview-row">
+                <span class="task-name">{{ task.name }}</span>
+                <span class="task-price">
+                  {{ (task.hours ?? 0) * (task.hourly_rate ?? 0) | number:'1.2-2' }} €
+                </span>
+              </div>
+              <hr *ngIf="!last" class="task-separator" />
+            </ng-container>
+          </div>
+        </div>
         <ng-container *ngIf="viewEstimateData?.customerId as cid">
           <mat-form-field appearance="fill">
             <mat-label>Adresse</mat-label>

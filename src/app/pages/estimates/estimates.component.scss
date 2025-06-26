@@ -28,7 +28,7 @@
 
     .actions {
       display: flex;
-      gap: 30px;
+      gap: 15px;
       justify-content: center;
       align-items: center;
       background-color: $white;
@@ -261,6 +261,89 @@
         width: 100%;
       }
     }
+
+    .task-row-fields {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      align-items: flex-end;
+      margin-bottom: 12px;
+
+      mat-form-field {
+        flex: 1 1 0;
+        min-width: 120px;
+        margin-bottom: 0;
+      }
+
+      button {
+        height: 40px;
+        align-self: center;
+        margin-left: 8px;
+        background: #ffeaea;
+        color: #db2828;
+        border: none;
+        border-radius: 8px;
+        padding: 0 16px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s;
+        &:hover {
+          background: #db2828;
+          color: #fff;
+        }
+      }
+    }
+
+    .add-task-btn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      margin-top: 2px;
+    }
+
+    .add-task-btn {
+      border: none;
+      border-radius: 50%;
+      background: $blue;
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0077ff22;
+      transition: background 0.2s, transform 0.2s;
+      &:hover {
+        background: $color2;
+        transform: scale(1.08);
+      }
+      &:active {
+        background: $color2;
+        transform: scale(0.97);
+      }
+
+      &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #b0b0b0 !important;
+        color: #fff !important;
+        box-shadow: none;
+      }
+    }
+
+    .add-task-label {
+      font-size: 1.1em;
+      color: $blue;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      &.disabled {
+        color: #b0b0b0;
+        font-weight: 400;
+      }
+    }
   }
 
   .view-estimate-form {
@@ -367,5 +450,58 @@
 
   .highlight-color2 {
     color: $color2;
+  }
+
+  .tasks-preview-list {
+    margin-bottom: 16px;
+    .task-preview-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.1em;
+      .task-name {
+        font-weight: 500;
+        color: #0077ff;
+      }
+      .task-price {
+        padding: 25px 25px 25px 0px;
+        font-weight: 600;
+        color: #222;
+      }
+    }
+    .task-separator {
+      border: none;
+      border-top: 2px solid #0077ff;
+      margin: 0 0 0.5em 0;
+    }
+  }
+
+  .chips-totaux-taches {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    margin-top: 4px;
+    mat-chip {
+      font-size: 1.1em;
+      font-weight: 600;
+      &.ht-chip {
+        background: $color2;
+        color: #fff;
+      }
+      &.ttc-chip {
+        background: $light-blue;
+        color: #fff;
+      }
+    }
+  }
+
+  .tva-details {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 8px;
+    margin-top: -6px;
+    font-size: 1em;
+    color: #0077ff;
   }
 }

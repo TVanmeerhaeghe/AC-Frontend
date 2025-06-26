@@ -5,12 +5,13 @@ export interface Estimate {
     object: string;
     status: EstimateStatus;
     adminNote: string;
-    customerId: number; // doit être number, pas string
+    customerId: number;
     discountName: string;
     discountValue: number;
     finalNote: string;
     createdAt: Date;
     updatedAt: Date;
+    estimate_id?: number;
 }
 
 export enum EstimateStatus {

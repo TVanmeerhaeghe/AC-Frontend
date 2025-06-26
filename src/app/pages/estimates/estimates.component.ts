@@ -13,6 +13,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
+import { Task } from '../../models/tasks.model';
+import { lastValueFrom } from 'rxjs';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-estimates',
@@ -28,7 +31,8 @@ import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    ConfirmPopupComponent
+    ConfirmPopupComponent,
+    MatChipsModule
   ],
 })
 export class EstimatesComponent implements OnInit {
@@ -60,6 +64,9 @@ export class EstimatesComponent implements OnInit {
   confirmMessage = '';
   confirmAction: (() => void) | null = null;
 
+  tvaValues: string[] = [];
+  prestationTasks: Partial<Task>[] = [];
+
   constructor(
     private apiService: ApiService,
     private snackBar: MatSnackBar,
@@ -69,6 +76,11 @@ export class EstimatesComponent implements OnInit {
   ngOnInit(): void {
     this.loadEstimates();
     this.loadCustomers();
+    // Ajout récupération TVA
+    this.apiService.getTvaValues?.().subscribe?.({
+      next: (values: string[]) => { this.tvaValues = values; },
+      error: () => { this.tvaValues = ['20.00', '21.20']; }
+    });
 
     this.route.queryParams.subscribe(params => {
       if (params['create'] === '1') {
@@ -107,6 +119,7 @@ export class EstimatesComponent implements OnInit {
     this.showCreateForm = true;
     this.editMode = false;
     this.editEstimateId = null;
+    this.prestationTasks = [];
     this.createForm = {
       object: '',
       status: EstimateStatus.Brouillon,
@@ -132,9 +145,63 @@ export class EstimatesComponent implements OnInit {
     this.showCreateForm = true;
     this.editEstimateId = estimate.id ?? null;
     this.createForm = { ...estimate };
+    this.prestationTasks = [];
+    if (estimate.id) {
+      this.apiService.getAllTasks?.().subscribe?.((tasks: Task[]) => {
+        this.prestationTasks = tasks.filter(t => t.estimate_id === estimate.id);
+      });
+    }
+  }
+  addPrestationTask() {
+    this.prestationTasks.push({
+      name: '',
+      description: '',
+      hours: 1,
+      tva: this.tvaValues[0] || '20.00',
+      hourly_rate: 0
+    });
+  }
+  removePrestationTask(index: number) {
+    this.prestationTasks.splice(index, 1);
+  }
+  isLastTaskValid(): boolean {
+    if (this.prestationTasks.length === 0) return true;
+    const last = this.prestationTasks[this.prestationTasks.length - 1];
+    if (!last) return false;
+    if (!last.name || last.name.trim() === '') return false;
+    if (!last.hours || last.hours <= 0) return false;
+    if (!last.hourly_rate || last.hourly_rate <= 0) return false;
+    return true;
   }
 
-  submitForm() {
+  // Totaux
+  get prestationTotalHT(): number {
+    return this.prestationTasks.reduce((sum, task) =>
+      sum + ((task.hours ?? 0) * (task.hourly_rate ?? 0)), 0
+    );
+  }
+  get prestationTotalTTC(): number {
+    return this.prestationTasks.reduce((sum, task) => {
+      const ht = (task.hours ?? 0) * (task.hourly_rate ?? 0);
+      const tva = parseFloat(task.tva ?? '0');
+      return sum + ht * (1 + (tva / 100));
+    }, 0);
+  }
+  get prestationTVADetails(): { tva: string, montant: number }[] {
+    const tvaMap = new Map<string, number>();
+    for (const task of this.prestationTasks) {
+      const ht = (task.hours ?? 0) * (task.hourly_rate ?? 0);
+      const tva = task.tva ?? '0';
+      const tvaRate = parseFloat(tva);
+      if (!tvaMap.has(tva)) tvaMap.set(tva, 0);
+      tvaMap.set(tva, tvaMap.get(tva)! + ht * (tvaRate / 100));
+    }
+    return Array.from(tvaMap.entries())
+      .filter(([tva, montant]) => parseFloat(tva) > 0 && montant > 0)
+      .map(([tva, montant]) => ({ tva, montant }));
+  }
+
+  async submitForm() {
     const formToSubmit: any = {
       ...this.createForm,
       creationDate: this.createForm.creationDate ? new Date(this.createForm.creationDate).toISOString().substring(0, 10) : '',
@@ -143,7 +210,16 @@ export class EstimatesComponent implements OnInit {
 
     if (this.editMode && this.editEstimateId) {
       this.apiService.updateEstimate(this.editEstimateId, formToSubmit).subscribe({
-        next: () => {
+        next: async (estimate) => {
+          const estimateId = estimate?.id ?? this.editEstimateId;
+          const saveTasks$ = this.prestationTasks.map(task => {
+            if ((task as any).id) {
+              return lastValueFrom(this.apiService.updateTask((task as any).id, { ...task, estimate_id: estimateId }));
+            } else {
+              return lastValueFrom(this.apiService.createTask({ ...task, estimate_id: estimateId }));
+            }
+          });
+          await Promise.all(saveTasks$);
           this.closeCreateForm();
           this.loadEstimates();
           this.snackBar.open('Devis modifié avec succès', 'Fermer', { duration: 3000 });
@@ -154,10 +230,24 @@ export class EstimatesComponent implements OnInit {
       });
     } else {
       this.apiService.createEstimate(formToSubmit).subscribe({
-        next: () => {
+        next: async (estimate) => {
+          let estimateId =
+            estimate?.id ??
+            estimate?.estimate_id;
+          if (!estimateId && Array.isArray(estimate) && estimate[0]?.id) {
+            estimateId = estimate[0].id;
+          }
+          if (!estimateId) {
+            this.snackBar.open('Erreur : id de devis introuvable', 'Fermer', { duration: 3000 });
+            return;
+          }
+          const saveTasks$ = this.prestationTasks.map(task =>
+            lastValueFrom(this.apiService.createTask({ ...task, estimate_id: estimateId }))
+          );
+          await Promise.all(saveTasks$);
           this.closeCreateForm();
           this.loadEstimates();
-          this.snackBar.open('Devis créé avec succès', 'Fermer', { duration: 3000 });
+          this.snackBar.open('Devis et tâches créés avec succès', 'Fermer', { duration: 3000 });
         },
         error: () => {
           this.snackBar.open('Erreur lors de la création du devis', 'Fermer', { duration: 3000 });
@@ -172,6 +262,10 @@ export class EstimatesComponent implements OnInit {
       next: (data) => {
         this.viewEstimateData = data;
         this.showViewForm = true;
+        // Charger les tâches pour la vue
+        this.apiService.getAllTasks?.().subscribe?.((tasks: Task[]) => {
+          this.prestationTasks = tasks.filter(t => t.estimate_id === data.id);
+        });
       },
       error: () => {
         console.error('Erreur lors de la récupération du devis');
