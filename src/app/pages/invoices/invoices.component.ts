@@ -17,6 +17,7 @@ import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.
 import { MatRadioModule } from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
 import { Task } from '../../models/tasks.model';
+import { lastValueFrom } from 'rxjs';
 
 interface InvoiceProductInput {
   product_id: number;
@@ -240,20 +241,19 @@ export class InvoicesComponent implements OnInit {
       };
       if (this.editMode && this.editInvoiceId) {
         this.apiService.updateInvoice(this.editInvoiceId, formToSubmit).subscribe({
-          next: (invoice) => {
+          next: async (invoice) => {
             const invoiceId = invoice?.id ?? this.editInvoiceId;
             const saveTasks$ = this.prestationTasks.map(task => {
               if (task.id) {
-                return this.apiService.updateTask(task.id, { ...task, invoice_id: invoiceId });
+                return lastValueFrom(this.apiService.updateTask(task.id, { ...task, invoice_id: invoiceId }));
               } else {
-                return this.apiService.createTask({ ...task, invoice_id: invoiceId });
+                return lastValueFrom(this.apiService.createTask({ ...task, invoice_id: invoiceId }));
               }
             });
-            Promise.all(saveTasks$.map(obs => obs.toPromise())).then(() => {
-              this.closeCreateForm();
-              this.loadInvoices();
-              this.snackBar.open('Facture modifiée avec succès', 'Fermer', { duration: 3000 });
-            });
+            await Promise.all(saveTasks$);
+            this.closeCreateForm();
+            this.loadInvoices();
+            this.snackBar.open('Facture modifiée avec succès', 'Fermer', { duration: 3000 });
           },
           error: () => {
             this.snackBar.open('Erreur lors de la modification de la facture', 'Fermer', { duration: 3000 });
@@ -261,7 +261,7 @@ export class InvoicesComponent implements OnInit {
         });
       } else {
         this.apiService.createInvoice(formToSubmit).subscribe({
-          next: (invoice) => {
+          next: async (invoice) => {
             console.log('Invoice response:', invoice);
             const invoiceId =
               invoice?.id ??
@@ -274,13 +274,12 @@ export class InvoicesComponent implements OnInit {
               return;
             }
             const saveTasks$ = this.prestationTasks.map(task =>
-              this.apiService.createTask({ ...task, invoice_id: invoiceId }).toPromise()
+              lastValueFrom(this.apiService.createTask({ ...task, invoice_id: invoiceId }))
             );
-            Promise.all(saveTasks$).then(() => {
-              this.closeCreateForm();
-              this.loadInvoices();
-              this.snackBar.open('Facture et tâches créées avec succès', 'Fermer', { duration: 3000 });
-            });
+            await Promise.all(saveTasks$);
+            this.closeCreateForm();
+            this.loadInvoices();
+            this.snackBar.open('Facture et tâches créées avec succès', 'Fermer', { duration: 3000 });
           },
           error: () => {
             this.snackBar.open('Erreur lors de la création de la facture', 'Fermer', { duration: 3000 });
@@ -433,7 +432,6 @@ export class InvoicesComponent implements OnInit {
   }
 
   get prestationTotalTTC(): number {
-    // Additionne la TVA de chaque tâche individuellement
     return this.prestationTasks.reduce((sum, task) => {
       const ht = (task.hours ?? 0) * (task.hourly_rate ?? 0);
       const tva = parseFloat(task.tva ?? '0');
@@ -446,5 +444,21 @@ export class InvoicesComponent implements OnInit {
     return this.viewInvoiceData.products.reduce((sum, prod) =>
       sum + ((prod.price ?? 0) * ((prod.InvoiceProduct?.quantity ?? prod.quantity ?? 1))), 0
     );
+  }
+
+  // Détail du montant de TVA par taux (pour affichage avancé)
+  get prestationTVADetails(): { tva: string, montant: number }[] {
+    const tvaMap = new Map<string, number>();
+    for (const task of this.prestationTasks) {
+      const ht = (task.hours ?? 0) * (task.hourly_rate ?? 0);
+      const tva = task.tva ?? '0';
+      const tvaRate = parseFloat(tva);
+      if (!tvaMap.has(tva)) tvaMap.set(tva, 0);
+      tvaMap.set(tva, tvaMap.get(tva)! + ht * (tvaRate / 100));
+    }
+    // On ne garde que les taux > 0
+    return Array.from(tvaMap.entries())
+      .filter(([tva, montant]) => parseFloat(tva) > 0 && montant > 0)
+      .map(([tva, montant]) => ({ tva, montant }));
   }
 }

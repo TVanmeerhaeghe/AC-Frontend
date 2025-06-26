@@ -19,6 +19,8 @@ import { Task } from '../models/tasks.model';
 })
 export class ApiService {
   private baseUrl = 'http://diawd.fr/acbrocante/api/';
+  // local development URL :
+  // private baseUrl = 'http://localhost:3000/acbrocante/api/'; 
 
   constructor(private http: HttpClient) {}
 
