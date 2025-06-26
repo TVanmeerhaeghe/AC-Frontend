@@ -76,7 +76,7 @@ export class EstimatesComponent implements OnInit {
   ngOnInit(): void {
     this.loadEstimates();
     this.loadCustomers();
-    // Ajout récupération TVA
+    // TVA
     this.apiService.getTvaValues?.().subscribe?.({
       next: (values: string[]) => { this.tvaValues = values; },
       error: () => { this.tvaValues = ['20.00', '21.20']; }
@@ -174,7 +174,7 @@ export class EstimatesComponent implements OnInit {
     return true;
   }
 
-  // Totaux
+  // Totau
   get prestationTotalHT(): number {
     return this.prestationTasks.reduce((sum, task) =>
       sum + ((task.hours ?? 0) * (task.hourly_rate ?? 0)), 0
@@ -202,10 +202,21 @@ export class EstimatesComponent implements OnInit {
   }
 
   async submitForm() {
+    // Mapping correct des champs pour l'API
     const formToSubmit: any = {
-      ...this.createForm,
-      creationDate: this.createForm.creationDate ? new Date(this.createForm.creationDate).toISOString().substring(0, 10) : '',
-      validityDate: this.createForm.validityDate ? new Date(this.createForm.validityDate).toISOString().substring(0, 10) : ''
+      creation_date: this.createForm.creationDate
+        ? new Date(this.createForm.creationDate).toISOString().substring(0, 10)
+        : '',
+      validity_date: this.createForm.validityDate
+        ? new Date(this.createForm.validityDate).toISOString().substring(0, 10)
+        : '',
+      object: this.createForm.object,
+      status: this.createForm.status,
+      admin_note: this.createForm.adminNote,
+      customer_id: this.createForm.customerId,
+      discount_name: this.createForm.discountName,
+      discount_value: this.createForm.discountValue,
+      final_note: this.createForm.finalNote
     };
 
     if (this.editMode && this.editEstimateId) {
@@ -230,13 +241,13 @@ export class EstimatesComponent implements OnInit {
       });
     } else {
       this.apiService.createEstimate(formToSubmit).subscribe({
-        next: async (estimate) => {
+        next: async (response) => {
           let estimateId =
-            estimate?.id ??
-            estimate?.estimate_id;
-          if (!estimateId && Array.isArray(estimate) && estimate[0]?.id) {
-            estimateId = estimate[0].id;
-          }
+            (response && (response as any).estimate && (response as any).estimate.id) ? (response as any).estimate.id :
+            (response && (response as any).estimate_id) ? (response as any).estimate_id :
+            (response && (response as any).id) ? (response as any).id :
+            (Array.isArray(response) && response[0]?.id) ? response[0].id :
+            undefined;
           if (!estimateId) {
             this.snackBar.open('Erreur : id de devis introuvable', 'Fermer', { duration: 3000 });
             return;
@@ -256,13 +267,32 @@ export class EstimatesComponent implements OnInit {
     }
   }
 
+  // Ajout de la fonction de conversion snake_case -> camelCase
+  private toCamelCaseEstimate(estimate: any): Estimate {
+    return {
+      id: estimate.id,
+      creationDate: new Date(estimate.creation_date ?? estimate.creationDate),
+      validityDate: new Date(estimate.validity_date ?? estimate.validityDate),
+      object: estimate.object,
+      status: estimate.status,
+      adminNote: estimate.admin_note ?? estimate.adminNote,
+      customerId: estimate.customer_id ?? estimate.customerId,
+      discountName: estimate.discount_name ?? estimate.discountName,
+      discountValue: estimate.discount_value ?? estimate.discountValue,
+      finalNote: estimate.final_note ?? estimate.finalNote,
+      createdAt: new Date(estimate.created_at ?? estimate.createdAt),
+      updatedAt: new Date(estimate.updated_at ?? estimate.updatedAt),
+      estimate_id: estimate.estimate_id
+    };
+  }
+
   viewEstimate(estimate: Estimate) {
     this.closeCreateForm();
     this.apiService.getEstimate(estimate.id!).subscribe({
       next: (data) => {
-        this.viewEstimateData = data;
+        // Conversion ici
+        this.viewEstimateData = this.toCamelCaseEstimate(data);
         this.showViewForm = true;
-        // Charger les tâches pour la vue
         this.apiService.getAllTasks?.().subscribe?.((tasks: Task[]) => {
           this.prestationTasks = tasks.filter(t => t.estimate_id === data.id);
         });
@@ -299,7 +329,6 @@ export class EstimatesComponent implements OnInit {
 
   getCustomerFullName(customerId: number | string | null | undefined): string {
     if (!customerId) return 'Client non renseigné';
-    // Convertir en nombre si besoin
     const id = typeof customerId === 'string' ? parseInt(customerId, 10) : customerId;
     const customer = this.customers.find(c => c.id === id);
     return customer ? `${customer.surname} ${customer.name}` : 'Client non renseigné';
@@ -309,9 +338,22 @@ export class EstimatesComponent implements OnInit {
     if (!customerId) return '';
     const id = typeof customerId === 'string' ? parseInt(customerId, 10) : customerId;
     const customer = this.customers.find(c => c.id === id);
-    // console.log('getCustomerField', { id, field, customer });
     return customer && customer[field as keyof Customer] ? String(customer[field as keyof Customer]) : '';
   }
+
+  getEstimateTotalTVA(estimate: any): number {
+  if (!estimate || !estimate.prestationTasks || !Array.isArray(estimate.prestationTasks)) {
+    return 0;
+  }
+  let totalTVA = 0;
+  for (const task of estimate.prestationTasks) {
+    const hours = Number(task.hours) || 0;
+    const rate = Number(task.hourly_rate) || 0;
+    const tva = Number(task.tva) || 0;
+    totalTVA += (hours * rate) * (tva / 100);
+  }
+  return totalTVA;
+}
 
   onConfirmPopup() {
     if (this.confirmAction) this.confirmAction();

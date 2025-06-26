@@ -180,7 +180,7 @@
     <div class="view-estimate-form" *ngIf="showViewForm">
       <div class="top-view">
         <h2 class="sub-title">
-          Détails du
+          Détails du devis
           <ng-container *ngIf="viewEstimateData?.object; else defaultViewTitle">
             <span class="form-object">
               {{ (viewEstimateData?.object?.length ?? 0) > 24 ? (viewEstimateData?.object ?? '' | slice:0:24) + '...' : (viewEstimateData?.object ?? '') }}
@@ -197,7 +197,7 @@
       <form>
         <mat-form-field appearance="fill">
           <mat-label>Objet</mat-label>
-          <input matInput [value]="viewEstimateData?.object" disabled />
+          <input matInput [value]="viewEstimateData?.object || ''" disabled />
         </mat-form-field>
         <div class="user-estimate">
           <span class="iconify user-estimate-avatar" data-icon="mynaui:user" data-inline="true"></span>
@@ -209,12 +209,37 @@
             }}
           </span>
         </div>
+        
         <mat-form-field appearance="fill">
           <mat-label>Statut</mat-label>
-          <input matInput [value]="viewEstimateData?.status" disabled />
+          <input matInput [value]="viewEstimateData?.status || ''" disabled />
         </mat-form-field>
-        <h2 class="sub-title">
-          Détail <span class="highlight-color2">des tâches</span>
+        <mat-form-field appearance="fill">
+          <mat-label>Date de création</mat-label>
+          <input matInput [value]="viewEstimateData?.creationDate ? (viewEstimateData?.creationDate | date:'yyyy-MM-dd') : ''" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Date de validité</mat-label>
+          <input matInput [value]="viewEstimateData?.validityDate ? (viewEstimateData?.validityDate | date:'yyyy-MM-dd') : ''" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Note</mat-label>
+          <input matInput [value]="viewEstimateData?.adminNote || ''" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Note finale</mat-label>
+          <input matInput [value]="viewEstimateData?.finalNote || ''" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Nom remise</mat-label>
+          <input matInput [value]="viewEstimateData?.discountName || ''" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Valeur remise</mat-label>
+          <input matInput [value]="viewEstimateData?.discountValue ?? ''" disabled />
+        </mat-form-field>
+         <h2 class="sub-title">
+          Détail <span class="highlight-color2">des préstations</span>
         </h2>
         <div *ngIf="prestationTasks.length > 0">
           <div class="tasks-preview-list">
@@ -259,14 +284,6 @@
             <input matInput [value]="getCustomerField(cid, 'email')" disabled />
           </mat-form-field>
         </ng-container>
-        <mat-form-field appearance="fill">
-          <mat-label>Note</mat-label>
-          <input matInput [value]="viewEstimateData?.adminNote" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Note finale</mat-label>
-          <input matInput [value]="viewEstimateData?.finalNote" disabled />
-        </mat-form-field>
       </form>
     </div>
   </div>

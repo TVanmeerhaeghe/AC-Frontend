@@ -229,14 +229,14 @@
       <form>
         <mat-form-field appearance="fill">
           <mat-label>Objet</mat-label>
-          <input matInput [value]="viewInvoiceData?.object" disabled />
+          <input matInput [value]="viewInvoiceData?.object || viewInvoiceData?.object" disabled />
         </mat-form-field>
 
         <div class="user-invoice">
           <span class="iconify user-invoice-avatar" data-icon="mynaui:user" data-inline="true"></span>
           <span>
             {{
-              customers.length > 0 && viewInvoiceData && viewInvoiceData.customer_id != null
+              customers.length > 0 && viewInvoiceData && (viewInvoiceData.customer_id != null)
                 ? getCustomerFullName(viewInvoiceData.customer_id)
                 : 'Client non renseigné'
             }}

@@ -358,10 +358,12 @@ export class InvoicesComponent implements OnInit {
     this.showConfirm = true;
   }
 
-  getCustomerFullName(customer_id: number): string {
-    const customer = this.customers.find(c => c.id === customer_id);
+  getCustomerFullName(customer_id: number | string | null | undefined): string {
+    const id = typeof customer_id === 'string' ? parseInt(customer_id, 10) : customer_id;
+    const customer = this.customers.find(c => c.id === id);
     return customer ? `${customer.surname} ${customer.name}` : 'Client non renseigné';
   }
+
 
   getProductName(product_id: number): string {
     const product = this.products.find(p => p.id === product_id);

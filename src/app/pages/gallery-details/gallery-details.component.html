@@ -51,10 +51,15 @@
       <div class="related" *ngIf="relatedProducts?.length">
         <h2>Dans la même catégorie</h2>
         <div class="related-list">
-          <div class="product-card" *ngFor="let rp of relatedProducts">
+          <div
+            class="product-card"
+            *ngFor="let rp of relatedProducts"
+            [routerLink]="['/galerie', 'produits', 'tous', slugify(rp.name)]"
+            style="cursor:pointer"
+          >
             <img *ngIf="rp.imageUrl" [src]="rp.imageUrl" [alt]="rp.name" />
             <h3>{{ rp.name }}</h3>
-            <span>{{ rp.price | currency : "EUR" : "symbol" }}</span>
+            <span>{{ rp.price | currency : 'EUR' : 'symbol' }}</span>
           </div>
         </div>
       </div>
