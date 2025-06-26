@@ -128,9 +128,9 @@
         <ng-template #defaultViewTitle> d'un client</ng-template>
       </h2>
         <div class="view-actions">
-          <button class="btn-small" title="Fermer le détail de {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="closeViewForm()">Fermer</button>
-          <button class="btn-small" title="Éditer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="viewCustomerData && openEditForm(viewCustomerData)">Éditer</button>  
-          <button class="btn-small" title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="askDeleteCustomer(viewCustomerData)">Supprimer</button>
+          <button class="btn-small" title="Fermer le détail de {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="closeViewForm()"><span class="iconify" data-icon="ic:round-close" data-inline="true"></span></button>
+          <button class="btn-small" title="Éditer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="viewCustomerData && openEditForm(viewCustomerData)"><span class="iconify" data-icon="tdesign:pen-ball" data-inline="true"></span></button>  
+          <button class="btn-small" title="Supprimer {{ viewCustomerData?.name }} {{ viewCustomerData?.surname }}" (click)="askDeleteCustomer(viewCustomerData)"><span class="iconify" data-icon="cuida:trash-outline" data-inline="true"></span></button>
         </div>
       </div>
 

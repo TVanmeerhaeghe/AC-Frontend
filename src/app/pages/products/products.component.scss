@@ -273,21 +273,6 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
-
-      .view-actions {
-        display: flex;
-        gap: 10px;
-
-        button:nth-child(1) {
-          background: rgba(133, 133, 133, 0.5);
-        }
-        button:nth-child(2) {
-          background: $blue;
-        }
-        button:nth-child(3) {
-          background: #ff8686;
-        }
-      }
     }
   }
 

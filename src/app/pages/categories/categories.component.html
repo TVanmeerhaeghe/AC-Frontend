@@ -101,9 +101,15 @@
           <ng-template #defaultViewTitle> d'une catégorie</ng-template>
         </h2>
         <div class="view-actions">
-          <button class="btn-small" title="Fermer" (click)="closeViewForm()">Fermer</button>
-          <button class="btn-small" title="Éditer" (click)="viewCategoryData && openEditForm(viewCategoryData)">Éditer</button>
-          <button class="btn-small" title="Supprimer" (click)="askDeleteCategory(viewCategoryData)">Supprimer</button>
+          <button class="btn-small" title="Fermer" (click)="closeViewForm()">
+            <span class="iconify" data-icon="ic:round-close" data-inline="true"></span>
+          </button>
+          <button class="btn-small" title="Éditer" (click)="viewCategoryData && openEditForm(viewCategoryData)">
+            <span class="iconify" data-icon="tdesign:pen-ball" data-inline="true"></span>
+          </button>
+          <button class="btn-small" title="Supprimer" (click)="askDeleteCategory(viewCategoryData)">
+            <span class="iconify" data-icon="cuida:trash-outline" data-inline="true"></span>
+          </button>
         </div>
       </div>
       <form>
