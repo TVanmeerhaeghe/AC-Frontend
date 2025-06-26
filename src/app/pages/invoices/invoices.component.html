@@ -251,6 +251,19 @@
             <mat-chip>{{ prod.name }} x{{ prod.InvoiceProduct?.quantity || prod.quantity }}</mat-chip>
           </mat-chip-set>
         </div>
+        <div *ngIf="(viewInvoiceData?.products?.length || 0) > 0" class="chips-totaux-taches">
+          <mat-chip class="ttc-chip" selected>
+            Total TTC : {{ produitsTotalTTC | number:'1.2-2' }} €
+          </mat-chip>
+        </div>
+        <div *ngIf="(viewInvoiceData?.products?.length || 0) === 0 && prestationTasks.length > 0" class="chips-totaux-taches">
+          <mat-chip class="ht-chip" selected>
+            Total HT : {{ prestationTotalHT | number:'1.2-2' }} €
+          </mat-chip>
+          <mat-chip class="ttc-chip" selected>
+            Total TTC : {{ prestationTotalTTC | number:'1.2-2' }} €
+          </mat-chip>
+        </div>
         <div *ngIf="(viewInvoiceData?.products?.length || 0) === 0 && prestationTasks.length > 0">
           <div class="tasks-preview-list">
             <ng-container *ngFor="let task of prestationTasks; let last = last">

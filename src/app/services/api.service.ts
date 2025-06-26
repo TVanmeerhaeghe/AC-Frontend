@@ -210,23 +210,23 @@ export class ApiService {
   //Category
 
   getCategories() {
-    return this.http.get<Category[]>('http://diawd.fr/acbrocante/api/categories/');
+    return this.http.get<Category[]>(`${this.baseUrl}/categories/`);
   }
 
   getCategory(id: number) {
-    return this.http.get<Category>(`http://diawd.fr/acbrocante/api/categories/${id}`);
+    return this.http.get<Category>(`${this.baseUrl}/categories/${id}`);
   }
 
   updateCategory(id: number, data: { name: string; description: string; icon: string; }) {
-    return this.http.put(`http://diawd.fr/acbrocante/api/categories/${id}`, data);
+    return this.http.put(`${this.baseUrl}/categories/${id}`, data);
   }
 
   createCategory(data: Partial<Category>) {
-    return this.http.post<Category>('http://diawd.fr/acbrocante/api/categories/', data);
+    return this.http.post<Category>('${this.baseUrl}/categories/', data);
   }
 
   deleteCategory(id: number) {
-    return this.http.delete(`http://diawd.fr/acbrocante/api/categories/${id}`);
+    return this.http.delete(`${this.baseUrl}/categories/${id}`);
   }
 
   // Estimates
@@ -254,7 +254,7 @@ export class ApiService {
     return this.http.get<Estimate[]>(`${this.baseUrl}estimates/search?q=${encodeURIComponent(query)}`);
   }
 
-  // Tasks (Prestations)
+  // Tasks
   getAllTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.baseUrl}tasks/`);
   }

@@ -425,4 +425,26 @@ export class InvoicesComponent implements OnInit {
       this.createForm.products.splice(index, 1);
     }
   }
+
+  get prestationTotalHT(): number {
+    return this.prestationTasks.reduce((sum, task) =>
+      sum + ((task.hours ?? 0) * (task.hourly_rate ?? 0)), 0
+    );
+  }
+
+  get prestationTotalTTC(): number {
+    // Additionne la TVA de chaque tâche individuellement
+    return this.prestationTasks.reduce((sum, task) => {
+      const ht = (task.hours ?? 0) * (task.hourly_rate ?? 0);
+      const tva = parseFloat(task.tva ?? '0');
+      return sum + ht * (1 + (tva / 100));
+    }, 0);
+  }
+
+  get produitsTotalTTC(): number {
+    if (!this.viewInvoiceData?.products) return 0;
+    return this.viewInvoiceData.products.reduce((sum, prod) =>
+      sum + ((prod.price ?? 0) * ((prod.InvoiceProduct?.quantity ?? prod.quantity ?? 1))), 0
+    );
+  }
 }

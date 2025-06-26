@@ -645,5 +645,24 @@
     margin: 0 0 0.5em 0;
   }
 }
+
+.chips-totaux-taches {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  margin-top: 4px;
+  mat-chip {
+    font-size: 1.1em;
+    font-weight: 600;
+    &.ht-chip {
+      background: $color2;
+      color: #fff;
+    }
+    &.ttc-chip {
+      background: $light-blue;
+      color: #fff;
+    }
+  }
+}
 }
 
