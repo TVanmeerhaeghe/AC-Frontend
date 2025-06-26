@@ -446,7 +446,7 @@ export class InvoicesComponent implements OnInit {
     );
   }
 
-  // Détail du montant de TVA par taux (pour affichage avancé)
+  // Advenced TVA calc
   get prestationTVADetails(): { tva: string, montant: number }[] {
     const tvaMap = new Map<string, number>();
     for (const task of this.prestationTasks) {
@@ -456,9 +456,19 @@ export class InvoicesComponent implements OnInit {
       if (!tvaMap.has(tva)) tvaMap.set(tva, 0);
       tvaMap.set(tva, tvaMap.get(tva)! + ht * (tvaRate / 100));
     }
-    // On ne garde que les taux > 0
+
     return Array.from(tvaMap.entries())
       .filter(([tva, montant]) => parseFloat(tva) > 0 && montant > 0)
       .map(([tva, montant]) => ({ tva, montant }));
+  }
+
+  isLastTaskValid(): boolean {
+    if (this.prestationTasks.length === 0) return true;
+    const last = this.prestationTasks[this.prestationTasks.length - 1];
+    if (!last) return false;
+    if (!last.name || last.name.trim() === '') return false;
+    if (!last.hours || last.hours <= 0) return false;
+    if (!last.hourly_rate || last.hourly_rate <= 0) return false;
+    return true;
   }
 }

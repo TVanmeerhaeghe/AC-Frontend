@@ -673,5 +673,55 @@
   font-size: 1em;
   color: #0077ff;
 }
+
+.add-task-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  margin-top: 2px;
 }
 
+.add-task-btn {
+  border: none;
+  border-radius: 50%;
+  background: $blue;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0077ff22;
+  transition: background 0.2s, transform 0.2s;
+  &:hover {
+    background: $color2;
+    transform: scale(1.08);
+  }
+  &:active {
+    background: $color2;
+    transform: scale(0.97);
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #b0b0b0 !important;
+    color: #fff !important;
+    box-shadow: none;
+  }
+}
+
+.add-task-label {
+  font-size: 1.1em;
+  color: $blue;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  &.disabled {
+    color: #b0b0b0;
+    font-weight: 400;
+  }
+}
+}
