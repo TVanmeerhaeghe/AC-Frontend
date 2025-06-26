@@ -241,6 +241,14 @@
          <h2 class="sub-title">
           Détail <span class="highlight-color2">des préstations</span>
         </h2>
+        <div class="chips-totaux-taches" *ngIf="prestationTasks.length > 0">
+          <mat-chip class="ht-chip" selected>
+            Total HT : {{ prestationTotalHT | number:'1.2-2' }} €
+          </mat-chip>
+          <mat-chip class="ttc-chip" selected>
+            Total TTC : {{ prestationTotalTTC | number:'1.2-2' }} €
+          </mat-chip>
+        </div>
         <div *ngIf="prestationTasks.length > 0">
           <div class="tasks-preview-list">
             <ng-container *ngFor="let task of prestationTasks; let last = last">

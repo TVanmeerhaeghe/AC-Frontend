@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Customer } from '../../models/customers.model';
 import { Invoice } from '../../models/invoices.model';
+import { Estimate } from '../../models/estimates.model';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -44,6 +45,12 @@ export class CustomersComponent implements OnInit {
   invoices: Invoice[] = [];
   filteredInvoices: Invoice[] = [];
   invoiceSearch: string = '';
+  estimates: Estimate[] = [];
+  filteredEstimates: Estimate[] = [];
+  estimateSearch: string = '';
+  purchases: { name: string; quantity: number; invoiceId: number }[] = [];
+  filteredPurchases: { name: string; quantity: number; invoiceId: number }[] = [];
+  purchaseSearch: string = '';
 
   constructor(
     private apiService: ApiService,
@@ -53,8 +60,6 @@ export class CustomersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCustomers();
-
-    // Ouvre le formulaire de création si ?create=1 dans l'URL
     this.route.queryParams.subscribe(params => {
       if (params['create'] === '1') {
         this.openCreateForm();
@@ -157,6 +162,8 @@ export class CustomersComponent implements OnInit {
         this.viewCustomerData = data;
         this.showViewForm = true;
         this.loadInvoicesForCustomer(data.id);
+        this.loadEstimatesForCustomer(data.id);
+        this.loadPurchasesForCustomer(data.id);
       }
     });
   }
@@ -175,6 +182,67 @@ export class CustomersComponent implements OnInit {
     this.filteredInvoices = this.invoices.filter(inv =>
       (`Facture#${inv.id}`.toLowerCase().includes(search) ||
         (inv.object && inv.object.toLowerCase().includes(search)))
+    );
+  }
+
+  loadEstimatesForCustomer(customerId: number) {
+    this.apiService.getAllEstimates().subscribe({
+      next: (estimates: Estimate[]) => {
+        this.estimates = estimates.filter(e =>
+          // @ts-ignore
+          (e.customerId === customerId) || (e['customer_id'] === customerId)
+        );
+        this.filteredEstimates = this.estimates;
+      }
+    });
+  }
+
+  filterEstimates() {
+    const search = this.estimateSearch.toLowerCase();
+    this.filteredEstimates = this.estimates.filter(e =>
+      (`Devis#${e.id}`.toLowerCase().includes(search) ||
+        (e.object && e.object.toLowerCase().includes(search)))
+    );
+  }
+
+  loadPurchasesForCustomer(customerId: number) {
+    this.apiService.getAllInvoices().subscribe({
+      next: (invoices: Invoice[]) => {
+        const clientInvoices = invoices.filter(inv => inv.customer_id === customerId);
+        const purchaseMap = new Map<string, { name: string; quantity: number; invoiceId: number }>();
+        clientInvoices.forEach(inv => {
+          if (inv.products && Array.isArray(inv.products)) {
+            inv.products.forEach(prod => {
+              let qty = prod.quantity;
+              if (prod.InvoiceProduct && typeof prod.InvoiceProduct.quantity === 'number') {
+                qty = prod.InvoiceProduct.quantity;
+              }
+              if (prod && prod.name && qty != null) {
+                const key = prod.name;
+                if (purchaseMap.has(key)) {
+                  purchaseMap.get(key)!.quantity += qty;
+                } else {
+                  purchaseMap.set(key, {
+                    name: prod.name,
+                    quantity: qty,
+                    invoiceId: inv.id ?? 0
+                  });
+                }
+              }
+            });
+          }
+        });
+        this.purchases = Array.from(purchaseMap.values());
+        this.filteredPurchases = this.purchases;
+      }
+    });
+  }
+
+  filterPurchases() {
+    const search = this.purchaseSearch.toLowerCase();
+    this.filteredPurchases = this.purchases.filter(p =>
+      p.name.toLowerCase().includes(search)
+      || (`Achat#${p.invoiceId}`).toLowerCase().includes(search)
     );
   }
 

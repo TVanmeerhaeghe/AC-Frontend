@@ -171,7 +171,7 @@
               </mat-form-field>
             </form>
           </mat-tab>
-          <mat-tab label="Facture">
+          <mat-tab label="Facture ({{ filteredInvoices.length }})">
           <div class="invoice-toolbar">
             <div class="search-bar">
               <input type="text" [(ngModel)]="invoiceSearch" (ngModelChange)="filterInvoices()" placeholder="Rechercher par numéro de facture" />
@@ -206,11 +206,67 @@
             </div>
           </div>
         </mat-tab>
-          <mat-tab label="Devis">
-          </mat-tab>
-          <mat-tab label="Achats">
-          </mat-tab>
-      </mat-tab-group>
+          <mat-tab label="Devis ({{ filteredEstimates.length }})">
+  <div class="invoice-toolbar">
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="estimateSearch" (ngModelChange)="filterEstimates()" placeholder="Rechercher par numéro de devis" />
+      <span class="iconify" data-icon="material-symbols:search" data-inline="true"></span>
+    </div>
+    <div class="invoice-toolbar-actions">
+      <button mat-icon-button title="Télécharger la liste des devis">
+        <span class="iconify" data-icon="lucide:share" data-inline="true"></span>
+      </button>
+      <button mat-icon-button title="Ajouter un devis">
+        <span class="iconify" data-icon="mage:printer" data-inline="true"></span>
+      </button>
+      <button mat-icon-button title="Importer des devis">
+        <span class="iconify" data-icon="tabler:file-plus" data-inline="true"></span>
+      </button>
+    </div>
+  </div>
+  <div *ngIf="filteredEstimates.length === 0">
+    <span>Aucun devis trouvé pour ce client.</span>
+  </div>
+  <div *ngIf="filteredEstimates.length > 0" class="invoice-list">
+    <div *ngFor="let estimate of filteredEstimates" class="invoice-row">
+      <span class="invoice-ref">Devis#{{ estimate.id }}</span>
+      <div class="invoice-actions">
+        <button title="Voir">
+          <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
+        </button>
+        <input type="checkbox" title="Sélectionner ce devis"/>
+      </div>
+    </div>
+  </div>
+</mat-tab>
+          <mat-tab label="Achats ({{ filteredPurchases.length }})">
+    <div class="invoice-toolbar">
+      <div class="search-bar">
+        <input type="text" [(ngModel)]="purchaseSearch" (ngModelChange)="filterPurchases()" placeholder="Rechercher par nom ou facture" />
+        <span class="iconify" data-icon="material-symbols:search" data-inline="true"></span>
+      </div>
+      <div class="invoice-toolbar-actions">
+        <button mat-icon-button title="Télécharger la liste des achats">
+          <span class="iconify" data-icon="lucide:share" data-inline="true"></span>
+        </button>
+      </div>
+    </div>
+    <div *ngIf="filteredPurchases.length === 0">
+      <span>Aucun achat trouvé pour ce client.</span>
+    </div>
+    <div *ngIf="filteredPurchases.length > 0" class="invoice-list">
+      <div *ngFor="let purchase of filteredPurchases" class="invoice-row">
+        <span class="invoice-ref">{{ purchase.name }} x{{ purchase.quantity }}</span>
+        <div class="invoice-actions">
+          <button title="Voir">
+            <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
+          </button>
+          <input type="checkbox" title="Sélectionner cet achat"/>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+        </mat-tab-group>
     </div>
   </div>
 
