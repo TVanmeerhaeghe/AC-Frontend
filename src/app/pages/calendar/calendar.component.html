@@ -34,7 +34,10 @@
               <div class="event-card-body">
                 <div><strong>Date de début :</strong> {{ event.start_date | date: 'dd/MM/yyyy HH:mm' }}</div>
                 <div><strong>Date de fin :</strong> {{ event.end_date | date: 'dd/MM/yyyy HH:mm' }}</div>
-                <div><strong>Description :</strong> {{ event.description }}</div>
+                <div class="description-field">
+                  <strong>Description :</strong>
+                  <div class="description-content">{{ event.description }}</div>
+                </div>
                 <div><strong>Lieu :</strong> {{ event.localisation }}</div>
               </div>
             </div>
@@ -43,7 +46,7 @@
       </ng-container>
 
       <!-- Formulaire création/modification -->
-      <div *ngIf="filteredEvents.length === 0 || showCreateForm">
+      <div *ngIf="filteredEvents.length === 0 || showCreateForm" class="custom-form">
         <div class="top-form">
           <h2 class="sub-title">{{ formData.id ? 'Modifier l\'événement' : 'Créer un événement' }}</h2>
           <button type="button" (click)="askDeleteEvent()" *ngIf="formData.id">

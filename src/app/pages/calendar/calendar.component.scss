@@ -6,6 +6,18 @@
   flex-direction: row;
   gap: 20px;
   flex-wrap: wrap;
+  max-height: 90vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 
   .calendar-left,
   .calendar-right {
@@ -15,7 +27,19 @@
     box-sizing: border-box;
     width: 100%;
     max-width: 700px;
+    max-height: 85vh;
     flex-grow: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 
     mat-form-field {
       width: 100%;
@@ -78,6 +102,19 @@
     }
 
     .custom-form {
+      max-height: 70vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Hide scrollbar for IE, Edge and Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+
       mat-form-field.form-field {
         appearance: outline;
         margin-bottom: 15px;
@@ -162,6 +199,18 @@
 }
 
 .custom-form {
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
   mat-form-field.form-field {
     appearance: outline;
     margin-bottom: 15px;
@@ -189,6 +238,17 @@
 .event-list {
   list-style: none;
   padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 
   li {
     background-color: #d9ebff;
@@ -221,27 +281,34 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-height: 600px;
+  max-height: 70vh;
+  overflow-x: hidden;
 
   .event-list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
-
-    .sub-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
+    flex-shrink: 0;
   }
 
   .event-list-scroll {
+    overflow-x: hidden;
     overflow-y: auto;
-    max-height: 500px;
+    max-height: 60vh;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     padding-right: 4px;
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 }
 
@@ -250,6 +317,39 @@
   border-radius: 10px;
   padding: 15px;
   box-shadow: 0 2px 8px #0001;
+
+  .event-card-body {
+    > div {
+      margin-bottom: 8px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
+    .description-field {
+      .description-content {
+        max-height: 100px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        line-height: 1.4;
+        margin-top: 4px;
+        padding: 4px;
+        border-radius: 4px;
+        
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        
+        /* Hide scrollbar for IE, Edge and Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+    }
+  }
 }
 
 .event-card-header {
