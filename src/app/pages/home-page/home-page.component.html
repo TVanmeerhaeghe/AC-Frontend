@@ -76,7 +76,7 @@
     <div *ngFor="let event of popupEvents" class="event-popup-item">
       <strong>{{ event.name }}</strong><br>
       <span>{{ event.start_date | date:'HH:mm' }} - {{ event.end_date | date:'HH:mm' }}</span><br>
-      <span>{{ event.description }}</span>
+      <div class="event-description">{{ event.description }}</div>
     </div>
   </div>
 </div>

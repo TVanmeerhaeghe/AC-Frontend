@@ -194,6 +194,18 @@ html {
   z-index: 1001;
   min-width: 320px;
   max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none; /* WebKit */
+  }
 }
 .event-popup-header {
   display: flex;
@@ -207,7 +219,24 @@ html {
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #eee;
+  
+  .event-description {
+    max-height: 100px;
+    overflow-y: auto;
+    margin-top: 0.5rem;
+    
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none; /* WebKit */
+    }
+  }
 }
+
 .event-popup button {
   background: none;
   border: none;
