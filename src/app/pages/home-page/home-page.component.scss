@@ -1,74 +1,168 @@
 @use '../../../styles/shared' as *;
 
-.home-title {
-  color: #fff;
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
+html {
+  font-size: 110%; // Scale global de 10%
 }
+
+.home-main {
+  display: flex;
+  flex-direction: row;
+  max-height: fit-content;
+  max-height: 707.67px;
+  gap: clamp(1.1rem, 2.2vw, 2.2rem);
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 0;
+  padding-left: 0;
+}
+
 .home-grid {
   display: flex;
-  gap: 2.5rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: row;
+  gap: clamp(1.1rem, 2.2vw, 2.2rem);
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .left-column {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  min-width: 370px;
-  max-width: 70%;
+  gap: clamp(0.246rem, 0.431vw, 0.431rem);
+  margin-right: clamp(0.22rem, 1.1vw, 1.1rem);
+  margin-left: 0;
+  max-width: clamp(387px, 49.5vw, 726px); // +10%
+  min-width: 264px;
   flex: 1 1 420px;
 }
 
 .right-column {
   flex: 1 1 350px;
-  min-width: 350px;
-  max-width: 500px;
+  min-width: 300px;
+  max-width: clamp(308px, 30.8vw, 484px); // +10%
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: clamp(0.77rem, 1.65vw, 1.65rem);
+  margin-left: 0;
+}
+
+.recette-block,
+.quick-access-block,
+.calendar-block {
+  background: #fff;
+  border-radius: clamp(13.2px, 2.2vw, 24.2px);
+  box-shadow: 0 2px 12px #0001;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: clamp(0.55rem, 1.1vw, 1.1rem);
 }
 
 .recette-block {
-  background: #fff;
-  border-radius: 24px;
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
-  box-shadow: 0 4px 24px #0001;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; 
-  min-width: 420px;
-  max-width: 1000px;
-  min-height: 420px;
+  padding: clamp(1.1rem, 2.2vw, 2.2rem);
+  min-width: 242px;
+  max-width: 100%;
+  min-height: clamp(198px, 33vw, 374px);
   overflow: hidden;
+}
 
-  h2 {
-    color: #007AFF;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-    letter-spacing: 0.5px;
+.quick-access-block {
+  padding: clamp(0.77rem, 1.65vw, 1.65rem);
+  max-width: 100%;
+
+  .quick-access-list {
+    display: flex;
+    gap: clamp(0.77rem, 2.2vw, 2.2rem);
+    margin-top: clamp(0.22rem, 0.55vw, 0.55rem);
+    width: 100%;
+    justify-content: center;
+
+    button {
+      margin-top: clamp(11px, 2.2vw, 26.4px);
+      margin-bottom: clamp(11px, 2.2vw, 26.4px);
+      border: none;
+      border-radius: 100%;
+      font-size: clamp(1.43rem, 2.2vw, 2.42rem);
+      cursor: pointer;
+      padding: clamp(0.55rem, 1.1vw, 1.32rem);
+      color: $blue;
+      background: #e3f0ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.5s;
+      box-shadow: none;
+      min-width: clamp(52.8px, 7.7vw, 99px);
+      min-height: clamp(52.8px, 7.7vw, 99px);
+
+      &:hover {
+        background: #e3f0ff;
+        border-radius: 50%;
+        scale: 1.08;
+        transition: 0.5s;
+      }
+
+      &:active {
+        scale: 0.95;
+        transition: 0.3s;
+      }
+
+      .iconify {
+        color: $blue !important;
+        font-size: clamp(1.43rem, 2.2vw, 2.42rem);
+      }
+    }
   }
 }
+
+.calendar-block {
+  padding: clamp(1.1rem, 2.2vw, 1.65rem);
+  min-width: 250px;
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: clamp(0.44rem, 1.1vw, 1.1rem);
+
+    .mat-form-field-outline {
+      border-radius: 10px;
+    }
+
+    .mat-input-element {
+      font-size: clamp(0.99rem, 1.1vw, 1.21rem);
+    }
+  }
+
+  mat-calendar {
+    background: #eaf0ff;
+    border-radius: clamp(11px, 2.2vw, 19.8px);
+    padding: clamp(0.22rem, 1.1vw, 0.77rem) 0;
+    margin-bottom: clamp(0.44rem, 1.1vw, 1.1rem);
+    width: 100%;
+    box-shadow: none;
+  }
+}
+
 .recette-tabs {
   display: flex;
-  margin-bottom: 1.2rem;
+  margin-bottom: clamp(0.77rem, 1.1vw, 1.32rem);
   justify-content: space-around;
-    width: 100%;
+  width: 100%;
+
   button {
     background: none;
     border: none;
     font-weight: 600;
     color: #49454f;
     border-bottom: 2.5px solid transparent;
-    font-size: 1.08rem;
+    font-size: clamp(0.99rem, 1.1vw, 1.21rem);
     cursor: pointer;
-    padding: 0.5rem 1.2rem 0.4rem 1.2rem;
+    padding: clamp(0.33rem, 0.77vw, 0.77rem) clamp(0.77rem, 1.1vw, 1.32rem) clamp(0.22rem, 0.55vw, 0.44rem) clamp(0.77rem, 1.1vw, 1.32rem);
     border-radius: 0;
     transition: border 0.2s, color 0.2s;
+
     &.active {
       border-bottom: 2.5px solid #007AFF;
       color: #007AFF;
@@ -76,115 +170,11 @@
   }
 }
 .recette-value {
-  font-size: 25px;
+  font-size: clamp(1.21rem, 2.2vw, 1.87rem);
   font-weight: 700;
   color: #007AFF;
-  margin-bottom: 0.5rem;
-  margin-top: 25px;
-}
-
-.quick-access-block {
-  background: #fff;
-  border-radius: 24px;
-  padding: 2rem 2.5rem;
-  box-shadow: 0 4px 24px #0001;
-  display: flex;
-  flex-direction: column;
-
-  h2 {
-    color: #007AFF;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-    letter-spacing: 0.5px;
-  }
-
-  .quick-access-list {
-    display: flex;
-    gap: 2.2rem;
-    margin-top: 0.5rem;
-    width: 100%;
-    justify-content: space-evenly;
-    button {
-      background: #eaf0ff;
-      border: none;
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.2rem;
-      color: #007AFF;
-      cursor: pointer;
-      box-shadow: 0 2px 8px #007AFF1a;
-      &:hover {
-        background: #d9ebff;
-        transform: scale(1.10);
-        box-shadow: 0 4px 16px #007AFF33;
-      }
-      .iconify {
-        color: #007AFF !important;
-      }
-    }
-  }
-}
-.calendar-block {
-  background: #fff;
-  border-radius: 24px;
-  padding: 2.2rem 2rem 1.5rem 2rem;
-  min-width: 320px;
-  box-shadow: 0 4px 24px #0001;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  h2 {
-    color: #007AFF;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-    letter-spacing: 0.5px;
-  }
-
-  mat-form-field {
-    width: 100%;
-    margin-bottom: 1rem;
-    .mat-form-field-outline {
-      border-radius: 10px;
-    }
-    .mat-input-element {
-      font-size: 1.1rem;
-    }
-  }
-
-  mat-calendar {
-    background: #eaf0ff;
-    border-radius: 16px;
-    padding: 0.5rem 0;
-    margin-bottom: 1rem;
-    width: 100%;
-    box-shadow: none;
-  }
-
-  .calendar-events {
-    width: 100%;
-    margin-top: 0.5rem;
-    div {
-      background: #eaf0ff;
-      border-radius: 8px;
-      padding: 0.5rem 1rem;
-      margin-bottom: 0.5rem;
-      font-size: 1rem;
-      color: #007AFF;
-    }
-  }
-
-  .calendar-event-day .mat-calendar-body-cell-content {
-    background: #a259ff !important;
-    color: #fff !important;
-    border-radius: 50%;
-  }
+  margin-bottom: clamp(0.33rem, 1.1vw, 0.77rem);
+  margin-top: clamp(1.1rem, 2.2vw, 2.2rem);
 }
 
 .event-popup-backdrop {
@@ -226,37 +216,44 @@
 }
 
 @media (max-width: 1100px) {
+  .home-main,
   .home-grid {
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
   }
   .left-column, .right-column {
     max-width: 98vw;
     min-width: 0;
+    gap: 1rem;
   }
   .recette-block, .quick-access-block, .calendar-block {
     max-width: 98vw;
     min-width: 0;
+    padding: 1rem !important;
   }
 }
 
 @media (max-width: 600px) {
   .recette-block, .quick-access-block, .calendar-block {
-    padding: 1.2rem !important;
+    padding: 0.7rem !important;
   }
   .quick-access-list {
-    gap: 1rem !important;
+    gap: 0.7rem !important;
     button {
-      width: 48px !important;
-      height: 48px !important;
-      font-size: 1.3rem !important;
+      width: 40px !important;
+      height: 40px !important;
+      font-size: 1rem !important;
     }
   }
 }
 
-.home-charts{
-    width: 100%;
-    height: 100%;
+.home-charts {
+  width: 100%;
+  height: 100%;
+  min-height: 250px; // optionnel pour éviter un effet trop petit sur petits écrans
+  display: flex;
+  flex: 1 1 auto;
 }
 
 ::ng-deep .calendar-has-event .mat-calendar-body-cell-content {
