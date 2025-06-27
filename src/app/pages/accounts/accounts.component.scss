@@ -25,13 +25,6 @@
     max-width: fit-content;
     height: fit-content;
 
-    .sub-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: $blue;
-      margin-bottom: 10px;
-    }
-
     .actions {
       display: flex;
       gap: 30px;
@@ -70,13 +63,6 @@
     flex-grow: 1;
     max-height: 65vh;
     overflow-y: auto;
-
-    .sub-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: $blue;
-      margin-bottom: 18px;
-    }
 
     .account-table {
       width: 100%;
@@ -193,13 +179,6 @@
     flex-direction: column;
     z-index: 10;
     overflow-y: auto;
-
-    .sub-title {
-      color: $blue;
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 18px;
-    }
 
     form {
       display: flex;

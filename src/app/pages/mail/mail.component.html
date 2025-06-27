@@ -1,5 +1,5 @@
 <div class="app-content">
-  <div class="accounts-main">
+  <div class="accounts-main" style="overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; max-height: 80vh;">
     <div class="left-view">
       <div class="accounts-list">
         <h2 class="sub-title">Liste des contacts</h2>
@@ -17,7 +17,7 @@
                       {{ contact.name }} {{ contact.surname }}
                     </span>
                     <span class="subject">
-                      — {{ contact.subject }}
+                      — {{ contact.subject.length > 20 ? (contact.subject | slice:0:20) + '...' : contact.subject }}
                     </span>
                   </div>
                   <div class="actions-cell">
@@ -51,6 +51,14 @@
 
     <!-- Détail du contact sélectionné -->
     <div class="mail-details" *ngIf="selectedContact">
+      <button
+        class="close-mail-details"
+        (click)="selectedContact = undefined"
+        title="Fermer"
+        style="position: absolute; top: 18px; right: 18px; background: none; border: none; font-size: 1.7rem; color: #888; cursor: pointer; z-index: 20;"
+      >
+        &times;
+      </button>
       <div class="mail-header">
         <div class="mail-from">
           <strong>De :</strong> {{ selectedContact.name }} {{ selectedContact.surname }} &lt;{{ selectedContact.email }}&gt;
@@ -62,14 +70,17 @@
           <strong>Produit :</strong> {{ selectedContact.product.name }}
           <img *ngIf="productImageUrl" [src]="productImageUrl" alt="Photo produit" class="product-img" />
         </div>
-        <div class="mail-subject">
+        <div class="mail-subject" style="white-space: pre-line; word-break: break-word; overflow-wrap: break-word;">
           <strong>Sujet :</strong> {{ selectedContact.subject }}
         </div>
         <div class="mail-date">
           <strong>Reçu le :</strong> {{ selectedContact.createdAt | date:'dd/MM/yyyy HH:mm' }}
         </div>
       </div>
-      <div class="mail-body">
+      <div
+        class="mail-body"
+        style="max-height: 400px; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;"
+      >
         {{ selectedContact.message }}
       </div>
       <a

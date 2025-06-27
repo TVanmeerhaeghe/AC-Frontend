@@ -1,1 +1,65 @@
 @use '../../../styles/shared' as *;
+
+
+.parameters-title {
+  color: $white;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-left: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.parameters-card {
+  background: #3939a6;
+  border-radius: 20px;
+  padding: 3rem 2.5rem 2.5rem 2.5rem;
+  margin-left: 2.5rem;
+  min-width: 60vw;
+  max-width: 70vw;
+  display: flex;
+  flex-direction: column;
+  gap: 10rem;
+  box-shadow: 0 2px 12px #0002;
+}
+
+.parameters-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.parameters-label {
+  color: $white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.parameters-version {
+  color: #b8cafd;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.parameters-username {
+  color: #b8cafd;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.delete-account-btn {
+  background: none;
+  border: none;
+  color: #ff2222;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 0.2rem;
+  transition: color 0.2s;
+  &:hover {
+    color: #b80000;
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,35 @@
+<div class="parameters-content">
+  <div class="parameters-card">
+    <div class="parameters-section">
+      <div class="parameters-label">Version de l’application</div>
+      <div class="parameters-version">v1.0</div>
+    </div>
+    <div class="parameters-section">
+      <div class="parameters-label">Compte</div>
+      <ng-container *ngIf="!loadingUser; else loadingUserTpl">
+        <ng-container *ngIf="user; else noUserTpl">
+          <div class="parameters-username">
+            {{ user.name }} {{ user.surname }}
+          </div>
+          <div class="parameters-email">
+            {{ user.email_adress }}
+          </div>
+          <button class="delete-account-btn" (click)="askDeleteAccount()">Supprimer mon compte</button>
+        </ng-container>
+        <ng-template #noUserTpl>
+          <div class="parameters-username">Aucun compte trouvé.</div>
+        </ng-template>
+      </ng-container>
+      <ng-template #loadingUserTpl>
+        <div class="parameters-username">Chargement du compte...</div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+<app-confirm-popup
+  [show]="showConfirm"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  (confirm)="onConfirmPopup()"
+  (cancel)="onCancelPopup()"
+></app-confirm-popup>
