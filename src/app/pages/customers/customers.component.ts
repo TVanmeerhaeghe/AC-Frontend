@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -56,7 +57,8 @@ export class CustomersComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -314,6 +316,35 @@ export class CustomersComponent implements OnInit {
   }
   onCancelPopup() {
     this.showConfirm = false;
+  }
+
+  goToInvoice(invoiceId: number) {
+    this.router.navigate(['/invoices', invoiceId]);
+  }
+
+  goToEstimate(estimateId: number) {
+    this.router.navigate(['/estimates', estimateId]);
+  }
+
+  goToProduct(purchase: { name: string; quantity: number; invoiceId: number }) {
+    // On va chercher l'id du produit dans la facture détaillée
+    this.apiService.getInvoice(purchase.invoiceId).subscribe({
+      next: (invoice: any) => {
+        if (invoice.products && Array.isArray(invoice.products)) {
+          const prod = invoice.products.find((p: any) => p.name === purchase.name);
+          if (prod && prod.id) {
+            this.router.navigate(['/products', prod.id]);
+          } else {
+            this.snackBar.open('Produit non trouvé dans la facture', 'Fermer', { duration: 3000 });
+          }
+        } else {
+          this.snackBar.open('Aucun produit trouvé dans la facture', 'Fermer', { duration: 3000 });
+        }
+      },
+      error: () => {
+        this.snackBar.open('Erreur lors de la récupération de la facture', 'Fermer', { duration: 3000 });
+      }
+    });
   }
 }
 

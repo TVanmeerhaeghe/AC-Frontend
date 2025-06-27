@@ -198,7 +198,7 @@
             <div *ngFor="let invoice of filteredInvoices" class="invoice-row">
               <span class="invoice-ref">Facture#{{ invoice.id }}</span>
               <div class="invoice-actions">
-                <button title="Voir">
+                <button title="Voir" (click)="goToInvoice(invoice.id!)">
                   <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
                 </button>
                 <input type="checkbox" title="Sélectionner cette facture"/>
@@ -231,7 +231,7 @@
     <div *ngFor="let estimate of filteredEstimates" class="invoice-row">
       <span class="invoice-ref">Devis#{{ estimate.id }}</span>
       <div class="invoice-actions">
-        <button title="Voir">
+        <button title="Voir" (click)="goToEstimate(estimate.id)">
           <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
         </button>
         <input type="checkbox" title="Sélectionner ce devis"/>
@@ -264,7 +264,7 @@ filteredPurchases: {{ filteredPurchases | json }}
           {{ purchase.name }} x{{ purchase.quantity }} <span style="color:#888;font-size:0.95em;">(Facture#{{ purchase.invoiceId }})</span>
         </span>
         <div class="invoice-actions">
-          <button title="Voir">
+          <button title="Voir" (click)="goToProduct(purchase)">
             <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
           </button>
           <input type="checkbox" title="Sélectionner cet achat"/>
