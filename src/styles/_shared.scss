@@ -58,25 +58,62 @@ $showcase-bleu: #007AFF;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: 
+                transform 0.22s cubic-bezier(0.4, 0.2, 0.2, 1),
+                box-shadow 0.22s cubic-bezier(0.4, 0.2, 0.2, 1),
+                background-color 0.22s cubic-bezier(0.4, 0.2, 0.2, 1),
+                color 0.22s cubic-bezier(0.4, 0.2, 0.2, 1);
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             padding: 5px 15px;
 
             &:hover {
-                transform: scale(1.05);
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.023);
+                transform: translateY(-3px) scale(1.07);
+                box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+                filter: brightness(1.08);
+            }
+
+            &:active {
+                transform: scale(0.98);
+                box-shadow: 0 1px 4px rgba(0,0,0,0.10);
             }
         }
 
         button:nth-child(1) {
           background: rgba(206, 206, 206, 0.24);
           color: rgb(107, 107, 107);
+          transition: 
+            background-color 0.22s cubic-bezier(0.4, 0.2, 0.2, 1),
+            color 0.22s cubic-bezier(0.4, 0.2, 0.2, 1);
+
+          &:hover{
+            background-color: #272727;
+            color: $white;
+            box-shadow: 0 8px 24px rgba(39,39,39,0.18);
+          }
         }
         button:nth-child(2) {
           background: #007bff6f;
+          transition: 
+            background-color 0.22s cubic-bezier(0.4, 0.2, 0.2, 1),
+            color 0.22s cubic-bezier(0.4, 0.2, 0.2, 1);
+
+          &:hover{
+            background-color: #007bffda;
+            color: $white;
+            box-shadow: 0 8px 24px rgba(0,123,255,0.18);
+          }
         }
         button:nth-child(3) {
           background: #ff00006d;
+          transition: 
+            background-color 0.22s cubic-bezier(0.4, 0.2, 0.2, 1),
+            color 0.22s cubic-bezier(0.4, 0.2, 0.2, 1);
+
+          &:hover{
+            background-color: #ff0000da;
+            color: $white;
+            box-shadow: 0 8px 24px rgba(255,0,0,0.18);
+          }
         }
       }
 

@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-customers',
@@ -209,31 +210,67 @@ export class CustomersComponent implements OnInit {
     this.apiService.getAllInvoices().subscribe({
       next: (invoices: Invoice[]) => {
         const clientInvoices = invoices.filter(inv => inv.customer_id === customerId);
-        const purchaseMap = new Map<string, { name: string; quantity: number; invoiceId: number }>();
-        clientInvoices.forEach(inv => {
-          if (inv.products && Array.isArray(inv.products)) {
-            inv.products.forEach(prod => {
-              let qty = prod.quantity;
-              if (prod.InvoiceProduct && typeof prod.InvoiceProduct.quantity === 'number') {
-                qty = prod.InvoiceProduct.quantity;
-              }
-              if (prod && prod.name && qty != null) {
-                const key = prod.name;
-                if (purchaseMap.has(key)) {
-                  purchaseMap.get(key)!.quantity += qty;
-                } else {
-                  purchaseMap.set(key, {
-                    name: prod.name,
-                    quantity: qty,
-                    invoiceId: inv.id ?? 0
-                  });
+        if (clientInvoices.length === 0) {
+          this.purchases = [];
+          this.filteredPurchases = [];
+          return;
+        }
+        // Appel pour chaque facture pour récupérer les produits
+        const invoiceDetailCalls = clientInvoices.map(inv => this.apiService.getInvoice(inv.id!));
+        forkJoin(invoiceDetailCalls).subscribe({
+          next: (detailedInvoices: any[]) => {
+            const purchases: { name: string; quantity: number; invoiceId: number }[] = [];
+            detailedInvoices.forEach(inv => {
+              if (inv.products && Array.isArray(inv.products)) {
+                interface InvoiceProduct {
+                  quantity: number;
                 }
+
+                interface Product {
+                  name: string;
+                  quantity?: number;
+                  InvoiceProduct?: InvoiceProduct;
+                }
+
+                interface DetailedInvoice {
+                  id?: number;
+                  products?: Product[];
+                }
+
+                (inv.products as Product[]).forEach((prod: Product) => {
+                  let qty: number | undefined = prod.quantity;
+                  if (prod.InvoiceProduct && typeof prod.InvoiceProduct.quantity === 'number') {
+                    qty = prod.InvoiceProduct.quantity;
+                  }
+                  if (prod && prod.name && qty != null) {
+                    purchases.push({
+                      name: prod.name,
+                      quantity: qty,
+                      invoiceId: (inv as DetailedInvoice).id ?? 0
+                    });
+                  } else {
+                    console.warn('[loadPurchasesForCustomer] Produit sans nom ou quantité:', prod);
+                  }
+                });
+              } else {
+                console.warn('[loadPurchasesForCustomer] Invoice sans produits:', inv);
               }
             });
+            console.log('[loadPurchasesForCustomer] Purchases:', purchases);
+            this.purchases = purchases;
+            this.filteredPurchases = this.purchases;
+          },
+          error: (err) => {
+            console.error('[loadPurchasesForCustomer] Error in forkJoin:', err);
+            this.purchases = [];
+            this.filteredPurchases = [];
           }
         });
-        this.purchases = Array.from(purchaseMap.values());
-        this.filteredPurchases = this.purchases;
+      },
+      error: (err) => {
+        console.error('[loadPurchasesForCustomer] Error:', err);
+        this.purchases = [];
+        this.filteredPurchases = [];
       }
     });
   }
@@ -243,6 +280,7 @@ export class CustomersComponent implements OnInit {
     this.filteredPurchases = this.purchases.filter(p =>
       p.name.toLowerCase().includes(search)
       || (`Achat#${p.invoiceId}`).toLowerCase().includes(search)
+      || (`Facture#${p.invoiceId}`).toLowerCase().includes(search)
     );
   }
 
@@ -272,9 +310,10 @@ export class CustomersComponent implements OnInit {
 
   onConfirmPopup() {
     if (this.confirmAction) this.confirmAction();
-    this.showConfirm = false;
+    (this.showConfirm ??= false);
   }
   onCancelPopup() {
     this.showConfirm = false;
   }
 }
+

@@ -251,12 +251,18 @@
         </button>
       </div>
     </div>
+    <!-- DEBUG: Affiche la liste brute des achats -->
+    <!-- <pre style="background:#eee;color:#333;font-size:0.9em;padding:8px;border-radius:8px;max-width:100%;overflow:auto;">
+filteredPurchases: {{ filteredPurchases | json }}
+    </pre> -->
     <div *ngIf="filteredPurchases.length === 0">
       <span>Aucun achat trouvé pour ce client.</span>
     </div>
     <div *ngIf="filteredPurchases.length > 0" class="invoice-list">
       <div *ngFor="let purchase of filteredPurchases" class="invoice-row">
-        <span class="invoice-ref">{{ purchase.name }} x{{ purchase.quantity }}</span>
+        <span class="invoice-ref">
+          {{ purchase.name }} x{{ purchase.quantity }} <span style="color:#888;font-size:0.95em;">(Facture#{{ purchase.invoiceId }})</span>
+        </span>
         <div class="invoice-actions">
           <button title="Voir">
             <span class="iconify" data-icon="simple-line-icons:eye" data-inline="true"></span>
