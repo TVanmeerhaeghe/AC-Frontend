@@ -262,7 +262,6 @@ export class InvoicesComponent implements OnInit {
       } else {
         this.apiService.createInvoice(formToSubmit).subscribe({
           next: async (invoice) => {
-            console.log('Invoice response:', invoice);
             const invoiceId =
               invoice?.id ??
               invoice?.data?.id ??

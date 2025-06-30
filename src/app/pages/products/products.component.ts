@@ -276,8 +276,6 @@ export class ProductsComponent implements OnInit {
 
   getCategorySlug(product: Product): string {
     const cat = this.categories?.find(c => c.id === product.category_id);
-    console.log('Produit:', product);
-    console.log('Catégorie trouvée:', cat);
     return cat ? cat.slug : 'tous';
   }
 }

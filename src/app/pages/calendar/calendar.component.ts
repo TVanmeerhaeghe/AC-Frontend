@@ -68,11 +68,6 @@ export class CalendarComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log('FormData:', this.formData);
-    console.log('Start Date:', this.formData.start_date);
-    console.log('End Date:', this.formData.end_date);
-    console.log('Start Time:', this.formData.start_time);
-    console.log('End Time:', this.formData.end_time);
 
     if (!this.formData.start_date || !this.formData.end_date || !this.formData.start_time || !this.formData.end_time) {
       console.error('Les dates et heures de début et de fin sont obligatoires.');
@@ -88,9 +83,6 @@ export class CalendarComponent implements OnInit {
 
     const startDateTime = new Date(`${startDateString}T${this.formData.start_time}`);
     const endDateTime = new Date(`${endDateString}T${this.formData.end_time}`);
-
-    console.log('Start DateTime:', startDateTime);
-    console.log('End DateTime:', endDateTime);
 
     if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
       console.error('Les dates ou heures fournies sont invalides.');

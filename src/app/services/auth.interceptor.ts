@@ -10,7 +10,6 @@ export const authInterceptor: HttpInterceptorFn = (
 ): Observable<HttpEvent<unknown>> => {
   const authService = inject(AuthService);
   const token = authService.getToken();
-  console.log('Token utilisé pour les requêtes :', token);  
 
   if (token) {
     const cloned = req.clone({

@@ -19,8 +19,8 @@ export interface Product {
 }
 
 export enum Condition {
-    Neuf = 'Nef',
-    PresqueNeuf = 'Presque Neuf',
+    Neuf = 'Neuf',
+    PresqueNeuf = 'Presque neuf',
     Bon = 'Bon',
     Passable = 'Passable'
 }

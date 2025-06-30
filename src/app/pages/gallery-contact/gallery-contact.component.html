@@ -5,21 +5,21 @@
       <label>Nom</label>
       <input formControlName="name" placeholder="Votre nom" />
       <small *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
-        Obligatoire
+        Obligatoire.
       </small>
       <small
         *ngIf="
           form.get('name')?.touched && form.get('name')?.hasError('minlength')
         "
       >
-        Au moins 3 caractères
+        Au moins 3 caractères.
       </small>
       <small
         *ngIf="
           form.get('name')?.touched && form.get('name')?.hasError('pattern')
         "
       >
-        Lettres uniquement
+        Lettres uniquement.
       </small>
     </div>
 
@@ -29,7 +29,7 @@
       <small
         *ngIf="form.get('surname')?.touched && form.get('surname')?.invalid"
       >
-        Obligatoire
+        Obligatoire.
       </small>
       <small
         *ngIf="
@@ -37,7 +37,7 @@
           form.get('surname')?.hasError('minlength')
         "
       >
-        Au moins 3 caractères
+        Au moins 3 caractères.
       </small>
       <small
         *ngIf="
@@ -45,26 +45,26 @@
           form.get('surname')?.hasError('pattern')
         "
       >
-        Lettres uniquement
+        Lettres uniquement.
       </small>
     </div>
 
     <div class="field">
       <label>Email</label>
-      <input formControlName="email" placeholder="Votre adresse email" />
+      <input formControlName="email" placeholder="Votre adresse e-mail" />
       <small
         *ngIf="
           form.get('email')?.touched && form.get('email')?.hasError('required')
         "
       >
-        Obligatoire
+        Obligatoire.
       </small>
       <small
         *ngIf="
           form.get('email')?.touched && form.get('email')?.hasError('email')
         "
       >
-        Format invalide
+        Format invalide.
       </small>
     </div>
 
@@ -72,14 +72,14 @@
       <label>Téléphone</label>
       <input formControlName="phone" placeholder="Votre téléphone" />
       <small *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
-        Obligatoire
+        Obligatoire.
       </small>
       <small
         *ngIf="
           form.get('phone')?.touched && form.get('phone')?.hasError('pattern')
         "
       >
-        Doit contenir exactement 10 chiffres
+        Doit contenir exactement 10 chiffres.
       </small>
     </div>
 
@@ -89,7 +89,7 @@
       <small
         *ngIf="form.get('subject')?.touched && form.get('subject')?.invalid"
       >
-        Obligatoire
+        Obligatoire.
       </small>
     </div>
 
@@ -103,7 +103,7 @@
       <small
         *ngIf="form.get('message')?.touched && form.get('message')?.invalid"
       >
-        Obligatoire
+        Obligatoire.
       </small>
     </div>
 
@@ -131,7 +131,7 @@
       {{ submitting ? "Envoi..." : "Envoyer" }}
     </button>
 
-    <p class="success" *ngIf="success">Message envoyé avec succès !</p>
+    <p class="success" *ngIf="success">Message envoyé avec succès !</p>
     <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
   </form>
 </div>

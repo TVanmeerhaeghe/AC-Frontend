@@ -6,6 +6,7 @@ import { authInterceptor } from './services/auth.interceptor';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const CUSTOM_DATES_FORMAT = {
   parse: {
@@ -30,5 +31,6 @@ export const appConfig: ApplicationConfig = {
       MatNativeDateModule,
       MatDatepickerModule
     ),
+    provideAnimations()
   ]
 };

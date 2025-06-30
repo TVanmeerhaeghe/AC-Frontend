@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
-import { UserService } from '../services/api.service';
+import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 
@@ -16,7 +16,7 @@ export class AuthComponent implements OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
-    private userService: UserService,
+    private apiService: ApiService,
     private authService: AuthService 
   ) {}
 
@@ -37,8 +37,7 @@ export class AuthComponent implements OnInit {
 
   onSignUp() {
     if (this.signupForm.valid) {
-      this.userService.signUp(this.signupForm.value).subscribe({
-        next: res => console.log('✅ Inscription réussie', res),
+      this.apiService.signUp(this.signupForm.value).subscribe({
         error: err => console.error('❌ Erreur signup', err)
       });
     }
@@ -46,11 +45,7 @@ export class AuthComponent implements OnInit {
 
   onSignIn() {
     if (this.signinForm.valid) {
-      this.userService.signIn(this.signinForm.value).subscribe({
-        next: res => {
-          this.authService.setToken(res.token);
-          console.log('✅ Connexion réussie', res);
-        },
+      this.apiService.signIn(this.signinForm.value).subscribe({
         error: err => console.error('❌ Erreur signin', err)
       });
     }
