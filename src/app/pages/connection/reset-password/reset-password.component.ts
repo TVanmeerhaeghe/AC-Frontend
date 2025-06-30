@@ -33,7 +33,7 @@ export class ResetPasswordComponent {
     if (this.form.valid && this.token) {
       this.api.resetPassword(this.form.value.password, this.token).subscribe({
         next: () => {
-          alert('Mot de passe modifié !');
+          alert('Mot de passe modifié !');
           this.router.navigate(['/sign-in']);
         },
         error: () => alert('Erreur lors de la modification.')

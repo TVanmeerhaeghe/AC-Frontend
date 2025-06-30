@@ -258,7 +258,6 @@ export class CustomersComponent implements OnInit {
                 console.warn('[loadPurchasesForCustomer] Invoice sans produits:', inv);
               }
             });
-            console.log('[loadPurchasesForCustomer] Purchases:', purchases);
             this.purchases = purchases;
             this.filteredPurchases = this.purchases;
           },

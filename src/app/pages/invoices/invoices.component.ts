@@ -18,6 +18,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
 import { Task } from '../../models/tasks.model';
 import { lastValueFrom } from 'rxjs';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface InvoiceProductInput {
   product_id: number;
@@ -262,7 +264,6 @@ export class InvoicesComponent implements OnInit {
       } else {
         this.apiService.createInvoice(formToSubmit).subscribe({
           next: async (invoice) => {
-            console.log('Invoice response:', invoice);
             const invoiceId =
               invoice?.id ??
               invoice?.data?.id ??
@@ -472,5 +473,123 @@ export class InvoicesComponent implements OnInit {
     if (!last.hours || last.hours <= 0) return false;
     if (!last.hourly_rate || last.hourly_rate <= 0) return false;
     return true;
+  }
+
+  async downloadInvoicePdf() {
+    if (!this.viewInvoiceData) return;
+
+    const formatDate = (iso: string) => {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return d.toLocaleDateString('fr-FR');
+    };
+
+    const rawPhone = this.getCustomerField(this.viewInvoiceData.customer_id!, 'phone');
+    const phone = rawPhone && !rawPhone.startsWith('0') ? '0' + rawPhone : rawPhone;
+
+    let tvaRows = '';
+    if (
+      (!this.viewInvoiceData.products || this.viewInvoiceData.products.length === 0) &&
+      this.prestationTasks.length > 0
+    ) {
+      const tvaDetails = this.prestationTVADetails;
+      if (tvaDetails.length > 0) {
+        tvaRows = `
+          <div style="margin-top:12px;text-align:right;">
+            <b>Détail TVA :</b>
+            <ul style="list-style:none;padding:0;margin:0;">
+              ${tvaDetails.map(tva =>
+                `<li>TVA ${tva.tva}% : ${tva.montant.toFixed(2)} €</li>`
+              ).join('')}
+            </ul>
+          </div>
+        `;
+      }
+    }
+
+    const pdfContent = document.createElement('div');
+    pdfContent.style.width = '800px';
+    pdfContent.style.padding = '32px';
+    pdfContent.style.background = '#fff';
+    pdfContent.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div style="max-width:50%">
+          <img src="/img/logo.png" alt="LVDB" style="height:60px;margin-bottom:8px;">
+          <div style="font-weight:bold;font-size:1.2em;">Le Village des Brocanteurs</div>
+          <div>10B Rue du Pré Baron,<br>27500 Pont-Audemer</div>
+          <div>Tel : 06 37 74 77 05</div>
+        </div>
+        <div style="text-align:right;max-width:45%">
+          <div style="font-weight:bold;">Client</div>
+          <div>${this.getCustomerFullName(this.viewInvoiceData.customer_id)}</div>
+          <div>${this.getCustomerField(this.viewInvoiceData.customer_id!, 'adress')}</div>
+          <div>${this.getCustomerField(this.viewInvoiceData.customer_id!, 'postal_code')} ${this.getCustomerField(this.viewInvoiceData.customer_id!, 'city')}</div>
+          <div>Tel : ${phone}</div>
+          <div>${this.getCustomerField(this.viewInvoiceData.customer_id!, 'email')}</div>
+        </div>
+      </div>
+      <hr style="margin:24px 0;">
+      <div>
+        <div style="font-size:1.1em;margin-bottom:8px;"><b>Facture du ${formatDate(this.viewInvoiceData.creation_date)} n°${this.viewInvoiceData.id}</b></div>
+        <div><b>Objet :</b> ${this.viewInvoiceData.object}</div>
+        <div><b>Statut :</b> ${this.viewInvoiceData.status}</div>
+      </div>
+      <div style="margin-top:24px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th style="border-bottom:1px solid #ccc;text-align:left;">Désignation</th>
+              <th style="border-bottom:1px solid #ccc;">Quantité</th>
+              <th style="border-bottom:1px solid #ccc;">Prix unitaire</th>
+              <th style="border-bottom:1px solid #ccc;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              (this.viewInvoiceData.products && this.viewInvoiceData.products.length > 0)
+                ? this.viewInvoiceData.products.map(prod => `
+                  <tr>
+                    <td>${prod.name}</td>
+                    <td style="text-align:center;">${prod.InvoiceProduct?.quantity ?? prod.quantity ?? 1}</td>
+                    <td style="text-align:right;">${prod.price.toFixed(2)} €</td>
+                    <td style="text-align:right;">${((prod.price ?? 0) * (prod.InvoiceProduct?.quantity ?? prod.quantity ?? 1)).toFixed(2)} €</td>
+                  </tr>
+                `).join('')
+                : this.prestationTasks.map(task => `
+                  <tr>
+                    <td>${task.name}</td>
+                    <td style="text-align:center;">${task.hours ?? 1}</td>
+                    <td style="text-align:right;">${task.hourly_rate?.toFixed(2) ?? '0.00'} €</td>
+                    <td style="text-align:right;">${((task.hours ?? 0) * (task.hourly_rate ?? 0)).toFixed(2)} €</td>
+                  </tr>
+                `).join('')
+            }
+          </tbody>
+        </table>
+      </div>
+      ${tvaRows}
+      <div style="margin-top:24px;text-align:right;">
+        <div><b>Total TTC :</b> ${
+          (this.viewInvoiceData.products && this.viewInvoiceData.products.length > 0)
+            ? this.produitsTotalTTC.toFixed(2)
+            : this.prestationTotalTTC.toFixed(2)
+        } €</div>
+      </div>
+      <div style="margin-top:16px;">
+        <b>Note :</b> ${this.viewInvoiceData.admin_note ?? ''}
+      </div>
+    `;
+
+    document.body.appendChild(pdfContent);
+
+    const canvas = await html2canvas(pdfContent, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'pt', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`Facture_${this.viewInvoiceData.id}.pdf`);
+
+    document.body.removeChild(pdfContent);
   }
 }

@@ -37,8 +37,7 @@ export class SignUpComponent implements OnInit {
       };
 
       this.apiService.signUp(payload).subscribe({
-        next: (res) => console.log('✅ Inscription réussie', res),
-        error: (err) => console.error('❌ Erreur', err)
+        error: (err) => console.error('❌ Erreur :', err)
       });
     }
   }

@@ -55,12 +55,12 @@
         </div>
         <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
           <mat-form-field appearance="fill">
-            <mat-label>Nom de l'événement</mat-label>
+            <mat-label>Nom de l’événement</mat-label>
             <input matInput [(ngModel)]="formData.name" name="name" required>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
-            <mat-label>Lieu de l'événement</mat-label>
+            <mat-label>Lieu de l’événement</mat-label>
             <input matInput [(ngModel)]="formData.localisation" name="localisation">
           </mat-form-field>
 
@@ -93,7 +93,7 @@
           </div>
 
           <mat-form-field appearance="fill">
-            <mat-label>Description de l'événement</mat-label>
+            <mat-label>Description de l’événement</mat-label>
             <textarea matInput [(ngModel)]="formData.description" name="description"></textarea>
           </mat-form-field>
 

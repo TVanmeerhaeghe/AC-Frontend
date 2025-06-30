@@ -8,7 +8,7 @@
     <div class="sign-in-content">
       <!-- Formulaire de connexion -->
       <form *ngIf="!showForgotForm" [formGroup]="form" (ngSubmit)="submit()">
-        <input type="email" formControlName="email_adress" placeholder="Identifiant" />
+        <input type="email" formControlName="email_adress" placeholder="Adresse e-mail" />
         <input type="password" formControlName="password" placeholder="Mot de passe" />
         <div *ngIf="errorMessage && !showForgotForm" class="error-message">
           {{ errorMessage }}

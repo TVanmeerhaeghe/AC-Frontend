@@ -16,6 +16,8 @@ import { ConfirmPopupComponent } from '../../shared/confirm-popup/confirm-popup.
 import { Task } from '../../models/tasks.model';
 import { lastValueFrom } from 'rxjs';
 import { MatChipsModule } from '@angular/material/chips';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-estimates',
@@ -361,5 +363,111 @@ export class EstimatesComponent implements OnInit {
   }
   onCancelPopup() {
     this.showConfirm = false;
+  }
+
+  async downloadEstimatePdf() {
+    if (!this.viewEstimateData) return;
+
+    const formatDate = (iso: string) => {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return d.toLocaleDateString('fr-FR');
+    };
+
+    const rawPhone = this.getCustomerField(this.viewEstimateData.customerId!, 'phone');
+    const phone = rawPhone && !rawPhone.startsWith('0') ? '0' + rawPhone : rawPhone;
+
+    let tvaRows = '';
+    if (this.prestationTasks.length > 0) {
+      const tvaDetails = this.prestationTVADetails;
+      if (tvaDetails.length > 0) {
+        tvaRows = `
+          <div style="margin-top:12px;text-align:right;">
+            <b>Détail TVA :</b>
+            <ul style="list-style:none;padding:0;margin:0;">
+              ${tvaDetails.map(tva =>
+                `<li>TVA ${tva.tva}% : ${tva.montant.toFixed(2)} €</li>`
+              ).join('')}
+            </ul>
+          </div>
+        `;
+      }
+    }
+
+    const pdfContent = document.createElement('div');
+    pdfContent.style.width = '800px';
+    pdfContent.style.padding = '32px';
+    pdfContent.style.background = '#fff';
+    pdfContent.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div style="max-width:50%">
+          <img src="/assets/img/logo.png" alt="LVDB" style="height:60px;margin-bottom:8px;">
+          <div style="font-weight:bold;font-size:1.2em;">Village des Brocanteurs</div>
+          <div>10B Rue du Pré Baron,<br>27500 Pont-Audemer</div>
+          <div>Tel : 06 37 74 77 05</div>
+        </div>
+        <div style="text-align:right;max-width:45%">
+          <div style="font-weight:bold;">Client</div>
+          <div>${this.getCustomerFullName(this.viewEstimateData.customerId)}</div>
+          <div>${this.getCustomerField(this.viewEstimateData.customerId!, 'adress')}</div>
+          <div>${this.getCustomerField(this.viewEstimateData.customerId!, 'postal_code')} ${this.getCustomerField(this.viewEstimateData.customerId!, 'city')}</div>
+          <div>Tel : ${phone}</div>
+          <div>${this.getCustomerField(this.viewEstimateData.customerId!, 'email')}</div>
+        </div>
+      </div>
+      <hr style="margin:24px 0;">
+      <div>
+        <div style="font-size:1.1em;margin-bottom:8px;"><b>Devis du ${formatDate(
+          typeof this.viewEstimateData.creationDate === 'string'
+            ? this.viewEstimateData.creationDate
+            : this.viewEstimateData.creationDate.toISOString()
+        )} n°${this.viewEstimateData.id}</b></div>
+        <div><b>Objet :</b> ${this.viewEstimateData.object}</div>
+        <div><b>Statut :</b> ${this.viewEstimateData.status}</div>
+      </div>
+      <div style="margin-top:24px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th style="border-bottom:1px solid #ccc;text-align:left;">Désignation</th>
+              <th style="border-bottom:1px solid #ccc;">Quantité</th>
+              <th style="border-bottom:1px solid #ccc;">Prix unitaire</th>
+              <th style="border-bottom:1px solid #ccc;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              this.prestationTasks.map(task => `
+                <tr>
+                  <td>${task.name}</td>
+                  <td style="text-align:center;">${task.hours ?? 1}</td>
+                  <td style="text-align:right;">${task.hourly_rate?.toFixed(2) ?? '0.00'} €</td>
+                  <td style="text-align:right;">${((task.hours ?? 0) * (task.hourly_rate ?? 0)).toFixed(2)} €</td>
+                </tr>
+              `).join('')
+            }
+          </tbody>
+        </table>
+      </div>
+      ${tvaRows}
+      <div style="margin-top:24px;text-align:right;">
+        <div><b>Total TTC :</b> ${this.prestationTotalTTC.toFixed(2)} €</div>
+      </div>
+      <div style="margin-top:16px;">
+        <b>Note :</b> ${this.viewEstimateData.adminNote ?? ''}
+      </div>
+    `;
+
+    document.body.appendChild(pdfContent);
+
+    const canvas = await html2canvas(pdfContent, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'pt', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`Devis_${this.viewEstimateData.id}.pdf`);
+
+    document.body.removeChild(pdfContent);
   }
 }
